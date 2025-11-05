@@ -2,12 +2,12 @@
 
 ## 🏁 Phase 0 : Préparation & Architecture (L'étape la plus critique)
 
-- [ ] **Administration (Priorité Zéro)**
-  - [ ] S'inscrire sur e-learning avant la deadline (13 novembre 23:59). (Ne pas faire ça = défaillant).
+- [x] **Administration (Priorité Zéro)**
+  - [x] S'inscrire sur e-learning avant la deadline (13 novembre 23:59). (Ne pas faire ça = défaillant).
 - [ ] **Mise en place de l'environnement**
-  - [ ] Créer le dossier `lib`.
-  - [ ] Télécharger `zen-6.0.jar`.
-  - [ ] Ajouter `zen-6.0.jar` au Build Path.
+  - [x] Créer le dossier `lib`.
+  - [x] Télécharger `zen-6.0.jar`.
+  - [ ] Ajouter `zen-6.0.jar` au Build Path. // A faire selon l'IDE.
 - [ ] **Réflexion & Conception (Le VRAI travail)**
   - [ ] **Choisir le pattern de conception.** Le sujet vous pousse vers **MVC (Modèle-Vue-Contrôleur)**.
     - [ ] **Modèle :** `Hero`, `Backpack`, `Item`, `Enemy`, `GameMap`, `CombatEngine`. (Les données et la logique pure).
