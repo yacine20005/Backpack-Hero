@@ -24,7 +24,7 @@
 
 - [x] **Modèle : Héros & Sac**
   - [x] Classe `Hero` (avec 40 HP).
-  - [x] Classe `Backpack` (grille fixe 3x5) (Un `Item[3][5]` ? Une `Map<Position, Item>` ?).
+  - [x] Classe `Backpack` (grille fixe 3x5) (Une `Map<Position, Item>` ?).
 - [ ] **Modèle : Équipements (Simples)**
   - [ ] Classe abstraite `Equipment` (ou interface `Item`).
   - [ ] Classe `WeaponMelee`.
