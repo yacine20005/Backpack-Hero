@@ -1,0 +1,24 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Backpack {
+    private final int width = 3;
+    private final int height = 5;
+    private final Map<Position, Item> items;
+
+    public Backpack() {
+        this.items = new HashMap<>();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Map<Position, Item> getItems() {
+        return items;
+    }
+}
