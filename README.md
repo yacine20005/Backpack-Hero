@@ -9,10 +9,10 @@
   - [x] Télécharger `zen-6.0.jar`.
   - [ ] Ajouter `zen-6.0.jar` au Build Path. // A faire selon l'IDE.
 - [ ] **Réflexion & Conception (Le VRAI travail)**
-  - [ ] **Choisir le pattern de conception.** Le sujet vous pousse vers **MVC (Modèle-Vue-Contrôleur)**.
-    - [ ] **Modèle :** `Hero`, `Backpack`, `Item`, `Enemy`, `GameMap`, `CombatEngine`. (Les données et la logique pure).
-    - [ ] **Vue :** La classe qui utilise `Zen` pour dessiner. Elle ne fait *que* dessiner ce que le Modèle lui dit.
-    - [ ] **Contrôleur :** La boucle de jeu, gère les clics, le clavier. Il dit au Modèle "le joueur a cliqué ici" et à la Vue "rafraîchis".
+  - [x] **Choisir le pattern de conception.** Le sujet vous pousse vers **MVC (Modèle-Vue-Contrôleur)**.
+    - [x] **Modèle :** `Hero`, `Backpack`, `Item`, `Enemy`, `GameMap`, `CombatEngine`. (Les données et la logique pure).
+    - [x] **Vue :** La classe qui utilise `Zen` pour dessiner. Elle ne fait *que* dessiner ce que le Modèle lui dit.
+    - [x] **Contrôleur :** La boucle de jeu, gère les clics, le clavier. Il dit au Modèle "le joueur a cliqué ici" et à la Vue "rafraîchis".
   - [ ] **Définir les interfaces.** C'est ça, la POO.
     - [ ] `interface Item { ... }`
     - [ ] `interface EnemyAction { ... }`
