@@ -25,16 +25,17 @@
 - [x] **Modèle : Héros & Sac**
   - [x] Classe `Hero` (avec 40 HP).
   - [x] Classe `Backpack` (grille fixe 3x5) (Une `Map<Position, Item>` ?).
-- [ ] **Modèle : Équipements (Simples)**
-  - [ ] Classe abstraite `Equipment` (ou interface `Item`).
-  - [ ] Classe `WeaponMelee`.
-  - [ ] Classe `WeaponRanged`.
-  - [ ] Classe `Armor`.
-  - [ ] Classe `Shield`.
-  - [ ] Classe `MagicItem`.
-  - [ ] Classe `ManaStone`.
-  - [ ] Classe `Gold`.
-  - [ ] **Règle P1 :** PAS d'interactions. Un objet = un effet simple.
+- [x] **Modèle : Équipements (Simples)**
+  - [x] Interface `Item`
+  - [x] Classe abstraite `Equipment`
+  - [x] Classe `WeaponMelee`.
+  - [x] Classe `WeaponRanged`.
+  - [x] Classe `Armor`.
+  - [x] Classe `Shield`.
+  - [x] Classe `MagicItem`.
+  - [x] Classe `ManaStone`.
+  - [x] Classe `Gold`.
+  - [x] **Règle P1 :** PAS d'interactions. Un objet = un effet simple.
 - [ ] **Modèle : Ennemis (Simples)**
   - [ ] Classe `Enemy` (abstraite).
   - [ ] Classe `RatLoup` et `PetitRatLoup`.

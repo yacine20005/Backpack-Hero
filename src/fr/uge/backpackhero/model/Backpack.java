@@ -1,5 +1,9 @@
+package fr.uge.backpackhero.model;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import fr.uge.backpackhero.item.Item;
 
 public class Backpack {
 
