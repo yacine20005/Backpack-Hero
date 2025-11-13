@@ -11,8 +11,7 @@ public class Backpack {
     private final int height = 5;
 
     private final Map<Position, Item> items; 
-    // Here we declare items as map and not as HashMap to increase the flexibility if we want to change the implementation in the constructor later on some chalant shyt.
-
+    
     public Backpack() {
         this.items = new HashMap<>();
     }

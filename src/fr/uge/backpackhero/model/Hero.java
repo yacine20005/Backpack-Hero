@@ -14,12 +14,8 @@ public class Hero {
     }
 
     public void setHp(int hp) {
-        if (hp < 0) {
-            this.hp = 0;
-        } else if (hp > MAX_HP) {
-            this.hp = MAX_HP;
-        } else {
-            this.hp = hp;
-        }
+        if (hp < 0) hp = 0;
+        else if (hp > MAX_HP) hp = MAX_HP;
+        else this.hp = hp;
     }
 }

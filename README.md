@@ -36,8 +36,8 @@
   - [x] Classe `ManaStone`.
   - [x] Classe `Gold`.
   - [x] **Règle P1 :** PAS d'interactions. Un objet = un effet simple.
-- [ ] **Modèle : Ennemis (Simples)**
-  - [ ] Classe `Enemy` (abstraite).
+- [x] **Modèle : Ennemis (Simples)**
+  - [x] Classe `Enemy` (abstraite).
   - [ ] Classe `RatLoup` et `PetitRatLoup`.
   - [ ] IA simple : `chooseAction()` (random attaque ou défense).
 - [ ] **Modèle : Combat**
