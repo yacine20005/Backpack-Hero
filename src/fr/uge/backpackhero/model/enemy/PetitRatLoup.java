@@ -1,11 +1,12 @@
 package fr.uge.backpackhero.model.enemy;
 
-public class RatLoup extends Enemy {
+public class PetitRatLoup extends Enemy {
 
-    public RatLoup() {
-        super("Rat Loup", 10, 1, 1);
+    public PetitRatLoup() {
+        super("Petit Rat Loup", 5, 1, 0);
     }
 
+    @Override
     public EnemyAction chooseAction() {
         int random = getRandom().nextInt(2);
         switch (random) {
