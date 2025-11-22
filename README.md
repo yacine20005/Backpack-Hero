@@ -38,23 +38,26 @@
   - [x] **Règle P1 :** PAS d'interactions. Un objet = un effet simple.
 - [x] **Modèle : Ennemis (Simples)**
   - [x] Classe `Enemy` (abstraite).
-  - [ ] Classe `RatLoup` et `PetitRatLoup`.
-  - [ ] IA simple : `chooseAction()` (random attaque ou défense).
+  - [x] Classe `RatLoup` et `PetitRatLoup`.
+  - [x] IA simple : `chooseAction()` (random attaque ou défense).
 - [ ] **Modèle : Combat**
-  - [ ] Classe `CombatEngine`.
-  - [ ] Logique de tour par tour (Héros, puis Ennemis).
-  - [ ] Gestion énergie (3 par tour).
-  - [ ] Gestion HP et Protection.
+  - [x] Classe `CombatEngine`.
+  - [x] Logique de tour par tour (Héros, puis Ennemis).
+  - [x] Gestion énergie (3 par tour).
+  - [x] Gestion HP et Protection.
+  - [ ] Boucle complète de combat de la rencontre avec un ennemi a sa mort.
 - [ ] **Modèle : Donjon (Codé en dur)**
-  - [ ] Classe `Dungeon` (contient 3 `Floor`).
-  - [ ] Classe `Floor` (contient une grille de `Room`).
-  - [ ] Coder en dur la carte (3 étages).
-  - [ ] Classes pour les salles : `Corridor`, `EnemyRoom`, `MerchantRoom`, `HealerRoom`, `TreasureRoom`, `ExitDoor`.
+  - [x] Classe `Dungeon` (contient 3 `Floor`).
+  - [x] Classe `Floor` (contient une grille de `Room`).
+  - [x] Coder en dur la carte (3 étages).
+  - [x] Classes pour les salles : `Corridor`, `EnemyRoom`, `MerchantRoom`, `HealerRoom`, `TreasureRoom`, `ExitDoor`.
+  - [ ] Ajouter le contenu adéquat à chaque salle.
   - [ ] Coder en dur le loot des trésors et combats.
 - [ ] **Vue & Contrôleur (GUI)**
   - [ ] Créer une fenêtre `Zen`.
   - [ ] Afficher la carte du donjon.
   - [ ] Gérer le clic pour se déplacer (règle des couloirs).
+  - [ ] Gérer la logique de déplacement du joueur.
   - [ ] Afficher l'écran de combat.
   - [ ] Afficher le sac à dos.
   - [ ] Gérer les clics pour utiliser un objet (épée, bouclier).

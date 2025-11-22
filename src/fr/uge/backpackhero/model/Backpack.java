@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.uge.backpackhero.item.Item;
+import fr.uge.backpackhero.model.level.Position;
 
 public class Backpack {
 

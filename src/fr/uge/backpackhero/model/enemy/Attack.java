@@ -5,7 +5,15 @@ import fr.uge.backpackhero.model.Hero;
 public class Attack implements EnemyAction {
 
     public void execute(Hero hero, Enemy enemy) {
-        hero.setHp(hero.getHp() - enemy.getAttack());
+        int damage = enemy.getAttack();
+        int block = hero.getBlock();
+
+        if (block >= damage) {
+            hero.setBlock(block - damage);
+        } else {
+            hero.setBlock(0);
+            hero.setHp(hero.getHp() - (damage - block));
+        }
     }
 
 }

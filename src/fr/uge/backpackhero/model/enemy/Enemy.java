@@ -20,10 +20,6 @@ public abstract class Enemy {
 		this.block = 0;
 	}
 
-	public String name() {
-		return name;
-	}
-
 	public int getHp() {
 		return hp;
 	}
@@ -65,6 +61,12 @@ public abstract class Enemy {
 
 	public Random getRandom() {
 		return randomnum;
+	}
+
+	@Override
+	public String toString() {
+		return "Enemy - Name=" + name + ", HP=" + hp + "/" + MAX_HP + ", Attack=" + attack + ", Defense=" + defense + ", Block="
+				+ block;
 	}
 
 	public abstract EnemyAction chooseAction();
