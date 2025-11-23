@@ -36,11 +36,8 @@ public abstract class Enemy {
 		return defense;
 	}
 
-	public void setDefense(int block) {
-		if (block < 0)
-			block = 0;
-		else
-			this.defense = block;
+	public void setDefense(int defense) {
+		this.defense = defense;
 	}
 
 	public int getAttack() {
@@ -65,7 +62,8 @@ public abstract class Enemy {
 
 	@Override
 	public String toString() {
-		return "Enemy - Name=" + name + ", HP=" + hp + "/" + MAX_HP + ", Attack=" + attack + ", Defense=" + defense + ", Block="
+		return "Enemy - Name=" + name + ", HP=" + hp + "/" + MAX_HP + ", Attack=" + attack + ", Defense=" + defense
+				+ ", Block="
 				+ block;
 	}
 

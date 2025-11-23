@@ -26,6 +26,6 @@ public class Backpack {
     }
 
     public Map<Position, Item> getItems() {
-        return items;
+        return Map.copyOf(items);
     }
 }
