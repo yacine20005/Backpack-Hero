@@ -1,4 +1,4 @@
-package fr.uge.backpackhero.item;
+package fr.uge.backpackhero.model.item;
 
 public abstract class Item {
 

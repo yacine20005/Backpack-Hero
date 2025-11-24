@@ -3,8 +3,8 @@ package fr.uge.backpackhero.model.level;
 import java.util.List;
 import java.util.Objects;
 
-import fr.uge.backpackhero.item.Item;
 import fr.uge.backpackhero.model.enemy.Enemy;
+import fr.uge.backpackhero.model.item.Item;
 
 public class Room {
     private final RoomType type;

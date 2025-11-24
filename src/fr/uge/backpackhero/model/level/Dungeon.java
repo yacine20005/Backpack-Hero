@@ -3,12 +3,12 @@ package fr.uge.backpackhero.model.level;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.uge.backpackhero.item.Gold;
-import fr.uge.backpackhero.item.ManaStone;
-import fr.uge.backpackhero.item.Armor;
-import fr.uge.backpackhero.item.Weapon;
 import fr.uge.backpackhero.model.enemy.PetitRatLoup;
 import fr.uge.backpackhero.model.enemy.RatLoup;
+import fr.uge.backpackhero.model.item.Armor;
+import fr.uge.backpackhero.model.item.Gold;
+import fr.uge.backpackhero.model.item.ManaStone;
+import fr.uge.backpackhero.model.item.Weapon;
 
 public class Dungeon {
     private final List<Floor> floors;

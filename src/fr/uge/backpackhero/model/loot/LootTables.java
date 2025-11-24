@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import fr.uge.backpackhero.item.Gold;
-import fr.uge.backpackhero.item.Item;
-import fr.uge.backpackhero.item.ManaStone;
-import fr.uge.backpackhero.item.Armor;
-import fr.uge.backpackhero.item.Weapon;
 import fr.uge.backpackhero.model.enemy.Enemy;
 import fr.uge.backpackhero.model.enemy.PetitRatLoup;
 import fr.uge.backpackhero.model.enemy.RatLoup;
+import fr.uge.backpackhero.model.item.Armor;
+import fr.uge.backpackhero.model.item.Gold;
+import fr.uge.backpackhero.model.item.Item;
+import fr.uge.backpackhero.model.item.ManaStone;
+import fr.uge.backpackhero.model.item.Weapon;
 
 public final class LootTables {
   private LootTables() {}
