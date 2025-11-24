@@ -45,7 +45,8 @@
   - [x] Logique de tour par tour (Héros, puis Ennemis).
   - [x] Gestion énergie (3 par tour).
   - [x] Gestion HP et Protection.
-  - [ ] Boucle complète de combat de la rencontre avec un ennemi a sa mort.
+  - [ ] Implémentation des actions du joueurs.
+  - [x] Boucle complète de combat de la rencontre avec un ennemi a sa mort.
 - [ ] **Modèle : Donjon (Codé en dur)**
   - [x] Classe `Dungeon` (contient 3 `Floor`).
   - [x] Classe `Floor` (contient une grille de `Room`).

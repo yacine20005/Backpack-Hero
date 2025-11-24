@@ -1,8 +1,6 @@
-package fr.uge.backpackhero.item.misc;
+package fr.uge.backpackhero.item;
 
-import fr.uge.backpackhero.item.Equipment;
-
-public class Gold extends Equipment {
+public class Gold extends Item {
 
     private int amount;
 

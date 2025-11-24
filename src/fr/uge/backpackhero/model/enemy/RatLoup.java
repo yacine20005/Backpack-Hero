@@ -10,9 +10,9 @@ public class RatLoup extends Enemy {
         int random = getRandom().nextInt(2);
         switch (random) {
             case 0:
-                return new Attack();
+                return new EnemyAttack();
             case 1:
-                return new Defend();
+                return new EnemyBlock();
             default:
                 throw new IllegalStateException("Unexpected value: " + random);
         }

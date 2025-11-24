@@ -1,11 +1,11 @@
 package fr.uge.backpackhero.item;
 
-public abstract class Protection extends Equipment {
+public class Armor extends Item {
 
     private final int protection;
     private final int energyCost;
 
-    public Protection(String name, int protection, int energyCost) {
+    public Armor(String name, int protection, int energyCost) {
         super(name);
         this.protection = protection;
         this.energyCost = energyCost;

@@ -13,7 +13,7 @@ public class TestCombat {
         CombatEngine engine = new CombatEngine();
         Enemy rat = new RatLoup();
 
-        engine.startTurn(hero);
+        engine.initializeHeroTurn(hero);
         IO.println(hero);
 
         IO.println("\n--- Enemy Attack (No Block) ---");
@@ -27,7 +27,7 @@ public class TestCombat {
         IO.println("\n--- Block Absorption Test ---");
         hero.setBlock(10);
         IO.println("Hero Block set to 10.");
-        new fr.uge.backpackhero.model.enemy.Attack().execute(hero, rat); // Call the attack action by creating a new instance of it
+        new fr.uge.backpackhero.model.enemy.EnemyAttack().execute(hero, rat); // Call the attack action by creating a new instance of it
         IO.println(hero);
 
         IO.println("=== Test Complete ===");

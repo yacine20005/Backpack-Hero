@@ -9,6 +9,7 @@ public enum RoomType {
     EXIT("X");
 
     private final String symbol;
+    
 
     RoomType(String symbol) {
         this.symbol = symbol;

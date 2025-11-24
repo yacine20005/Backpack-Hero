@@ -19,6 +19,10 @@ public class Hero {
         return hp;
     }
 
+    public boolean isAlive() {
+        return hp > 0;
+    }
+
     public void setHp(int hp) {
         if (hp < 0) {
             hp = 0;

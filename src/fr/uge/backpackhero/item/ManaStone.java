@@ -1,8 +1,6 @@
-package fr.uge.backpackhero.item.magic;
+package fr.uge.backpackhero.item;
 
-import fr.uge.backpackhero.item.Equipment;
-
-public class ManaStone extends Equipment {
+public class ManaStone extends Item {
 
     private final int manaProvided;
 
