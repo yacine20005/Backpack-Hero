@@ -52,7 +52,7 @@
   - [x] Coder en dur la carte (3 étages).
   - [x] Classes pour les salles : `Corridor`, `EnemyRoom`, `MerchantRoom`, `HealerRoom`, `TreasureRoom`, `ExitDoor`.
   - [ ] Ajouter le contenu adéquat à chaque salle.
-  - [ ] Coder en dur le loot des trésors et combats.
+  - [x] Coder en dur le loot des trésors et combats.
 - [ ] **Vue & Contrôleur (GUI)**
   - [ ] Créer une fenêtre `Zen`.
   - [ ] Afficher la carte du donjon.
