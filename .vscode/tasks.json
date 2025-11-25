@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile",
+      "type": "shell",
+      "command": "javac",
+      "args": [
+        "--module-path",
+        "lib/zen-6.0.jar", // path to the zen library
+        "-d",
+        "bin", // the output directory
+        "src/module-info.java", // module descriptor
+        "src/fr/uge/backpackhero/**/*.java" // source files
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run",
+      "type": "shell",
+      "command": "java",
+      "args": [
+        "--module-path", 
+        "lib/zen-6.0.jar:bin", // classpath including zen library and compiled classes
+        "-m",
+        "fr.uge.backpackhero/fr.uge.backpackhero.main.Main" // main class to run
+      ],
+      "dependsOn": "Compile",
+      "problemMatcher": []
+    },
+    {
+      "label": "Compile and Run",
+      "dependsOn": ["Compile", "Run"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    }
+  ]
+}
