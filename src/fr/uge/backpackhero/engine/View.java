@@ -1,4 +1,4 @@
-package fr.uge.backpackhero.main;
+package fr.uge.backpackhero.engine;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,7 +11,7 @@ import fr.uge.backpackhero.model.level.Position;
 import fr.uge.backpackhero.model.level.Room;
 import fr.uge.backpackhero.model.level.RoomType;
 
-public class GameView {
+public class View {
 
     public static final int TILE_SIZE = 40;
     
@@ -42,7 +42,7 @@ public class GameView {
         screen.fillRect(0, 0, BACKPACK_PIXEL_WIDTH, screenHeight);
         
         screen.setColor(Color.WHITE);
-        screen.drawString("SAC A DOS (Phase 1)", 10, 20);
+        screen.drawString("Backpack", 10, 20);
 
         int backpackHeightInTiles = 3; 
         drawBackpackGrid(screen, backpackHeightInTiles);

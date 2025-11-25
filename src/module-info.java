@@ -1,5 +1,5 @@
 module fr.uge.backpackhero {
-	exports fr.uge.backpackhero.main;
+	exports fr.uge.backpackhero.engine;
 	exports fr.uge.backpackhero.model.item;
 	exports fr.uge.backpackhero.model;
 	exports fr.uge.backpackhero.model.level;
