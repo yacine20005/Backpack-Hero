@@ -1,5 +1,6 @@
 package fr.uge.backpackhero.model.level;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,10 +11,10 @@ public class Room {
     private final RoomType type;
     private final List<Enemy> enemies;
     private final List<Item> treasureItems;
-    private final List<Item> merchantItems;
+    private final HashMap<Item, Integer> merchantItems;
     private final int healAmount;  
 
-    public Room(RoomType type, List<Enemy> enemies, List<Item> treasureItems, List<Item> merchantItems, int healAmount) {
+    public Room(RoomType type, List<Enemy> enemies, List<Item> treasureItems, HashMap<Item, Integer> merchantItems, int healAmount) {
         this.type = Objects.requireNonNull(type);
         this.enemies = enemies;
         this.treasureItems = treasureItems;
@@ -38,7 +39,7 @@ public class Room {
         return healAmount;
     }
     
-    public List<Item> getMerchantItems() {
+    public HashMap<Item, Integer> getMerchantItems() {
         return merchantItems;
     }
 
