@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.uge.backpackhero.model.item.Item;
+import fr.uge.backpackhero.model.item.Weapon;
 import fr.uge.backpackhero.model.level.Position;
 
 public class Backpack {
@@ -15,6 +16,8 @@ public class Backpack {
     
     public Backpack() {
         this.items = new HashMap<>();
+        
+        items.put(new Position(0, 0), new Weapon("Wooden Sword", 5, 1, 0));
     }
 
     public int getWidth() {

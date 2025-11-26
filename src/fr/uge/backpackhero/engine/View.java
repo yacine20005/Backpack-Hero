@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import com.github.forax.zen.ApplicationContext;
 import fr.uge.backpackhero.model.Hero; 
+import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
 import fr.uge.backpackhero.model.level.Room;
@@ -13,9 +14,9 @@ import fr.uge.backpackhero.model.level.RoomType;
 
 public class View {
 
-    public static final int TILE_SIZE = 40;
+    public static final int TILE_SIZE = 100;
     
-    public static final int BACKPACK_WIDTH_IN_TILES = 5; 
+    public static final int BACKPACK_WIDTH_IN_TILES = 3; 
     public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
 
     static void draw(ApplicationContext context, Floor floor, Position heroPos, Hero hero) {
@@ -36,16 +37,35 @@ public class View {
         screen.setColor(Color.BLACK);
         screen.fillRect(0, 0, width, height);
     }
+    
+    private static void drawOneItemName(Graphics2D screen, Item item, Position pos) {
+        if (item == null || pos == null) return;
+
+        String name = item.getName();
+        if (name == null) return;
+
+        int x = pos.x() * TILE_SIZE;
+        int y = (pos.y() * TILE_SIZE) + TILE_SIZE; 
+
+        screen.setColor(Color.WHITE);
+        screen.drawString(name, x + 5, y + 20);
+    }
 
     private static void drawBackpack(Graphics2D screen, Hero hero, int screenHeight) {
         screen.setColor(new Color(20, 20, 20)); 
         screen.fillRect(0, 0, BACKPACK_PIXEL_WIDTH, screenHeight);
-        
+
         screen.setColor(Color.WHITE);
         screen.drawString("Backpack", 10, 20);
 
-        int backpackHeightInTiles = 3; 
+        var backpack = hero.getBackpack();
+        int backpackHeightInTiles = backpack.getHeight();
+
         drawBackpackGrid(screen, backpackHeightInTiles);
+
+        backpack.getItems().forEach((position, item) -> {
+            drawOneItemName(screen, item, position);
+        });
     }
 
     private static void drawBackpackGrid(Graphics2D screen, int heightInTiles) {
@@ -102,8 +122,8 @@ public class View {
         var heroRect = new Rectangle2D.Float(
             (heroPos.x() * TILE_SIZE) + BACKPACK_PIXEL_WIDTH + 10, 
             heroPos.y() * TILE_SIZE + 10,
-            TILE_SIZE - 20,
-            TILE_SIZE - 20
+            TILE_SIZE - 40,
+            TILE_SIZE - 40
         );
         
         screen.setColor(Color.BLUE);
@@ -115,9 +135,9 @@ public class View {
             case CORRIDOR -> Color.GRAY;
             case ENEMY -> Color.RED;
             case TREASURE -> Color.YELLOW;
-            case MERCHANT -> Color.GREEN;
+            case MERCHANT -> Color.ORANGE;
             case HEALER -> Color.PINK;
-            case EXIT -> Color.MAGENTA;
+            case EXIT -> Color.GREEN;
             default -> Color.DARK_GRAY;
         };
     }

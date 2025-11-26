@@ -1,5 +1,6 @@
 package fr.uge.backpackhero.model;
 
+
 public class Hero {
 
     private static final int MAX_HP = 40;
@@ -9,10 +10,20 @@ public class Hero {
     private int energy;
     private int block;
 
+    
+    private final Backpack backpack;
+
     public Hero() {
         this.hp = MAX_HP;
         this.energy = MAX_ENERGY;
         this.block = 0;
+       
+        this.backpack = new Backpack(); 
+    }
+
+    
+    public Backpack getBackpack() {
+        return backpack;
     }
 
     public int getHp() {
@@ -22,7 +33,8 @@ public class Hero {
     public boolean isAlive() {
         return hp > 0;
     }
-
+    
+       
     public void setHp(int hp) {
         if (hp < 0) {
             hp = 0;
