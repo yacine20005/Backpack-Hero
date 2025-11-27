@@ -2,7 +2,6 @@ package fr.uge.backpackhero.test;
 
 import fr.uge.backpackhero.model.Hero;
 import fr.uge.backpackhero.model.CombatEngine;
-import fr.uge.backpackhero.model.enemy.RatLoup;
 import fr.uge.backpackhero.model.enemy.Enemy;
 
 public class TestCombat {
@@ -11,7 +10,7 @@ public class TestCombat {
 
         Hero hero = new Hero();
         CombatEngine engine = new CombatEngine();
-        Enemy rat = new RatLoup();
+        Enemy rat = Enemy.ratLoup();
 
         engine.initializeHeroTurn(hero);
         IO.println(hero);
@@ -27,7 +26,8 @@ public class TestCombat {
         IO.println("\n--- Block Absorption Test ---");
         hero.setBlock(10);
         IO.println("Hero Block set to 10.");
-        new fr.uge.backpackhero.model.enemy.EnemyAttack().execute(hero, rat); // Call the attack action by creating a new instance of it
+        new fr.uge.backpackhero.model.enemy.EnemyAttack().execute(hero, rat); // Call the attack action by creating a
+                                                                              // new instance of it
         IO.println(hero);
 
         IO.println("=== Test Complete ===");

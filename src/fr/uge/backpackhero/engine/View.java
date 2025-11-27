@@ -4,7 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+
 import com.github.forax.zen.ApplicationContext;
+
 import fr.uge.backpackhero.model.Hero; 
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.level.Floor;
@@ -15,7 +17,6 @@ import fr.uge.backpackhero.model.level.RoomType;
 public class View {
 
     public static final int TILE_SIZE = 100;
-    
     public static final int BACKPACK_WIDTH_IN_TILES = 3; 
     public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
 

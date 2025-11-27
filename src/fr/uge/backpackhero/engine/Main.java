@@ -10,6 +10,8 @@ import fr.uge.backpackhero.model.GameState;
 
 public class Main {
 
+    private final static int EVENT_POLL_TIMEOUT_MS = 10;
+
     public static void main(String[] args) {
         Application.run(Color.BLACK, Main::gameEntry);
     }
@@ -20,7 +22,7 @@ public class Main {
         View.draw(context, state.getCurrentFloor(), state.getPosition(), state.getHero());
 
         while (true) {
-            var event = context.pollOrWaitEvent(10);
+            var event = context.pollOrWaitEvent(EVENT_POLL_TIMEOUT_MS);
             if (event == null) {
                 continue;
             }

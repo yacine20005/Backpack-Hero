@@ -1,23 +1,34 @@
 package fr.uge.backpackhero.model.enemy;
 
+import java.util.Objects;
 import java.util.Random;
 
-public abstract class Enemy {
+public class Enemy {
 	private final String name;
 	private int hp;
 	private int attack;
 	private int defense;
 	private int block;
-	private final int MAX_HP;
-	protected final Random randomnum = new Random();
+	private final int maxHp;
+	private final int goldDrop;
+	private final Random random = new Random();
 
-	protected Enemy(String name, int maxHp, int attack, int defense) {
-		this.name = name;
-		this.MAX_HP = maxHp;
+	public Enemy(String name, int maxHp, int attack, int defense, int goldDrop) {
+		this.name = Objects.requireNonNull(name);
+		this.maxHp = maxHp;
 		this.hp = maxHp;
 		this.attack = attack;
 		this.defense = defense;
+		this.goldDrop = goldDrop;
 		this.block = 0;
+	}
+
+	public static Enemy ratLoup() {
+		return new Enemy("Rat Loup", 10, 1, 1, 6);
+	}
+
+	public static Enemy petitRatLoup() {
+		return new Enemy("Petit Rat Loup", 5, 1, 0, 3);
 	}
 
 	public int getHp() {
@@ -31,8 +42,8 @@ public abstract class Enemy {
 	public void setHp(int hp) {
 		if (hp < 0)
 			hp = 0;
-		if (hp > MAX_HP)
-			hp = MAX_HP;
+		if (hp > maxHp)
+			hp = maxHp;
 		this.hp = hp;
 	}
 
@@ -60,16 +71,29 @@ public abstract class Enemy {
 		this.block = block;
 	}
 
-	public Random getRandom() {
-		return randomnum;
+	public int getGoldDrop() {
+		return goldDrop;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override
 	public String toString() {
-		return "Enemy - Name=" + name + ", HP=" + hp + "/" + MAX_HP + ", Attack=" + attack + ", Defense=" + defense
-				+ ", Block="
-				+ block;
+		return "Enemy - Name=" + name + ", HP=" + hp + "/" + maxHp + ", Attack=" + attack + ", Defense=" + defense
+				+ ", Block=" + block;
 	}
 
-	public abstract EnemyAction chooseAction();
+	public EnemyAction chooseAction() {
+		var randomChoice = random.nextInt(2);
+		switch (randomChoice) {
+			case 0:
+				return new EnemyAttack();
+			case 1:
+				return new EnemyBlock();
+			default:
+				throw new IllegalStateException("Unexpected value: " + randomChoice);
+		}
+	}
 }

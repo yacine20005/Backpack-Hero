@@ -15,9 +15,9 @@ public class Controller {
         int y = (int) ((pe.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
 
         if (y < 0) {
-            System.out.println("Click out of backpack bounds");
+            IO.println("Click out of backpack bounds");
         } else {
-            System.out.println("Click on the BACKPACK: slot (" + x + ", " + y + ")");
+            IO.println("Click on the BACKPACK: slot (" + x + ", " + y + ")");
         }
     }
 

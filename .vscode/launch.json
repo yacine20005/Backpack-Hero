@@ -5,7 +5,7 @@
       "type": "java",
       "name": "Launch Backpack Hero",
       "request": "launch",
-      "mainClass": "fr.uge.backpackhero/fr.uge.backpackhero.main.Main",
+      "mainClass": "fr.uge.backpackhero/fr.uge.backpackhero.engine.Main",
       "modulePaths": [
         "${workspaceFolder}/bin",
         "${workspaceFolder}/lib/zen-6.0.jar"
