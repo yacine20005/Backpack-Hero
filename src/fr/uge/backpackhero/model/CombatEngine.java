@@ -1,11 +1,13 @@
 package fr.uge.backpackhero.model;
 
 import java.util.List;
+import java.util.Random;
 
 import fr.uge.backpackhero.model.enemy.Enemy;
-import fr.uge.backpackhero.model.enemy.EnemyAction;
 
 public class CombatEngine {
+
+    private final Random random = new Random();
 
     public void initializeHeroTurn(Hero hero) {
         hero.setEnergy(3);
@@ -13,9 +15,28 @@ public class CombatEngine {
         // TODO : verify if it's correct in Backpack Hero
     }
 
+    public void enemyAttack(Hero hero, Enemy enemy) {
+        int damage = enemy.getAttack();
+        int heroBlock = hero.getBlock();
+
+        if (heroBlock >= damage) {
+            hero.setBlock(heroBlock - damage);
+        } else {
+            hero.setBlock(0);
+            hero.setHp(hero.getHp() - (damage - heroBlock));
+        }
+    }
+
+    public void enemyDefend(Enemy enemy) {
+        enemy.setBlock(enemy.getDefense());
+    }
+
     public void enemyTurn(Hero hero, Enemy enemy) {
-        EnemyAction action = enemy.chooseAction();
-        action.execute(hero, enemy);
+        if (random.nextInt(2) == 0) {
+            enemyAttack(hero, enemy);
+        } else {
+            enemyDefend(enemy);
+        }
     }
 
     public boolean isCombatOver(Hero hero, List<Enemy> enemies) {

@@ -1,7 +1,6 @@
 package fr.uge.backpackhero.model.enemy;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class Enemy {
 	private final String name;
@@ -11,7 +10,6 @@ public class Enemy {
 	private int block;
 	private final int maxHp;
 	private final int goldDrop;
-	private final Random random = new Random();
 
 	public Enemy(String name, int maxHp, int attack, int defense, int goldDrop) {
 		this.name = Objects.requireNonNull(name);
@@ -83,17 +81,5 @@ public class Enemy {
 	public String toString() {
 		return "Enemy - Name=" + name + ", HP=" + hp + "/" + maxHp + ", Attack=" + attack + ", Defense=" + defense
 				+ ", Block=" + block;
-	}
-
-	public EnemyAction chooseAction() {
-		var randomChoice = random.nextInt(2);
-		switch (randomChoice) {
-			case 0:
-				return new EnemyAttack();
-			case 1:
-				return new EnemyBlock();
-			default:
-				throw new IllegalStateException("Unexpected value: " + randomChoice);
-		}
 	}
 }

@@ -26,8 +26,7 @@ public class TestCombat {
         IO.println("\n--- Block Absorption Test ---");
         hero.setBlock(10);
         IO.println("Hero Block set to 10.");
-        new fr.uge.backpackhero.model.enemy.EnemyAttack().execute(hero, rat); // Call the attack action by creating a
-                                                                              // new instance of it
+        engine.enemyAttack(hero, rat);
         IO.println(hero);
 
         IO.println("=== Test Complete ===");
