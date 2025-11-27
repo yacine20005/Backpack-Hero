@@ -5,8 +5,8 @@ public class Armor extends Item {
     private final int protection;
     private final int energyCost;
 
-    public Armor(String name, int protection, int energyCost) {
-        super(name);
+    public Armor(String name, int protection, int energyCost, Shape shape) {
+        super(name, shape);
         this.protection = protection;
         this.energyCost = energyCost;
     }

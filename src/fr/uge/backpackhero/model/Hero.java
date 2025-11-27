@@ -10,20 +10,10 @@ public class Hero {
     private int energy;
     private int block;
 
-    
-    private final Backpack backpack;
-
     public Hero() {
         this.hp = MAX_HP;
         this.energy = MAX_ENERGY;
         this.block = 0;
-       
-        this.backpack = new Backpack(); 
-    }
-
-    
-    public Backpack getBackpack() {
-        return backpack;
     }
 
     public int getHp() {

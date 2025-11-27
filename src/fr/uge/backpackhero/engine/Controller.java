@@ -17,7 +17,7 @@ public class Controller {
         if (y < 0) {
             IO.println("Click out of backpack bounds");
         } else {
-            IO.println("Click on the BACKPACK: slot (" + x + ", " + y + ")");
+            IO.println(state.getBackpack().getItemAt(new Position(x, y)).toString());
         }
     }
 
@@ -28,7 +28,7 @@ public class Controller {
 
         if (isMoveAllowed(state.getPosition(), clickedPos, state.getCurrentFloor())) {
             state.setPosition(clickedPos);
-            View.draw(context, state.getCurrentFloor(), state.getPosition(), state.getHero());
+            View.draw(context, state.getCurrentFloor(), state.getPosition(), state.getBackpack());
 
             Room newRoom = state.getCurrentFloor().getRoom(clickedPos);
             if (newRoom != null) {

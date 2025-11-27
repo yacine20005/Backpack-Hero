@@ -6,8 +6,8 @@ public class Weapon extends Item {
     private final int energyCost;
     private final int manaCost;
 
-    public Weapon(String name, int damage, int energyCost, int manaCost) {
-        super(name);
+    public Weapon(String name, int damage, int energyCost, int manaCost, Shape shape) {
+        super(name, shape);
         this.damage = damage;
         this.energyCost = energyCost;
         this.manaCost = manaCost;

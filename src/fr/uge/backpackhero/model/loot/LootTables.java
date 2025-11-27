@@ -9,6 +9,7 @@ import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.item.ManaStone;
+import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
 
 public final class LootTables {
@@ -19,18 +20,18 @@ public final class LootTables {
     var res = new ArrayList<Item>();
     switch (floorIndex) {
       case 0 -> { // FLOOR 1
-        res.add(new Weapon("Sword", 7, 1, 0));
-        res.add(new Armor("Wooden Shield", 6, 1));
+        res.add(new Weapon("Sword", 7, 1, 0, Shape.VERTICAL_3));
+        res.add(new Armor("Wooden Shield", 6, 1, Shape.SQUARE_2X2));
         res.add(new Gold(5));
       }
       case 1 -> { // FLOOR 2
-        res.add(new Weapon("Dart", 6, 1, 0));
-        res.add(new Armor("Leather Armor", 2, 0));
+        res.add(new Weapon("Dart", 6, 1, 0, Shape.VERTICAL_2));
+        res.add(new Armor("Leather Armor", 2, 0, Shape.VERTICAL_2));
         res.add(new ManaStone("Small Mana Stone", 3));
       }
       case 2 -> { // FLOOR 3
-        res.add(new Weapon("Magic Wand", 2, 0, 8));
-        res.add(new ManaStone("Big Mana Stone", 5));
+        res.add(new Weapon("Magic Wand", 2, 0, 8, Shape.VERTICAL_2));
+        res.add(new ManaStone("Big Mana Stone", 5, Shape.HORIZONTAL_2));
         res.add(new Gold(15));
       }
       default -> res.add(new Gold(3));

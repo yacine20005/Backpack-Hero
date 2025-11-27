@@ -19,7 +19,7 @@ public class Main {
     private static void gameEntry(ApplicationContext context) {
         var state = new GameState();
 
-        View.draw(context, state.getCurrentFloor(), state.getPosition(), state.getHero());
+        View.draw(context, state.getCurrentFloor(), state.getPosition(), state.getBackpack());
 
         while (true) {
             var event = context.pollOrWaitEvent(EVENT_POLL_TIMEOUT_MS);

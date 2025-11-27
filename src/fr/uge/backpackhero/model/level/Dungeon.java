@@ -9,6 +9,7 @@ import fr.uge.backpackhero.model.Enemy;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.ManaStone;
+import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
 
 public class Dungeon {
@@ -31,7 +32,7 @@ public class Dungeon {
 
         floor1.setRoom(new Position(2, 1), new Room(RoomType.CORRIDOR, null, null, null, 0));
 
-        List<Item> treasure_1 = List.of(new Weapon("Sword", 7, 1, 0), new Armor("Wooden Shield", 6, 1), new Gold(5));
+        List<Item> treasure_1 = List.of(new Weapon("Sword", 7, 1, 0, Shape.HORIZONTAL_3), new Armor("Wooden Shield", 6, 1, Shape.VERTICAL_3), new Gold(5));
         floor1.setRoom(new Position(3, 1), new Room(RoomType.TREASURE, null, treasure_1, null, 0));
         floor1.setRoom(new Position(4, 1), new Room(RoomType.CORRIDOR, null, null, null, 0));
 
@@ -42,8 +43,8 @@ public class Dungeon {
 
         floor1.setRoom(new Position(5, 2), new Room(RoomType.CORRIDOR, null, null, null, 0));
         HashMap<Item, Integer> merchant_1 = new HashMap<>();
-        merchant_1.put(new Weapon("Iron Sword", 10, 2, 0), 15);
-        merchant_1.put(new Armor("Steel Shield", 8, 2), 12);
+        merchant_1.put(new Weapon("Iron Sword", 10, 2, 0, Shape.HORIZONTAL_3), 15);
+        merchant_1.put(new Armor("Steel Shield", 8, 2, Shape.SQUARE_2X2), 12);
         merchant_1.put(new ManaStone("Blue Crystal", 5), 8);
         floor1.setRoom(new Position(5, 3), new Room(RoomType.MERCHANT, null, null, merchant_1, 0));
 

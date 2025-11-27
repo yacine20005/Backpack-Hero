@@ -52,15 +52,15 @@
   - [x] Classe `Floor` (contient une grille de `Room`).
   - [x] Coder en dur la carte (3 étages).
   - [x] Classes pour les salles : `Corridor`, `EnemyRoom`, `MerchantRoom`, `HealerRoom`, `TreasureRoom`, `ExitDoor`.
-  - [ ] Ajouter le contenu adéquat à chaque salle.
+  - [x] Ajouter le contenu adéquat à chaque salle.
   - [x] Coder en dur le loot des trésors et combats.
 - [ ] **Vue & Contrôleur (GUI)**
-  - [ ] Créer une fenêtre `Zen`.
-  - [ ] Afficher la carte du donjon.
-  - [ ] Gérer le clic pour se déplacer (règle des couloirs).
-  - [ ] Gérer la logique de déplacement du joueur.
+  - [x] Créer une fenêtre `Zen`.
+  - [x] Afficher la carte du donjon.
+  - [x] Gérer le clic pour se déplacer (règle des couloirs).
+  - [x] Gérer la logique de déplacement du joueur.
   - [ ] Afficher l'écran de combat.
-  - [ ] Afficher le sac à dos.
+  - [x] Afficher le sac à dos.
   - [ ] Gérer les clics pour utiliser un objet (épée, bouclier).
 
 ---

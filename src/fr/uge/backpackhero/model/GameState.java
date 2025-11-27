@@ -7,6 +7,7 @@ import fr.uge.backpackhero.model.level.Position;
 public class GameState {
     final Dungeon dungeon = new Dungeon();
     final Hero hero = new Hero();
+    Backpack backpack = new Backpack(5, 3);
     Position position = new Position(0, 0);
     boolean inCombat = false;
 
@@ -28,5 +29,9 @@ public class GameState {
 
     public Floor getCurrentFloor() {
         return dungeon.getFloor(0);
+    }
+
+    public Backpack getBackpack() {
+        return backpack;
     }
 }

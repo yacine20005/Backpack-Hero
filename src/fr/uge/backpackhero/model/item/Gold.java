@@ -4,9 +4,13 @@ public class Gold extends Item {
 
     private int amount;
 
-    public Gold(int amount) {
-        super("Gold");
+    public Gold(int amount, Shape shape) {
+        super("Gold", shape);
         this.amount = amount;
+    }
+
+    public Gold(int amount) {
+        this(amount, Shape.SINGLE);
     }
 
     public int getAmount() {
