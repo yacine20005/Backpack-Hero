@@ -3,8 +3,6 @@ package fr.uge.backpackhero.model;
 import java.util.List;
 import java.util.Random;
 
-import fr.uge.backpackhero.model.enemy.Enemy;
-
 public class CombatEngine {
 
     private final Random random = new Random();

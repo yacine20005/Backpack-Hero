@@ -1,4 +1,4 @@
-package fr.uge.backpackhero.model.enemy;
+package fr.uge.backpackhero.model;
 
 import java.util.Objects;
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.uge.backpackhero.model.enemy.Enemy;
 import fr.uge.backpackhero.model.item.Item;
+import fr.uge.backpackhero.model.Enemy;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.ManaStone;

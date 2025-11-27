@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import fr.uge.backpackhero.model.enemy.Enemy;
+import fr.uge.backpackhero.model.Enemy;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.Item;

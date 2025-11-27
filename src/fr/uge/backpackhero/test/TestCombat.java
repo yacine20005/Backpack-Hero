@@ -2,7 +2,7 @@ package fr.uge.backpackhero.test;
 
 import fr.uge.backpackhero.model.Hero;
 import fr.uge.backpackhero.model.CombatEngine;
-import fr.uge.backpackhero.model.enemy.Enemy;
+import fr.uge.backpackhero.model.Enemy;
 
 public class TestCombat {
     public static void main(String[] args) {
