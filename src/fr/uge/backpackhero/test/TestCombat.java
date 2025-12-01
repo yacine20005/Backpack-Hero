@@ -1,6 +1,7 @@
 package fr.uge.backpackhero.test;
 
 import fr.uge.backpackhero.model.Hero;
+import fr.uge.backpackhero.model.Backpack;
 import fr.uge.backpackhero.model.CombatEngine;
 import fr.uge.backpackhero.model.Enemy;
 
@@ -9,10 +10,11 @@ public class TestCombat {
         IO.println("=== Starting Combat Test ===");
 
         Hero hero = new Hero();
+        Backpack backpack = new Backpack(5, 5);
         CombatEngine engine = new CombatEngine();
         Enemy rat = Enemy.ratLoup();
 
-        engine.heroTurn(hero);
+        engine.heroTurn(hero, backpack);
         IO.println(hero);
 
         IO.println("\n--- Enemy Attack (No Block) ---");

@@ -36,7 +36,7 @@
 - [x] Classe abstraite `Item` avec forme (`Shape`)
 - [x] **Arme** : `Weapon` (épée en bois : 1 énergie, 6 dégâts)
 - [x] **Armure** : `Armor` (protection)
-- [ ] **Objet magique** : nécessite de la mana (manque la gestion du mana par le backpack et arme)
+- [x] **Objet magique** : nécessite de la mana
 - [x] **Pierres de mana** : `ManaStone`
 - [x] **Or** : `Gold`
 
