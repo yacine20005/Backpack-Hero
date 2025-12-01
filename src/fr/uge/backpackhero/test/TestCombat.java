@@ -12,7 +12,7 @@ public class TestCombat {
         CombatEngine engine = new CombatEngine();
         Enemy rat = Enemy.ratLoup();
 
-        engine.initializeHeroTurn(hero);
+        engine.heroTurn(hero);
         IO.println(hero);
 
         IO.println("\n--- Enemy Attack (No Block) ---");
