@@ -8,11 +8,13 @@ public class Hero {
 
     private int hp;
     private int energy;
+    private int mana;
     private int block;
 
     public Hero() {
         this.hp = MAX_HP;
         this.energy = MAX_ENERGY;
+        this.mana = 0;
         this.block = 0;
     }
 
@@ -47,6 +49,22 @@ public class Hero {
         } else {
             this.energy = energy;
         }
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public void setMana(int mana) {
+        if (mana < 0) {
+            this.mana = 0;
+        } else {
+            this.mana = mana;
+        }
+    }
+
+    public void refreshManaAmount(Backpack backpack) {
+        this.mana = backpack.getMana();
     }
 
     public int getBlock() {

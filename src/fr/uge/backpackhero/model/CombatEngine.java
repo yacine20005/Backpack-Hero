@@ -9,9 +9,10 @@ public class CombatEngine {
 
     private final Random random = new Random();
 
-    public void heroTurn(Hero hero) {
+    public void heroTurn(Hero hero, Backpack backpack) {
         hero.setEnergy(3);
         hero.setBlock(0);
+        hero.setMana(backpack.getMana());
     }
 
     public void enemyTurn(Hero hero, Enemy enemy) {
@@ -76,7 +77,8 @@ public class CombatEngine {
             return true;
         }
         boolean allEnemiesDefeated = enemies.stream().allMatch(enemy -> !enemy.isAlive());
-        // We use stream so that our professor is happy and give us a 20/20 for the masterclass delivered
+        // We use stream so that our professor is happy and give us a 20/20 for the
+        // masterclass delivered
         return allEnemiesDefeated;
     }
 
@@ -88,9 +90,13 @@ public class CombatEngine {
         return gold;
     }
 
-    public boolean loopCombat(Hero hero, List<Enemy> enemies) {
+    public boolean loopCombat(GameState state, List<Enemy> enemies) {
+        var hero = state.getHero();
+        var backpack = state.getBackpack();
+        // We update the mana amount before each combat so that we don't have to iterate
+        // over the backpack items each time we need the mana amount
         while (!isCombatOver(hero, enemies)) {
-            heroTurn(hero);
+            heroTurn(hero, backpack);
             // TODO : we need to make the connection with the graphical interface here
             for (Enemy enemy : enemies) {
                 if (enemy.isAlive()) {

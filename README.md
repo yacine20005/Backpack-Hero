@@ -1,149 +1,199 @@
 # TODO List - Projet BackPack Hero (L3)
 
-## 🏁 Phase 0 : Préparation & Architecture (L'étape la plus critique)
+## 🏁 Phase 0 : Préparation & Architecture
 
-- [x] **Administration (Priorité Zéro)**
-  - [x] S'inscrire sur e-learning avant la deadline (13 novembre 23:59). (Ne pas faire ça = défaillant).
+- [x] **Administration**
+  - [x] S'inscrire sur e-learning avant la deadline (13 novembre 23:59).
 - [x] **Mise en place de l'environnement**
   - [x] Créer le dossier `lib`.
   - [x] Télécharger `zen-6.0.jar`.
-  - [x] Ajouter `zen-6.0.jar` au Build Path. // A faire selon l'IDE.
-- [x] **Réflexion & Conception (Le VRAI travail)**
-  - [x] **Choisir le pattern de conception.** Le sujet vous pousse vers **MVC (Modèle-Vue-Contrôleur)**.
-    - [x] **Modèle :** `Hero`, `Backpack`, `Item`, `Enemy`, `GameMap`, `CombatEngine`. (Les données et la logique pure).
-    - [x] **Vue :** La classe qui utilise `Zen` pour dessiner. Elle ne fait *que* dessiner ce que le Modèle lui dit.
-    - [x] **Contrôleur :** La boucle de jeu, gère les clics, le clavier. Il dit au Modèle "le joueur a cliqué ici" et à la Vue "rafraîchis".
-  - [x] **Définir les interfaces.** C'est ça, la POO.
-    - [x] `interface Item { ... }`
-    - [x] `interface EnemyAction { ... }`
-    - [x] `interface RoomContent { ... }`
+  - [x] Ajouter `zen-6.0.jar` au Build Path.
+- [x] **Architecture MVC**
+  - [x] **Modèle :** Classes de données et logique (`Hero`, `Backpack`, `Item`, `Enemy`, `Dungeon`, `CombatEngine`).
+  - [x] **Vue :** Classe `View` qui utilise Zen pour dessiner.
+  - [x] **Contrôleur :** Classe `Controller` qui gère la boucle de jeu et les événements.
 
 ---
 
-## 1️⃣ Phase 1 : La Base (Le "Proof of Concept")
+## 1️⃣ Phase 1 : La Base (Soutenance β)
 
-- [x] **Modèle : Héros & Sac**
-  - [x] Classe `Hero` (avec 40 HP).
-  - [x] Classe `Backpack` (grille fixe 3x5) (Une `Map<Position, Item>` ?).
-- [x] **Modèle : Équipements (Simples)**
-  - [x] Interface `Item`
-  - [x] Classe abstraite `Equipment`
-  - [x] Classe `WeaponMelee`.
-  - [x] Classe `WeaponRanged`.
-  - [x] Classe `Armor`.
-  - [x] Classe `Shield`.
-  - [x] Classe `MagicItem`.
-  - [x] Classe `ManaStone`.
-  - [x] Classe `Gold`.
-  - [x] **Règle P1 :** PAS d'interactions. Un objet = un effet simple.
-- [x] **Modèle : Ennemis (Simples)**
-  - [x] Classe `Enemy` (abstraite).
-  - [x] Classe `RatLoup` et `PetitRatLoup`.
-  - [x] IA simple : `chooseAction()` (random attaque ou défense).
-- [ ] **Modèle : Combat**
-  - [x] Classe `CombatEngine`.
-  - [x] Logique de tour par tour (Héros, puis Ennemis).
-  - [x] Gestion énergie (3 par tour).
-  - [x] Gestion HP et Protection.
-  - [ ] Implémentation des actions du joueurs.
-  - [x] Boucle complète de combat de la rencontre avec un ennemi a sa mort.
-- [ ] **Modèle : Donjon (Codé en dur)**
-  - [x] Classe `Dungeon` (contient 3 `Floor`).
-  - [x] Classe `Floor` (contient une grille de `Room`).
-  - [x] Coder en dur la carte (3 étages).
-  - [x] Classes pour les salles : `Corridor`, `EnemyRoom`, `MerchantRoom`, `HealerRoom`, `TreasureRoom`, `ExitDoor`.
-  - [x] Ajouter le contenu adéquat à chaque salle.
-  - [x] Coder en dur le loot des trésors et combats.
-- [ ] **Vue & Contrôleur (GUI)**
-  - [x] Créer une fenêtre `Zen`.
-  - [x] Afficher la carte du donjon.
-  - [x] Gérer le clic pour se déplacer (règle des couloirs).
-  - [x] Gérer la logique de déplacement du joueur.
-  - [ ] Afficher l'écran de combat.
-  - [x] Afficher le sac à dos.
-  - [ ] Gérer les clics pour utiliser un objet (épée, bouclier).
+### Héros
 
----
+- [x] Classe `Hero` avec 40 HP de départ
+- [x] Gestion de l'énergie (3 par tour)
+- [x] Gestion du block (protection)
 
-## 2️⃣ Phase 2 : Le Vrai Jeu (Le "Cœur" du projet)
+### Sac à dos (Phase 1 = taille fixe)
 
-- [ ] **Refactor : Évolution du Héros**
-  - [ ] Ajouter XP au `Hero`.
-  - [ ] Ajouter gain d'XP à la mort des ennemis.
-  - [ ] Implémenter `levelUp()`.
-- [ ] **Refactor : Sac à dos Dynamique**
-  - [ ] Modifier la classe `Backpack` pour gérer l'ajout de cases (3-4 par niveau).
-  - [ ] Le sac est contenu dans 5x7 max.
-  - [ ] Gérer la rotation (90°) et la translation des objets.
-- [ ] **POO : Interactions d'Objets**
-  - [ ] Comment un objet "sait" qu'il est à côté d'un autre ? (Le `Backpack` doit le lui dire).
-  - [ ] Implémenter des synergies (ex: Gemme de cœur + arme adjacente).
-  - [ ] Implémenter des conditions (ex: Hachette + armure).
-- [ ] **Modèle : Effets de Combat**
-  - [ ] Créer un système de `StatusEffect` (positif/négatif) (ex: `Poison`, `Haste`, `Weakness`).
-  - [ ] Mettre à jour `CombatEngine` pour appliquer les effets à chaque tour.
-- [ ] **Modèle : Malédictions**
-  - [ ] Classe `Curse` (hérite de `Item`).
-  - [ ] Logique d'ajout :
-    - [ ] Choix : prendre dégâts ou insérer.
-    - [ ] Mécanique de refus (k dégâts au k-ième refus).
-    - [ ] **Pas de rotation**.
-    - [ ] Force à jeter les objets en dessous.
-- [ ] **Logique : Randomisation**
-  - [ ] Créer des tables de loot (basées sur la rareté).
-  - [ ] Remplacer le loot codé en dur par du loot aléatoire.
+- [x] Classe `Backpack` avec grille **3 lignes × 5 colonnes = 15 cases** (selon le sujet)
+- [x] Placement d'items avec leur forme
+- [x] Vérification des collisions
+- [ ] Rotation des items (90°)
+- [ ] Translation des items
 
----
+### Équipements (SANS interactions pour Phase 1)
 
-## 3️⃣ Phase 3 : Finitions (Le "Polish")
+- [x] Classe abstraite `Item` avec forme (`Shape`)
+- [x] **Arme** : `Weapon` (épée en bois : 1 énergie, 6 dégâts)
+- [x] **Armure** : `Armor` (protection)
+- [ ] **Objet magique** : nécessite de la mana (manque la gestion du mana par le backpack et arme)
+- [x] **Pierres de mana** : `ManaStone`
+- [x] **Or** : `Gold`
 
-- [ ] **Score & Persistance (Priorité 1)**
-  - [ ] Définir une formule de score.
-  - [ ] Créer le "Hall of Fame".
-  - [ ] **IO :** Sauvegarder/charger les scores.
-  - [ ] **ATTENTION :** Interdiction d'utiliser `java.io.File`. Utilisez les `Path` et `Files` de `java.nio`.
-- [ ] **Contenu : Nouveaux Ennemis**
-  - [ ] Implémenter le Sorcier-grenouille.
-  - [ ] Implémenter l'Ombre vivante.
-  - [ ] Implémenter la Reine des abeilles.
-- [ ] **Logique : Génération de Carte (Le plus dur)**
-  - [ ] Remplacer la carte codée en dur par un algorithme.
-  - [ ] **Contrainte :** La carte doit être connexe. (Pensez "labyrinthe", DFS/BFS, ou algo de Prim/Kruskal).
-  - [ ] Gérer les grilles/clés.
+### Ennemis (Phase 1 = simples)
+
+- [x] Classe `Enemy`
+- [x] `RatLoup` (20 HP, attaque ou défense aléatoire)
+- [x] `PetitRatLoup` (moins de HP)
+- [x] IA simple : choix aléatoire entre attaque et défense
+
+### Combat (CombatEngine)
+
+- [x] Structure de base du `CombatEngine`
+- [x] Initialisation du tour héros (3 énergie, block à 0)
+- [x] L'ennemi annonce son action AVANT son tour (visible par le joueur)
+- [x] Héros attaque un ennemi avec une arme
+- [x] Héros se défend avec une armure
+- [x] Ennemi attaque le héros (dégâts - block)
+- [x] Ennemi se défend (augmente son block)
+- [x] Vérification fin de combat
+- [x] Calcul de l'or gagné
+- [ ] **Intégration avec l'interface graphique** (le joueur clique sur ses items)
+- [ ] Afficher l'action annoncée par l'ennemi
+- [ ] Gestion du loot après victoire
+
+### Donjon (3 étages, codé en dur pour Phase 1)
+
+- [x] Classe `Dungeon` (contient 3 `Floor`)
+- [x] Classe `Floor` (grille 5×11 selon le sujet)
+- [x] Classe `Room` avec `RoomType`
+- [x] Types de salles :
+  - [x] Couloir (autant que souhaité)
+  - [x] Salle d'ennemis (×3 par étage)
+  - [x] Marchand (×1 par étage)
+  - [x] Guérisseur (×1 par étage)
+  - [x] Trésor (×2 par étage)
+  - [x] Porte de sortie (×1 par étage)
+- [x] Contenu des salles (ennemis, loot) codé en dur
+- [ ] Logique du marchand (acheter/vendre)
+- [ ] Logique du guérisseur (soigner contre or)
+
+### Interface graphique (Vue & Contrôleur)
+
+- [x] Fenêtre Zen créée
+- [x] Affichage de la carte du donjon
+- [x] Clic pour se déplacer (règle : passer uniquement par les couloirs)
+- [x] Affichage du sac à dos
+- [x] Clic pour utiliser un item
+- [ ] **Écran de combat** *(MANQUE)*
+  - [ ] Afficher le héros (HP, énergie, block)
+  - [ ] Afficher les ennemis (HP, block, action annoncée)
+  - [ ] Cliquer sur une arme → attaquer un ennemi
+  - [ ] Cliquer sur une armure → se défendre
+  - [ ] Bouton "Fin de tour"
+- [ ] Affichage du loot après combat
+- [ ] Écran de victoire/défaite
 
 ---
 
-## 📦 Livrables & Qualité (Ce qui vous rapporte des points)
+## 2️⃣ Phase 2 : Le jeu en version β
 
-- [ ] **Code**
-  - [ ] **Pas de duplication**. (Si vous copiez-collez, vous avez raté votre conception).
-  - [ ] **Pas de méthodes > 20 lignes**. (Une méthode = une seule chose).
-  - [ ] **Pas de champs non `private`**. (Encapsulation !).
-  - [ ] **Pas de variables globales**.
-  - [ ] **Vérification des arguments publics** (ex: `Objects.requireNonNull(arg)` en début de méthode).
-- [ ] **Documentation**
-  - [ ] `docs/doc/` : Javadoc **en anglais**.
-  - [ ] `docs/user.pdf` : Manuel pour "Bosphore, 11 ans". (Simple, visuel).
-  - [ ] `docs/dev.pdf` : Le manuel d'architecture (votre diagramme de classes, vos choix de design).
-- [ ] **Packaging (Rendu Intermédiaire)**
-  - [ ] Archive `.zip` (pas de .rar/.7z).
-  - [ ] Nom `Nom1_Nom2_BackpackHero.zip`.
-  - [ ] Structure : `src`, `docs`, `lib`, `BackpackHero.jar`.
-  - [ ] Le `.jar` doit être exécutable (`java -jar ...`).
-- [ ] **Packaging (Rendu Final)**
-  - [ ] Idem que le rendu intermédiaire, MAIS :
-  - [ ] Ajout d'un répertoire `classes` (vide).
-  - [ ] Ajout d'un `build.xml` (fichier Ant).
-  - [ ] `build.xml` doit avoir les cibles `compile`, `jar` (défaut), `javadoc`, `clean`.
-  - [ ] `dev.pdf` doit inclure les améliorations depuis la soutenance.
+### Expérience et niveaux
+
+- [ ] Ajouter XP au `Hero`
+- [ ] Chaque ennemi donne de l'XP à sa mort
+- [ ] Monter de niveau = +3 ou 4 cases dans le sac
+- [ ] Le joueur choisit où placer les nouvelles cases
+- [ ] Sac à dos max : 5×7 cases
+
+### Interactions d'équipements
+
+- [ ] Un item "sait" quels items sont adjacents (via le `Backpack`)
+- [ ] Gemme de cœur : +1 HP quand arme adjacente utilisée
+- [ ] Hachette : 4 dégâts, mais 1 dégât si le héros porte une armure
+- [ ] Autres synergies...
+
+### Effets de combat
+
+- [ ] Système de `StatusEffect` (positif/négatif)
+- [ ] Poison, Haste, Weakness, etc.
+- [ ] Appliquer les effets à chaque tour
+
+### Malédictions
+
+- [ ] Classe `Curse` (hérite de `Item`)
+- [ ] Choix : prendre k dégâts OU insérer la malédiction (k = nombre de refus)
+- [ ] Pas de rotation des malédictions
+- [ ] Jeter les objets en dessous de la malédiction
+- [ ] Se débarrasser d'une malédiction = pénalité jusqu'à fin du prochain combat
+
+### Loot aléatoire
+
+- [ ] Tables de loot basées sur la rareté
+- [ ] Remplacer le loot codé en dur par du loot aléatoire
 
 ---
 
-## 💀 Règles d'Or (Mort Subite - À relire avant chaque commit)
+## 3️⃣ Phase 3 : Le jeu complet
 
-- [ ] Je dois participer aux deux soutenances.
-- [ ] Mon code doit compiler.
-- [ ] Je ne dois **JAMAIS** copier-coller du code du net.
-- [ ] Je ne dois **JAMAIS** utiliser `java.io.File`.
-- [ ] Je dois écrire ma Javadoc en **anglais**.
-- [ ] Mon archive `.zip` doit avoir le bon nom et la bonne structure.
+### Score & Hall of Fame (PRIORITÉ 1)
+
+- [ ] Formule de score (HP max + somme prix équipements)
+- [ ] Hall of Fame avec les 3 meilleures parties
+- [ ] Sauvegarder/charger avec `java.nio` (PAS `java.io.File` !)
+
+### Nouveaux ennemis
+
+- [ ] Sorcier-grenouille
+- [ ] Ombre vivante
+- [ ] Reine des abeilles
+
+### Génération aléatoire de carte
+
+- [ ] Algorithme de génération (la carte doit être connexe)
+- [ ] Grilles et clés
+
+---
+
+## 📦 Livrables
+
+### Rendu intermédiaire (soutenance β)
+
+- [ ] Archive `.zip` nommée `Nom1_Nom2_BackpackHero.zip`
+- [ ] Répertoire `src` avec les sources
+- [ ] Répertoire `docs` avec :
+  - [ ] `user.pdf` : manuel utilisateur (lisible par "Bosphore, 11 ans")
+  - [ ] `dev.pdf` : architecture du projet
+  - [ ] `doc/` : Javadoc en anglais
+- [ ] Répertoire `lib` avec `zen-6.0.jar`
+- [ ] `BackpackHero.jar` exécutable (`java -jar BackpackHero.jar`)
+
+### Rendu final
+
+- [ ] Tout ce qui précède, PLUS :
+- [ ] Répertoire `classes` (vide dans l'archive)
+- [ ] `build.xml` avec targets : `compile`, `jar` (défaut), `javadoc`, `clean`
+- [ ] `dev.pdf` inclut les améliorations depuis la soutenance β
+
+---
+
+## ✅ Qualité du code (Points importants)
+
+- [ ] Pas de méthodes > 20 lignes
+- [ ] Pas de duplication de code
+- [ ] Tous les champs sont `private`
+- [ ] Pas de variables globales
+- [ ] Méthodes publiques : vérifier les arguments (`Objects.requireNonNull`)
+- [ ] Javadoc en anglais
+- [ ] PAS de `java.io.File` (utiliser `java.nio`)
+- [ ] PAS de code copié du net
+
+---
+
+## 💀 Règles Mort Subite
+
+- [ ] Participer aux DEUX soutenances (β et finale)
+- [ ] Le code DOIT compiler
+- [ ] Archive `.zip` avec le bon nom et la bonne structure
+- [ ] Pas de librairies externes non autorisées
+- [ ] Pas de plagiat

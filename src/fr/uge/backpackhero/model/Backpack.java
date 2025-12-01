@@ -18,13 +18,16 @@ public class Backpack {
     private final int height;
 
     private final Map<Position, Item> items;
-    private final Set<Position> occupiedCells; // We will use a set to track occupied cells faster
+    private final Set<Position> occupiedCells; // We use a set to track occupied cells faster
+
+    private int mana;
 
     public Backpack(int width, int height) {
         this.width = width;
         this.height = height;
         this.items = new HashMap<>();
         this.occupiedCells = new HashSet<>();
+        this.mana = 0;
         place(new Weapon("Wooden Sword", 5, 1, 0, Shape.VERTICAL_3), new Position(0, 0));
     }
 
@@ -42,6 +45,18 @@ public class Backpack {
 
     public Set<Position> getOccupiedCells() {
         return occupiedCells;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public int getMana() {
+        mana = 0;
+        for (var item : items.values()) {
+            mana += item.getManaProvided();
+        }
+        return mana;
     }
 
     public boolean isOccupied(Position pos) {

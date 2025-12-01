@@ -16,4 +16,8 @@ public class ManaStone extends Item {
     public int getManaProvided() {
         return manaProvided;
     }
+
+    public boolean isManaStone() {
+        return true;
+    }
 }
