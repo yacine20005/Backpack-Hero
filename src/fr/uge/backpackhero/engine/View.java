@@ -8,6 +8,8 @@ import java.awt.geom.Rectangle2D;
 import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.backpackhero.model.Backpack;
+import fr.uge.backpackhero.model.GameState;   
+import fr.uge.backpackhero.model.Enemy;   
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
@@ -20,7 +22,8 @@ public class View {
     public static final int BACKPACK_WIDTH_IN_TILES = 3;
     public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
 
-    static void draw(ApplicationContext context, Floor floor, Position heroPos, Backpack backpack) {
+
+    static void draw(ApplicationContext context, GameState state) {
         context.renderFrame(screen -> {
 
             var screenInfo = context.getScreenInfo();
@@ -28,9 +31,13 @@ public class View {
             var height = (int) screenInfo.height();
 
             clearScreen(screen, width, height);
-            drawBackpack(screen, backpack, height);
-            drawDungeon(screen, floor);
-            drawHero(screen, heroPos);
+            drawBackpack(screen, state.getBackpack(), height);  
+            drawDungeon(screen, state.getCurrentFloor());       
+            drawHero(screen, state.getPosition());               
+
+            if (state.isInCombat()) {                           
+                drawCombat(screen, state, height);               
+            }                                                   
         });
     }
 
@@ -151,4 +158,61 @@ public class View {
             default -> Color.DARK_GRAY;
         };
     }
+
+    
+    private static void drawCombat(Graphics2D screen, GameState state, int screenHeight) { 
+        var hero = state.getHero();                                                       
+        var enemies = state.getCurrentEnemies();                                          
+        if (enemies == null) { return; }                                                                                
+
+        int width = BACKPACK_PIXEL_WIDTH                                                 
+                + state.getCurrentFloor().getWidth() * TILE_SIZE;                         
+        
+        int panelWidth = 400;                                                            
+        int panelHeight = 80 + enemies.size() * 20;                                      
+        int x = (width - panelWidth) / 2;                                                 
+        int y = (screenHeight - panelHeight) / 2;                                       
+        screen.setColor(new Color(0, 0, 0, 180));                                        
+        screen.fillRect(x - 10, y - 25, panelWidth + 20, panelHeight + 40);             
+        var oldFont = screen.getFont();                                                  
+        screen.setFont(oldFont.deriveFont(18f));                                          
+        screen.setColor(Color.WHITE);                                                   
+        int textX = x;                                                                  
+        int textY = y;                                                                   
+        screen.drawString("Combat", textX, textY);                                       
+        textY += 22;                                                                      
+        screen.drawString("Hero HP: " + hero.getHp(), textX, textY);                     
+        textY += 20;                                                                      
+        screen.drawString("Energy: " + hero.getEnergy(), textX, textY);                  
+        textY += 20;                                                                      
+        screen.drawString("Block: " + hero.getBlock(), textX, textY);                     
+        textY += 25;                                                                      
+
+        screen.drawString("Ennemis :", textX, textY);                             
+        textY += 20;                                                                  
+
+        int index = 1;                                                                    
+        for (Enemy enemy : enemies) {                                                     
+            screen.drawString(index + ". " + enemy.getName()                              
+                    + " HP=" + enemy.getHp()                                              
+                    + " Block=" + enemy.getBlock(), textX, textY);                      
+            textY += 20;                                                               
+            index++;                                                                   
+        }                                                                           
+        int buttonWidth = 120;                                                    
+        int buttonHeight = 40;                                                           
+        int spacing = 20;                                                             
+        int totalWidth = 2 * buttonWidth + spacing;                                     
+        int buttonY = (screenHeight - buttonHeight) / 2 + 100;                                           
+        int startX = (width - totalWidth) / 2;                                          
+        int attackX = startX;                                                            
+        int defendX = startX + buttonWidth + spacing;                                    
+        screen.setColor(Color.DARK_GRAY);                                                 
+        screen.fillRect(attackX, buttonY, buttonWidth, buttonHeight);                    
+        screen.fillRect(defendX, buttonY, buttonWidth, buttonHeight);                  
+        screen.setColor(Color.WHITE);                                                   
+        screen.drawString("Attaquer", attackX + 10, buttonY + 25);                       
+        screen.drawString("Defendre", defendX + 10, buttonY + 25);                       
+        screen.setFont(oldFont);                                                         
+    }                                                                                     
 }

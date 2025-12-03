@@ -1,6 +1,7 @@
 package fr.uge.backpackhero.engine;
 
 import java.awt.Color;
+
 import com.github.forax.zen.Application;
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.KeyboardEvent;
@@ -19,7 +20,7 @@ public class Main {
     private static void gameEntry(ApplicationContext context) {
         var state = new GameState();
 
-        View.draw(context, state.getCurrentFloor(), state.getPosition(), state.getBackpack());
+        View.draw(context, state);
 
         while (true) {
             var event = context.pollOrWaitEvent(EVENT_POLL_TIMEOUT_MS);
