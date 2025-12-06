@@ -9,9 +9,24 @@ import com.github.forax.zen.PointerEvent;
 
 import fr.uge.backpackhero.model.GameState;
 
+/**
+ * Main class to start the Backpack Hero game.
+ * 
+ * @author @Naniiiii944
+ */
 public class Main {
 
+    private Main() {
+        // Private constructor to prevent warnings
+    }
+
     private final static int EVENT_POLL_TIMEOUT_MS = 10;
+
+    /**
+     * Main method to launch the game.
+     * 
+     * @param args command line arguments (not used)
+     */
 
     public static void main(String[] args) {
         Application.run(Color.BLACK, Main::gameEntry);

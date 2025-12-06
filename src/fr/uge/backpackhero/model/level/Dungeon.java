@@ -12,14 +12,29 @@ import fr.uge.backpackhero.model.item.ManaStone;
 import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
 
+/**
+ * Represents a dungeon consisting of multiple floors.
+ * Each floor contains rooms with various types such as enemies, treasures, merchants, etc.
+ * 
+ * @author Yacine
+ */
 public class Dungeon {
     private final List<Floor> floors;
 
+    /**
+     * Creates a new Dungeon with multiple floors predefined for the beta of the game.
+     * The dungeon consists of 3 floors.
+     */
     public Dungeon() {
         this.floors = new ArrayList<>();
         initializeFloors();
     }
 
+    /**
+     * Initializes the floors of the dungeon with predefined rooms and configurations.
+     * 
+     * pretty long method but it's only for the beta version of the game trust me soon it'll be replaced by a procedural generation algorithm that will outperform the ones from the biggest AAA games.
+     */
     private void initializeFloors() {
 
         // Floor 1
@@ -105,6 +120,13 @@ public class Dungeon {
         floors.add(floor3);
     }
 
+
+    /**
+     * Returns the floor at the specified index.
+     * 
+     * @param index the index of the floor to retrieve
+     * @return the floor at the specified index
+     */
     public Floor getFloor(int index) {
         if (index < 0 || index >= floors.size()) {
             throw new IndexOutOfBoundsException("Floor index out of bounds: " + index);
@@ -112,6 +134,11 @@ public class Dungeon {
         return floors.get(index);
     }
 
+    /**
+     * Returns the total number of floors in the dungeon.
+     * 
+     * @return the number of floors
+     */
     public int getFloorCount() {
         return floors.size();
     }

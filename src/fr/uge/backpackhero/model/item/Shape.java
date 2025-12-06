@@ -6,8 +6,21 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Objects;
 
+/**
+ * Represents the shape of an item in the backpack.
+ * The shape is defined by a list of relative positions that the item occupies.
+ * The shape can be rotated to fit different orientations in the backpack.
+ * 
+ * @param cells the list of relative positions that define the shape
+ * @author Yacine
+ */
 public record Shape(List<Position> cells) {
 
+    /**
+     * Creates a new Shape with the given list of cells.
+     * 
+     * @param cells the list of relative positions that define the shape
+     */
     public Shape {
         Objects.requireNonNull(cells, "cells cannot be null");
         if (cells.isEmpty()) {
@@ -16,74 +29,82 @@ public record Shape(List<Position> cells) {
         cells = List.copyOf(cells);
     }
 
-    // 1x1
+    /** A single 1x1 cell shape. */
     public static final Shape SINGLE = new Shape(List.of(
             new Position(0, 0)));
 
-    // Verical 2 cases
+    /** A vertical shape spanning 2 cells. */
     public static final Shape VERTICAL_2 = new Shape(List.of(
             new Position(0, 0),
             new Position(0, 1)));
 
-    // Verical 3 cases (épée)
+    /** A vertical shape spanning 3 cells (sword-like). */
     public static final Shape VERTICAL_3 = new Shape(List.of(
             new Position(0, 0),
             new Position(0, 1),
             new Position(0, 2)));
 
-    // Horizontal 2 cases
+    /** A horizontal shape spanning 2 cells. */
     public static final Shape HORIZONTAL_2 = new Shape(List.of(
             new Position(0, 0),
             new Position(1, 0)));
 
-    // Horizontal 3 cases
+    /** A horizontal shape spanning 3 cells. */
     public static final Shape HORIZONTAL_3 = new Shape(List.of(
             new Position(0, 0),
             new Position(1, 0),
             new Position(2, 0)));
 
-    // L shape
+    /** An L-shaped configuration. */
     public static final Shape L_SHAPE = new Shape(List.of(
             new Position(0, 0),
             new Position(0, 1),
             new Position(1, 1)));
 
-    // L shape reversed
+    /** A reversed L-shaped configuration. */
     public static final Shape L_SHAPE_REVERSED = new Shape(List.of(
             new Position(1, 0),
             new Position(0, 1),
             new Position(1, 1)));
 
-    // Square 2x2
+    /** A square 2x2 shape. */
     public static final Shape SQUARE_2X2 = new Shape(List.of(
-            new Position(0, 0), 
+            new Position(0, 0),
             new Position(1, 0),
-            new Position(0, 1), 
+            new Position(0, 1),
             new Position(1, 1)));
 
-    // T shape
+    /** A T-shaped configuration. */
     public static final Shape T_SHAPE = new Shape(List.of(
             new Position(1, 0),
             new Position(0, 1),
             new Position(1, 1),
             new Position(2, 1)));
 
-    // T shape reversed
+    /** A reversed T-shaped configuration. */
     public static final Shape T_SHAPE_REVERSED = new Shape(List.of(
             new Position(0, 0),
             new Position(1, 0),
             new Position(2, 0),
             new Position(1, 1)));
 
-    // Cross shape
+    /** A cross-shaped (plus sign) configuration. */
     public static final Shape CROSS = new Shape(List.of(
             new Position(1, 0),
-            new Position(0, 1), 
-            new Position(1, 1), 
+            new Position(0, 1),
+            new Position(1, 1),
             new Position(2, 1),
             new Position(1, 2)));
 
-    
+    /**
+     * Returns the absolute positions of the shape based on an anchor position.
+     * In other words, it translates the positions of the shape to be relative to
+     * the anchor so that we have the actual occupied positions in the backpack for
+     * example.
+     * 
+     * @param anchor the anchor position to translate the shape's positions
+     * @return a set of absolute positions based on the anchor position
+     */
     public Set<Position> absolutePositions(Position anchor) {
         Objects.requireNonNull(anchor, "anchor cannot be null");
         var result = new HashSet<Position>();
@@ -93,25 +114,40 @@ public record Shape(List<Position> cells) {
         return result;
     }
 
+    /**
+     * Normalizes a list of positions to create a Shape.
+     * The normalization process shifts the positions so that the minimum x and y
+     * coordinates are at (0, 0).
+     * It can be useful after rotating a shape to ensure the shape is properly
+     * aligned.
+     * 
+     * @param positions the list of positions to normalize
+     * @return a new Shape with normalized positions
+     */
     private static Shape normalize(List<Position> positions) {
         Objects.requireNonNull(positions, "positions cannot be null");
         if (positions.isEmpty()) {
             throw new IllegalArgumentException("positions cannot be empty");
         }
         int minX = positions.stream()
-            .mapToInt(Position::x)
-            .min()
-            .orElse(0);
+                .mapToInt(Position::x)
+                .min()
+                .orElse(0);
         int minY = positions.stream()
-            .mapToInt(Position::y)
-            .min()
-            .orElse(0);
+                .mapToInt(Position::y)
+                .min()
+                .orElse(0);
         var normalized = positions.stream()
                 .map(p -> new Position(p.x() - minX, p.y() - minY))
                 .toList();
         return new Shape(normalized);
     }
 
+    /**
+     * Rotates the shape 90 degrees clockwise.
+     * 
+     * @return a new Shape rotated 90 degrees clockwise
+     */
     public Shape rotate90() {
         var rotated = cells.stream()
                 .map(p -> new Position(-p.y(), p.x()))
@@ -119,32 +155,62 @@ public record Shape(List<Position> cells) {
         return normalize(rotated);
     }
 
+    /**
+     * Rotates the shape 180 degrees clockwise.
+     * 
+     * @return a new Shape rotated 180 degrees clockwise
+     */
     public Shape rotate180() {
         return rotate90().rotate90();
     }
 
+    /**
+     * Rotates the shape 270 degrees clockwise.
+     * 
+     * @return a new Shape rotated 270 degrees clockwise
+     */
     public Shape rotate270() {
         return rotate90().rotate90().rotate90();
     }
 
+    /**
+     * Returns the width of the shape.
+     * 
+     * @return the width of the shape
+     */
     public int width() {
         return cells.stream()
-            .mapToInt(Position::x)
-            .max()
-            .orElse(0) + 1;
+                .mapToInt(Position::x)
+                .max()
+                .orElse(0) + 1;
     }
 
+    /**
+     * Returns the height of the shape.
+     * 
+     * @return the height of the shape
+     */
     public int height() {
         return cells.stream()
-            .mapToInt(Position::y)
-            .max()
-            .orElse(0) + 1;
+                .mapToInt(Position::y)
+                .max()
+                .orElse(0) + 1;
     }
 
+    /**
+     * Returns the number of cells in the shape.
+     * 
+     * @return the size of the shape
+     */
     public int size() {
         return cells.size();
     }
 
+    /**
+     * Returns a string representation of the shape.
+     * 
+     * @return a string representation of the shape
+     */
     @Override
     public String toString() {
         var sb = new StringBuilder();

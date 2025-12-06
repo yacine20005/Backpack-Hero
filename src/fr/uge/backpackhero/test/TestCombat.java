@@ -5,7 +5,22 @@ import fr.uge.backpackhero.model.Backpack;
 import fr.uge.backpackhero.model.CombatEngine;
 import fr.uge.backpackhero.model.Enemy;
 
+/**
+ * TestCombat class to test combat mechanics between Hero and Enemy.
+ * 
+ * @author Yacine
+ */
 public class TestCombat {
+
+    private TestCombat() {
+        // Private constructor to prevent warnings
+    }
+
+    /**
+     * Main method to run combat tests.
+     * 
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
         IO.println("=== Starting Combat Test ===");
 

@@ -1,0 +1,7 @@
+module:fr.uge.backpackhero
+fr.uge.backpackhero.engine
+fr.uge.backpackhero.model
+fr.uge.backpackhero.model.item
+fr.uge.backpackhero.model.level
+fr.uge.backpackhero.model.loot
+fr.uge.backpackhero.test

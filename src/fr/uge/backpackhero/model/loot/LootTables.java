@@ -12,10 +12,26 @@ import fr.uge.backpackhero.model.item.ManaStone;
 import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
 
+/**
+ * Provides loot tables for different floors and enemy drops in the game.
+ * This class contains methods to retrieve possible treasure items based on the floor index
+ * and to get loot dropped by enemies after combat.
+ * 
+ * TODO : We should maybe abandon this class in favor of a implementation that use the Enemy class and generate the loot directly from it.
+ * 
+ * @author @Naniiiii944
+ */
 public final class LootTables {
   private LootTables() {
   }
 
+  /**
+   * Returns a list of possible treasure items for the given floor index.
+   * 
+   * @param floorIndex the index of the floor
+   * @param rng a random number generator
+   * @return a list of possible treasure items
+   */
   public static List<Item> treasureChoices(int floorIndex, Random rng) {
     var res = new ArrayList<Item>();
     switch (floorIndex) {
@@ -39,6 +55,12 @@ public final class LootTables {
     return res;
   }
 
+  /**
+   * Returns a list of items dropped by the given enemy after combat.
+   * 
+   * @param enemy the enemy that was defeated
+   * @return a list of items dropped by the enemy
+   */
   public static List<Item> combatLoot(Enemy enemy) {
     var res = new ArrayList<Item>();
     res.add(new Gold(enemy.getGoldDrop()));
