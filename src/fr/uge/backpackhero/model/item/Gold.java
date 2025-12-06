@@ -20,10 +20,12 @@ public class Gold extends Item {
      * @param shape the shape of the gold item in the backpack
      */
     public Gold(int amount, Shape shape) {
-        if (amount < 0) {
+        
+    	super("Gold", shape);
+    	if (amount < 0) {
             throw new IllegalArgumentException("Gold amount cannot be negative");
         }
-        super("Gold", shape);
+        
         this.amount = amount;
     }
 

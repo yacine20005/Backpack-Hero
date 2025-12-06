@@ -20,10 +20,11 @@ public class ManaStone extends Item {
      * @param shape        the shape of the mana stone in the backpack
      */
     public ManaStone(String name, int manaProvided, Shape shape) {
-        if (manaProvided < 0) {
+        
+    	super(name, shape);
+    	if (manaProvided < 0) {
             throw new IllegalArgumentException("Mana provided cannot be negative");
         }
-        super(name, shape);
         this.manaProvided = manaProvided;
     }
 

@@ -19,11 +19,15 @@ public class Armor extends Item {
      * @param energyCost the energy cost to use the armor
      * @param shape the shape of the armor item in the backpack
      */
+    
     public Armor(String name, int protection, int energyCost, Shape shape) {
-        if (protection < 0 || energyCost < 0) {
+        
+    	super(name, shape);
+    	
+    	if (protection < 0 || energyCost < 0) {
             throw new IllegalArgumentException("Protection and energy cost must be non-negative");
         }
-        super(name, shape);
+        
         this.protection = protection;
         this.energyCost = energyCost;
     }
