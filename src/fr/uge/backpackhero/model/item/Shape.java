@@ -75,7 +75,7 @@ public record Shape(List<Position> cells) {
             new Position(2, 0),
             new Position(1, 1)));
 
-    
+    // Cross shape
     public static final Shape CROSS = new Shape(List.of(
             new Position(1, 0),
             new Position(0, 1), 
@@ -94,8 +94,18 @@ public record Shape(List<Position> cells) {
     }
 
     private static Shape normalize(List<Position> positions) {
-        int minX = positions.stream().mapToInt(Position::x).min().orElse(0);
-        int minY = positions.stream().mapToInt(Position::y).min().orElse(0);
+        Objects.requireNonNull(positions, "positions cannot be null");
+        if (positions.isEmpty()) {
+            throw new IllegalArgumentException("positions cannot be empty");
+        }
+        int minX = positions.stream()
+            .mapToInt(Position::x)
+            .min()
+            .orElse(0);
+        int minY = positions.stream()
+            .mapToInt(Position::y)
+            .min()
+            .orElse(0);
         var normalized = positions.stream()
                 .map(p -> new Position(p.x() - minX, p.y() - minY))
                 .toList();
@@ -118,11 +128,17 @@ public record Shape(List<Position> cells) {
     }
 
     public int width() {
-        return cells.stream().mapToInt(Position::x).max().orElse(0) + 1;
+        return cells.stream()
+            .mapToInt(Position::x)
+            .max()
+            .orElse(0) + 1;
     }
 
     public int height() {
-        return cells.stream().mapToInt(Position::y).max().orElse(0) + 1;
+        return cells.stream()
+            .mapToInt(Position::y)
+            .max()
+            .orElse(0) + 1;
     }
 
     public int size() {

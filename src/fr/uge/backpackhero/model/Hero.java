@@ -28,13 +28,7 @@ public class Hero {
     
        
     public void setHp(int hp) {
-        if (hp < 0) {
-            hp = 0;
-        } else if (hp > MAX_HP) {
-            hp = MAX_HP;
-        } else {
-            this.hp = hp;
-        }
+        this.hp = Math.min(Math.max(hp, 0), MAX_HP);
     }
 
     public int getEnergy() {
@@ -42,13 +36,7 @@ public class Hero {
     }
 
     public void setEnergy(int energy) {
-        if (energy < 0) {
-            this.energy = 0;
-        } else if (energy > MAX_ENERGY) {
-            this.energy = MAX_ENERGY;
-        } else {
-            this.energy = energy;
-        }
+        this.energy = Math.min(Math.max(energy, 0), MAX_ENERGY);
     }
 
     public int getMana() {
@@ -56,11 +44,7 @@ public class Hero {
     }
 
     public void setMana(int mana) {
-        if (mana < 0) {
-            this.mana = 0;
-        } else {
-            this.mana = mana;
-        }
+        this.mana = Math.max(mana, 0);
     }
 
     public void refreshManaAmount(Backpack backpack) {
@@ -72,11 +56,7 @@ public class Hero {
     }
 
     public void setBlock(int block) {
-        if (block < 0) {
-            this.block = 0;
-        } else {
-            this.block = block;
-        }
+        this.block = Math.max(block, 0);
     }
 
     @Override

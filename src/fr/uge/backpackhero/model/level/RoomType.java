@@ -1,5 +1,7 @@
 package fr.uge.backpackhero.model.level;
 
+import java.util.Objects;
+
 public enum RoomType {
     CORRIDOR("C"),
     ENEMY("E"),
@@ -12,7 +14,7 @@ public enum RoomType {
     
 
     RoomType(String symbol) {
-        this.symbol = symbol;
+        this.symbol = Objects.requireNonNull(symbol, "symbol cannot be null");
     }
 
     public String getSymbol() {

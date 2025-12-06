@@ -5,6 +5,9 @@ public class ManaStone extends Item {
     private final int manaProvided;
 
     public ManaStone(String name, int manaProvided, Shape shape) {
+        if (manaProvided < 0) {
+            throw new IllegalArgumentException("Mana provided cannot be negative");
+        }
         super(name, shape);
         this.manaProvided = manaProvided;
     }

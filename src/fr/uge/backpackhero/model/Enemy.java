@@ -38,11 +38,7 @@ public class Enemy {
 	}
 
 	public void setHp(int hp) {
-		if (hp < 0)
-			hp = 0;
-		if (hp > maxHp)
-			hp = maxHp;
-		this.hp = hp;
+		this.hp = Math.min(Math.max(hp, 0), maxHp);
 	}
 
 	public int getDefense() {
@@ -50,7 +46,7 @@ public class Enemy {
 	}
 
 	public void setDefense(int defense) {
-		this.defense = defense;
+		this.defense = Math.max(defense, 0);
 	}
 
 	public int getAttack() {
@@ -58,7 +54,7 @@ public class Enemy {
 	}
 
 	public void setAttack(int attack) {
-		this.attack = attack;
+		this.attack = Math.max(attack, 0);
 	}
 
 	public int getBlock() {
@@ -66,7 +62,7 @@ public class Enemy {
 	}
 
 	public void setBlock(int block) {
-		this.block = block;
+		this.block = Math.max(block, 0);
 	}
 
 	public int getGoldDrop() {

@@ -1,6 +1,7 @@
 package fr.uge.backpackhero.model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Weapon;
@@ -10,14 +11,17 @@ public class CombatEngine {
     private final Random random = new Random();
 
     public void heroTurn(Hero hero, Backpack backpack) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(backpack, "backpack cannot be null");
         hero.setEnergy(3);
         hero.setBlock(0);
         hero.setMana(backpack.getMana());
     }
 
     public void enemyTurn(Hero hero, Enemy enemy) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(enemy, "enemy cannot be null");
         enemy.setBlock(0);
-
         if (random.nextInt(2) == 0) {
             enemyAttack(hero, enemy);
         } else {
@@ -26,16 +30,18 @@ public class CombatEngine {
     }
 
     public boolean heroAttack(Hero hero, Enemy enemy, Weapon weapon) {
-        int cost = weapon.getEnergyCost();
-        if (hero.getEnergy() < cost) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(enemy, "enemy cannot be null");
+        Objects.requireNonNull(weapon, "weapon cannot be null");
+
+        int energyCost = weapon.getEnergyCost();
+        if (hero.getEnergy() < energyCost) {
             return false;
         }
-
-        hero.setEnergy(hero.getEnergy() - cost);
+        hero.setEnergy(hero.getEnergy() - energyCost);
 
         int damage = weapon.getDamage();
         int enemyBlock = enemy.getBlock();
-
         if (enemyBlock >= damage) {
             enemy.setBlock(enemyBlock - damage);
         } else {
@@ -46,6 +52,8 @@ public class CombatEngine {
     }
 
     public boolean heroDefend(Hero hero, Armor armor) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(armor, "armor cannot be null");
         int cost = armor.getEnergyCost();
         if (hero.getEnergy() < cost) {
             return false;
@@ -57,6 +65,8 @@ public class CombatEngine {
     }
 
     public void enemyAttack(Hero hero, Enemy enemy) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(enemy, "enemy cannot be null");
         int damage = enemy.getAttack();
         int heroBlock = hero.getBlock();
 
@@ -69,11 +79,14 @@ public class CombatEngine {
     }
 
     public void enemyDefend(Enemy enemy) {
+        Objects.requireNonNull(enemy, "enemy cannot be null");
         enemy.setBlock(enemy.getBlock() + enemy.getDefense());
     }
 
     public boolean isCombatOver(Hero hero, List<Enemy> enemies) {
-        if (!hero.isAlive()) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(enemies, "enemies cannot be null");
+        if (!hero.isAlive() || enemies.isEmpty()) {
             return true;
         }
         boolean allEnemiesDefeated = enemies.stream().allMatch(enemy -> !enemy.isAlive());
@@ -83,6 +96,10 @@ public class CombatEngine {
     }
 
     public int calculateGoldReward(List<Enemy> enemies) {
+        Objects.requireNonNull(enemies, "enemies cannot be null");
+        if (enemies.isEmpty()) {
+            return 0;
+        }
         int gold = 0;
         for (Enemy enemy : enemies) {
             gold += enemy.getGoldDrop();
@@ -91,8 +108,13 @@ public class CombatEngine {
     }
 
     public boolean loopCombat(GameState state, List<Enemy> enemies) {
+        Objects.requireNonNull(state, "state cannot be null");
+        Objects.requireNonNull(enemies, "enemies cannot be null");
         var hero = state.getHero();
         var backpack = state.getBackpack();
+        if (enemies.isEmpty()) {
+            return hero.isAlive();
+        }
         // We update the mana amount before each combat so that we don't have to iterate
         // over the backpack items each time we need the mana amount
         while (!isCombatOver(hero, enemies)) {

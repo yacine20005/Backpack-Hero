@@ -5,6 +5,9 @@ public class Gold extends Item {
     private int amount;
 
     public Gold(int amount, Shape shape) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Gold amount cannot be negative");
+        }
         super("Gold", shape);
         this.amount = amount;
     }
