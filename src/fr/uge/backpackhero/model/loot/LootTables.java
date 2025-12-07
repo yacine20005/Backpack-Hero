@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import fr.uge.backpackhero.model.Enemy;
+import fr.uge.backpackhero.model.entity.Enemy;
 import fr.uge.backpackhero.model.item.Armor;
-import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.item.ManaStone;
 import fr.uge.backpackhero.model.item.Weapon;
@@ -39,7 +38,6 @@ public final class LootTables {
       case 0 -> { // FLOOR 1
         res.add(Weapon.woodSword());
         res.add(Armor.woodenShield());
-        res.add(new Gold(5));
       }
       case 1 -> { // FLOOR 2
         res.add(Weapon.montaintop());
@@ -49,23 +47,37 @@ public final class LootTables {
       case 2 -> { // FLOOR 3
         res.add(Weapon.telesto());
         res.add(ManaStone.bigManaStone());
-        res.add(new Gold(15));
       }
-      default -> res.add(new Gold(3));
+      default -> {
+        // No items for unknown floors
+      }
     }
     return res;
   }
 
   /**
-   * Returns a list of items dropped by the given enemy after combat.
+   * Returns the amount of gold for the given floor index.
+   * 
+   * @param floorIndex the index of the floor
+   * @return the amount of gold available
+   */
+  public static int treasureGold(int floorIndex) {
+    return switch (floorIndex) {
+      case 0 -> 5;
+      case 1 -> 10;
+      case 2 -> 15;
+      default -> 3;
+    };
+  }
+
+  /**
+   * Returns the amount of gold dropped by the given enemy after combat.
    * 
    * @param enemy the enemy that was defeated
-   * @return a list of items dropped by the enemy
+   * @return the amount of gold dropped
    */
-  public static List<Item> combatLoot(Enemy enemy) {
-    var res = new ArrayList<Item>();
-    res.add(new Gold(enemy.getGoldDrop()));
-    return res;
+  public static int combatGold(Enemy enemy) {
+    return enemy.getGoldDrop();
   }
 
 }

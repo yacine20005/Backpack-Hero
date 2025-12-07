@@ -26,7 +26,7 @@
       "args": [
         "--create",
         "--file=backpack-hero.jar",
-        "--main-class=fr.uge.backpackhero.main.Main",
+        "--main-class=fr.uge.backpackhero.Main",
         "-C",
         "bin",
         "."
@@ -42,7 +42,7 @@
         "--module-path",
         "lib/zen-6.0.jar:backpack-hero.jar",
         "-m",
-        "fr.uge.backpackhero/fr.uge.backpackhero.main.Main"
+        "fr.uge.backpackhero/fr.uge.backpackhero.Main"
       ],
       "dependsOn": "Create JAR",
       "problemMatcher": []

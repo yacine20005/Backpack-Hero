@@ -1,8 +1,11 @@
-package fr.uge.backpackhero.model;
+package fr.uge.backpackhero.logic;
 
 import java.util.List;
 import java.util.Objects;
 
+import fr.uge.backpackhero.model.entity.Enemy;
+import fr.uge.backpackhero.model.entity.Hero;
+import fr.uge.backpackhero.model.item.Backpack;
 import fr.uge.backpackhero.model.level.Dungeon;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;

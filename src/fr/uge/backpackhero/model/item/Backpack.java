@@ -1,4 +1,4 @@
-package fr.uge.backpackhero.model;
+package fr.uge.backpackhero.model.item;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,9 +7,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import fr.uge.backpackhero.model.item.Item;
-import fr.uge.backpackhero.model.item.Weapon;
-import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.level.Position;
 
 /**

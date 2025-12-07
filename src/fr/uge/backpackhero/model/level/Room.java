@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import fr.uge.backpackhero.model.Backpack;
-import fr.uge.backpackhero.model.Enemy;
+import fr.uge.backpackhero.model.entity.Enemy;
+import fr.uge.backpackhero.model.item.Backpack;
 import fr.uge.backpackhero.model.item.Item;
 
 /**
@@ -26,6 +26,7 @@ public class Room {
     private final List<Item> treasureItems;
     private final HashMap<Item, Integer> merchantItems;
     private final int healAmount;
+    private int goldAmount;
 
     /**
      * Creates a new Room with the specified attributes.
@@ -37,14 +38,16 @@ public class Room {
      * @param treasureItems the list of treasure items in the room
      * @param merchantItems the map of merchant items and their prices in the room
      * @param healAmount    the amount of healing available in the room
+     * @param goldAmount    the amount of gold available in the room
      */
     public Room(RoomType type, List<Enemy> enemies, List<Item> treasureItems, HashMap<Item, Integer> merchantItems,
-            int healAmount) {
+            int healAmount, int goldAmount) {
         this.type = Objects.requireNonNull(type);
         this.enemies = enemies;
         this.treasureItems = treasureItems;
         this.merchantItems = merchantItems;
         this.healAmount = healAmount;
+        this.goldAmount = goldAmount;
     }
 
     /**
@@ -100,6 +103,26 @@ public class Room {
      */
     public List<Item> getTreasureItems() {
         return treasureItems;
+    }
+
+    /**
+     * Returns the amount of gold available in the room.
+     * 
+     * @return the amount of gold available in the room
+     */
+    public int getGoldAmount() {
+        return goldAmount;
+    }
+
+    /**
+     * Collects all gold from the room and resets the gold amount to zero.
+     * 
+     * @return the amount of gold collected
+     */
+    public int collectGold() {
+        int collected = goldAmount;
+        goldAmount = 0;
+        return collected;
     }
 
     public boolean getFromTreasure(Backpack backpack, Position position, Item item) {

@@ -1,12 +1,12 @@
-package fr.uge.backpackhero.engine;
+package fr.uge.backpackhero.gui;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.PointerEvent;
 
-import fr.uge.backpackhero.model.CombatEngine;
-import fr.uge.backpackhero.model.Enemy;
-import fr.uge.backpackhero.model.GameState;
-import fr.uge.backpackhero.model.Hero;
+import fr.uge.backpackhero.logic.CombatEngine;
+import fr.uge.backpackhero.logic.GameState;
+import fr.uge.backpackhero.model.entity.Enemy;
+import fr.uge.backpackhero.model.entity.Hero;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.item.Weapon;
@@ -31,11 +31,11 @@ public class Controller {
     /**
      * Handles a click event in the backpack area.
      * 
-     * @param context the application context
-     * @param state   the current game state
-     * @param pointerEvent      the pointer event representing the click
+     * @param context      the application context
+     * @param state        the current game state
+     * @param pointerEvent the pointer event representing the click
      */
-    static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
+    public static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
         int x = (int) (pointerEvent.location().x() / View.TILE_SIZE);
         int y = (int) ((pointerEvent.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
         if (y < 0)
@@ -98,11 +98,11 @@ public class Controller {
     /**
      * Handles a click event in the dungeon area.
      * 
-     * @param context the application context
-     * @param state   the current game state
-     * @param pointerEvent      the pointer event representing the click
+     * @param context      the application context
+     * @param state        the current game state
+     * @param pointerEvent the pointer event representing the click
      */
-    static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
+    public static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
         if (state.isInCombat()) {
             return;
         }
@@ -201,7 +201,7 @@ public class Controller {
         }
         var floor = state.getCurrentFloor();
         var pos = state.getPosition();
-        floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0));
+        floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
         state.endCombat();
         IO.println("Combat won.");
         View.draw(context, state);
