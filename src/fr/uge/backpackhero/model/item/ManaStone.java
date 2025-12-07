@@ -27,14 +27,30 @@ public class ManaStone extends Item {
         this.manaProvided = manaProvided;
     }
 
+    /**
+     * Creates a Small Mana Stone.
+     * 
+     * @return a Small Mana Stone
+     */
     public static ManaStone smallManaStone() {
         return new ManaStone("Small Mana Stone", 3, Shape.SINGLE, Rarity.COMMON, 8);
     }
 
+
+    /**
+     * Creates a Big Mana Stone.
+     * 
+     * @return a Big Mana Stone
+     */
     public static ManaStone bigManaStone() {
         return new ManaStone("Big Mana Stone", 5, Shape.SINGLE, Rarity.UNCOMMON, 15);
     }
 
+    /**
+     * Creates a Blue Crystal mana stone.
+     * 
+     * @return a Blue Crystal mana stone
+     */
     public static ManaStone blueCrystal() {
         return new ManaStone("Blue Crystal", 8, Shape.SQUARE_2X2, Rarity.RARE, 25);
     }
@@ -51,7 +67,7 @@ public class ManaStone extends Item {
     /**
      * Indicates that this item is a mana stone.
      * 
-     * @return true
+     * @return true if the item is a mana stone, false otherwise
      */
     @Override
     public boolean isManaStone() {

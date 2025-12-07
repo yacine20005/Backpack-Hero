@@ -1,6 +1,5 @@
 /**
- * Main module for the Backpack Hero game.
- * Contains engine, model, and test packages for the rogue-like dungeon crawler.
+ * Module definition for the Backpack Hero game.
  */
 module fr.uge.backpackhero {
 	exports fr.uge.backpackhero;

@@ -92,14 +92,40 @@ public class Dungeon {
 
         floor2.setRoom(new Position(0, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
 
-        List<Enemy> enemy_f2 = List.of(Enemy.ratLoup());
-        floor2.setRoom(new Position(1, 0), new Room(RoomType.ENEMY, enemy_f2, null, null, 0, 0));
+        List<Enemy> enemy_f2_1 = List.of(Enemy.ratLoup());
+        floor2.setRoom(new Position(1, 0), new Room(RoomType.ENEMY, enemy_f2_1, null, null, 0, 0));
 
         floor2.setRoom(new Position(2, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
 
-        floor2.setRoom(new Position(3, 0), new Room(RoomType.HEALER, null, null, null, 20, 0));
+        List<Item> treasure_f2_1 = List.of(Weapon.woodenBow(), ManaStone.smallManaStone());
+        floor2.setRoom(new Position(3, 0), new Room(RoomType.TREASURE, null, treasure_f2_1, null, 0, 10));
 
-        floor2.setRoom(new Position(4, 0), new Room(RoomType.EXIT, null, null, null, 0, 0));
+        floor2.setRoom(new Position(4, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        List<Enemy> enemy_f2_2 = List.of(Enemy.petitRatLoup(), Enemy.ratLoup());
+        floor2.setRoom(new Position(5, 0), new Room(RoomType.ENEMY, enemy_f2_2, null, null, 0, 0));
+
+        floor2.setRoom(new Position(5, 1), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        floor2.setRoom(new Position(5, 2), new Room(RoomType.HEALER, null, null, null, 25, 0));
+
+        floor2.setRoom(new Position(6, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        HashMap<Item, Integer> merchant_f2 = new HashMap<>();
+        merchant_f2.put(Weapon.lastWord(), 30);
+        merchant_f2.put(Armor.liarshandshake(), 25);
+        merchant_f2.put(ManaStone.bigManaStone(), 15);
+        floor2.setRoom(new Position(6, 1), new Room(RoomType.MERCHANT, null, null, merchant_f2, 0, 0));
+
+        List<Enemy> enemy_f2_3 = List.of(Enemy.ratLoup(), Enemy.ratLoup());
+        floor2.setRoom(new Position(7, 0), new Room(RoomType.ENEMY, enemy_f2_3, null, null, 0, 0));
+
+        floor2.setRoom(new Position(8, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        List<Item> treasure_f2_2 = List.of(Armor.emeraldShield());
+        floor2.setRoom(new Position(9, 0), new Room(RoomType.TREASURE, null, treasure_f2_2, null, 0, 15));
+
+        floor2.setRoom(new Position(10, 0), new Room(RoomType.EXIT, null, null, null, 0, 0));
 
         floors.add(floor2);
 
@@ -107,15 +133,41 @@ public class Dungeon {
         Floor floor3 = new Floor(11, 5);
 
         floor3.setRoom(new Position(0, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
-        List<Enemy> enemy_3a = List.of(Enemy.petitRatLoup(), Enemy.ratLoup());
-        floor3.setRoom(new Position(1, 0), new Room(RoomType.ENEMY, enemy_3a, null, null, 0, 0));
 
-        List<Enemy> enemy_3b = List.of(Enemy.ratLoup(), Enemy.ratLoup());
-        floor3.setRoom(new Position(2, 0), new Room(RoomType.ENEMY, enemy_3b, null, null, 0, 0));
+        List<Enemy> enemy_f3_1 = List.of(Enemy.ratLoup(), Enemy.petitRatLoup());
+        floor3.setRoom(new Position(1, 0), new Room(RoomType.ENEMY, enemy_f3_1, null, null, 0, 0));
 
-        floor3.setRoom(new Position(3, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+        floor3.setRoom(new Position(2, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
 
-        floor3.setRoom(new Position(4, 0), new Room(RoomType.EXIT, null, null, null, 0, 0));
+        List<Item> treasure_f3_1 = List.of(Weapon.sturn());
+        floor3.setRoom(new Position(3, 0), new Room(RoomType.TREASURE, null, treasure_f3_1, null, 0, 20));
+
+        floor3.setRoom(new Position(3, 1), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        floor3.setRoom(new Position(3, 2), new Room(RoomType.HEALER, null, null, null, 30, 0));
+
+        floor3.setRoom(new Position(4, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        List<Enemy> enemy_f3_2 = List.of(Enemy.ratLoup(), Enemy.ratLoup());
+        floor3.setRoom(new Position(5, 0), new Room(RoomType.ENEMY, enemy_f3_2, null, null, 0, 0));
+
+        floor3.setRoom(new Position(6, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        HashMap<Item, Integer> merchant_f3 = new HashMap<>();
+        merchant_f3.put(Weapon.telesto(), 100);
+        merchant_f3.put(Armor.luckypants(), 50);
+        merchant_f3.put(ManaStone.blueCrystal(), 25);
+        floor3.setRoom(new Position(6, 1), new Room(RoomType.MERCHANT, null, null, merchant_f3, 0, 0));
+
+        List<Enemy> enemy_f3_3 = List.of(Enemy.ratLoup(), Enemy.ratLoup(), Enemy.petitRatLoup());
+        floor3.setRoom(new Position(7, 0), new Room(RoomType.ENEMY, enemy_f3_3, null, null, 0, 0));
+
+        floor3.setRoom(new Position(8, 0), new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        List<Item> treasure_f3_2 = List.of(Armor.celestialnighthawk(), ManaStone.bigManaStone());
+        floor3.setRoom(new Position(9, 0), new Room(RoomType.TREASURE, null, treasure_f3_2, null, 0, 25));
+
+        floor3.setRoom(new Position(10, 0), new Room(RoomType.EXIT, null, null, null, 0, 0));
 
         floors.add(floor3);
     }

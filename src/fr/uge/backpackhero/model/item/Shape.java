@@ -151,7 +151,7 @@ public record Shape(List<Position> cells) {
      */
     public Shape rotate90() {
         var rotated = cells.stream()
-                .map(p -> new Position(-p.y(), p.x()))
+                .map(p -> new Position(p.y(), -p.x()))
                 .toList();
         return normalize(rotated);
     }

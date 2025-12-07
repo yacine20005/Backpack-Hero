@@ -18,19 +18,16 @@ public class Hero {
     private int energy;
     private int mana;
     private int block;
-    private int gold;
 
     /**
      * Creates a new Hero with default attributes.
-     * The hero starts with maximum HP, full energy, zero mana, no block and no
-     * gold.
+     * The hero starts with maximum HP, full energy, zero mana and no block.
      */
     public Hero() {
         this.hp = MAX_HP;
         this.energy = MAX_ENERGY;
         this.mana = 0;
         this.block = 0;
-        this.gold = 0;
     }
 
     /**
@@ -130,47 +127,6 @@ public class Hero {
      */
     @Override
     public String toString() {
-        return "Hero - HP=" + hp + "/" + MAX_HP + ", Energy=" + energy + ", Block=" + block + ", Gold=" + gold;
-    }
-
-    /**
-     * Returns the current gold of the hero.
-     * 
-     * @return the current gold amount
-     */
-    public int getGold() {
-        return gold;
-    }
-
-    /**
-     * Sets the gold of the hero, ensuring it is not negative.
-     * 
-     * @param gold the new gold value
-     */
-    public void setGold(int gold) {
-        this.gold = Math.max(gold, 0);
-    }
-
-    /**
-     * Adds gold to the hero's current amount.
-     * 
-     * @param amount the amount of gold to add
-     */
-    public void addGold(int amount) {
-        this.gold = Math.max(this.gold + amount, 0);
-    }
-
-    /**
-     * Removes gold from the hero's current amount.
-     * 
-     * @param amount the amount of gold to remove
-     * @return true if the hero had enough gold, false otherwise
-     */
-    public boolean spendGold(int amount) {
-        if (amount > this.gold) {
-            return false;
-        }
-        this.gold -= amount;
-        return true;
+        return "Hero - HP=" + hp + "/" + MAX_HP + ", Energy=" + energy + ", Block=" + block;
     }
 }

@@ -33,22 +33,47 @@ public class Armor extends Item {
         this.manaCost = manaCost;
     }
 
+    /**
+     * Creates a Wooden Shield armor.
+     * 
+     * @return a Wooden Shield armor
+     */
     public static Armor woodenShield() {
         return new Armor("Wooden Shield", 3, 1, 0, Shape.SINGLE, Rarity.COMMON, 5);
     }
 
+    /**
+     * Creates an Emerald Shield armor.
+     * 
+     * @return an Emerald Shield armor
+     */
     public static Armor emeraldShield() {
         return new Armor("Emerald Shield", 4, 1, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
     }
 
+    /**
+     * Creates a Celestial Nighthawk armor from Destiny 2.
+     * 
+     * @return a Celestial Nighthawk armor
+     */
     public static Armor celestialnighthawk() {
         return new Armor("Celestial Nighthawk", 5, 2, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
     }
 
+    /**
+     * Creates a Liar's Handshake armor from Destiny 2.
+     * 
+     * @return a Liar's Handshake armor
+     */
     public static Armor liarshandshake() {
         return new Armor("Liar's Handshake", 7, 0, 2, Shape.HORIZONTAL_3, Rarity.RARE, 30);
     }
 
+    /**
+     * Creates Lucky Pants armor from Destiny 2.
+     * 
+     * @return Lucky Pants armor
+     */
     public static Armor luckypants() {
         return new Armor("Lucky Pants", 10, 3, 0, Shape.VERTICAL_3, Rarity.EPIC, 50);
     }
