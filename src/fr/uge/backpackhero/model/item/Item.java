@@ -12,8 +12,7 @@ import java.util.Objects;
 public abstract class Item {
 
     private final String name;
-    /** The shape of the item defining how it occupies space in the backpack. */
-    public final Shape shape;
+    private Shape shape;
     private final Rarity rarity;
     private final int price;
 
@@ -51,6 +50,15 @@ public abstract class Item {
      */
     public Shape getShape() {
         return shape;
+    }
+
+    /**
+     * Sets the shape of the item.
+     * 
+     * @param shape the new shape of the item
+     */
+    public void setShape(Shape shape) {
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
     }
 
     /**

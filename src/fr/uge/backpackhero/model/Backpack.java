@@ -8,10 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import fr.uge.backpackhero.model.item.Item;
-import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
 import fr.uge.backpackhero.model.item.Armor;
-import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.level.Position;
 
 /**
@@ -249,12 +247,12 @@ public class Backpack {
             return false;
         }
         remove(anchor);
-        item.shape.rotate90();
+        item.setShape(item.getShape().rotate90());
         if (place(item, anchor)) {
             return true;
         }
         // If failed, undo the rotation (3 rotations = back to original rotation)
-        item.shape.rotate270();
+        item.setShape(item.getShape().rotate270());
         place(item, anchor);
         return false;
     }
