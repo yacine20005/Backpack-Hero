@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import fr.uge.backpackhero.model.Backpack;
 import fr.uge.backpackhero.model.Enemy;
 import fr.uge.backpackhero.model.item.Item;
 
@@ -99,5 +100,18 @@ public class Room {
      */
     public List<Item> getTreasureItems() {
         return treasureItems;
+    }
+
+    public boolean getFromTreasure(Backpack backpack, Position position, Item item) {
+        Objects.requireNonNull(backpack);
+        Objects.requireNonNull(item);
+        if (treasureItems == null || !treasureItems.contains(item)) {
+            throw new IllegalArgumentException("Item " + item + " is not in the treasure items of this room");
+        }
+        if (backpack.place(item, position)) {
+            treasureItems.remove(item);
+            return true;
+        }
+        return false;
     }
 }

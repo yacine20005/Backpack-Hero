@@ -37,6 +37,10 @@ public class Armor extends Item {
         return new Armor("Wooden Shield", 3, 1, 0, Shape.SINGLE, Rarity.COMMON, 5);
     }
 
+    public static Armor emeraldShield() {
+        return new Armor("Emerald Shield", 4, 1, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
+    }
+
     public static Armor celestialnighthawk() {
         return new Armor("Celestial Nighthawk", 5, 2, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
     }
