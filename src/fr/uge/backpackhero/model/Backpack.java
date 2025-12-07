@@ -10,6 +10,8 @@ import java.util.Set;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
+import fr.uge.backpackhero.model.item.Armor;
+import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.level.Position;
 
 /**
@@ -29,8 +31,7 @@ public class Backpack {
 
     /**
      * Creates a new Backpack with the specified width and height.
-     * 
-     * @param width the width of the backpack
+     *  ckpack
      * @param height the height of the backpack
      */
     public Backpack(int width, int height) {
@@ -43,6 +44,7 @@ public class Backpack {
         this.occupiedCells = new HashSet<>();
         this.mana = 0;
         place(new Weapon("Wooden Sword", 5, 1, 0, Shape.VERTICAL_3), new Position(0, 0));
+        place(new Armor("Wooden Shield", 6, 1, Shape.SQUARE_2X2), new Position(1, 0));
     }
 
     /**

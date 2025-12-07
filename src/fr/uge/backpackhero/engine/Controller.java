@@ -3,7 +3,6 @@ package fr.uge.backpackhero.engine;
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.PointerEvent;
 
-import fr.uge.backpackhero.model.Backpack;
 import fr.uge.backpackhero.model.CombatEngine;
 import fr.uge.backpackhero.model.Enemy;
 import fr.uge.backpackhero.model.GameState;
@@ -40,12 +39,57 @@ public class Controller {
     static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pe) {
         int x = (int) (pe.location().x() / View.TILE_SIZE);
         int y = (int) ((pe.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
-        if (y < 0) {
-            IO.println("Click out of backpack bounds");
-        } else {
-            IO.println(state.getBackpack().getItemAt(new Position(x, y)).toString());
+        if (y < 0) return;
+        var pos = new Position(x, y);
+        var optItem = state.getBackpack().getItemAt(pos);
+        if (optItem.isEmpty()) {
+            return;
         }
+
+        var item = optItem.get();
+        if (!state.isInCombat()) {
+            IO.println(item.toString());
+            return;
+        }
+
+        if (!useItemInCombat(state, item)) {
+            IO.println("Cannot use item in combat.");
+            View.draw(context, state);
+            return;
+        }
+
+        afterHeroAction(context, state);
     }
+    
+    /**
+     * Uses the given item during combat if possible.
+     * A weapon triggers an attack on the first alive enemy, an armor triggers a defend action.
+     *
+     * @param state the current game state
+     * @param item  the item clicked in the backpack
+     * @return true if the combat action was successfully used, false otherwise
+     */
+    static boolean useItemInCombat(GameState state, Item item) {
+        var combat = state.getCombatEngine();
+        var hero = state.getHero();
+        var enemies = state.getCurrentEnemies(); 
+
+        if (item instanceof Weapon weapon) {
+            Enemy target = null;
+            for (Enemy enemy : enemies) {
+                if (enemy.isAlive()) { target = enemy; break; }
+            }
+            if (target == null) return false;
+            return combat.heroAttack(hero, target, weapon);
+        }
+
+        if (item instanceof Armor armor) {
+            return combat.heroDefend(hero, armor);
+        }
+
+        return false;
+    }
+
 
     /**
      * Handles a click event in the dungeon area.
@@ -55,10 +99,6 @@ public class Controller {
      * @param pe      the pointer event representing the click
      */
     static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pe) {
-        if (state.isInCombat()) {
-            handleCombatClick(context, state, pe);
-            return;
-        }
         int x = (int) ((pe.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
         int y = (int) (pe.location().y() / View.TILE_SIZE);
         var clickedPos = new Position(x, y);
@@ -87,94 +127,15 @@ public class Controller {
      * @return true if the move is allowed, false otherwise
      */
     static boolean isMoveAllowed(Position current, Position target, Floor floor) {
-        if (floor.getRoom(target) == null) {
+        if (!target.checkBounds(floor.getWidth(), floor.getHeight())) {
+            return false;
+        }
+    	if (floor.getRoom(target) == null) {
             return false;
         }
         int deltaX = Math.abs(current.x() - target.x());
         int deltaY = Math.abs(current.y() - target.y());
         return (deltaX == 1 && deltaY == 0) || (deltaX == 0 && deltaY == 1);
-    }
-
-    /**
-     * Handles a click event during combat.
-     * 
-     * @param context the application context
-     * @param state   the current game state
-     * @param pe      the pointer event representing the click
-     */
-    static void handleCombatClick(ApplicationContext context, GameState state, PointerEvent pe) {
-        var info = context.getScreenInfo();
-        int screenHeight = (int) info.height(),
-                width = View.BACKPACK_PIXEL_WIDTH + state.getCurrentFloor().getWidth() * View.TILE_SIZE;
-        int buttonWidth = 120, buttonHeight = 40, spacing = 20;
-        int totalWidth = 2 * buttonWidth + spacing;
-        int buttonY = (screenHeight - buttonHeight) / 2 + 100;
-        int startX = (width - totalWidth) / 2;
-        int attackX = startX, defendX = startX + buttonWidth + spacing;
-        int mouseX = (int) pe.location().x(), mouseY = (int) pe.location().y();
-        boolean attackClicked = mouseY >= buttonY && mouseY <= buttonY + buttonHeight
-                && mouseX >= attackX && mouseX <= attackX + buttonWidth;
-        boolean defendClicked = mouseY >= buttonY && mouseY <= buttonY + buttonHeight
-                && mouseX >= defendX && mouseX <= defendX + buttonWidth;
-        if (!attackClicked && !defendClicked)
-            return;
-        boolean used = attackClicked ? heroAttackAction(state) : heroDefendAction(state);
-        if (!used) {
-            IO.println("Cannot use action no equipment or not enough energy.");
-            View.draw(context, state);
-            return;
-        }
-        afterHeroAction(context, state);
-    }
-
-    /**
-     * Handles the hero's attack action during combat.
-     * 
-     * @param state the current game state
-     * @return true if the attack action was successfully used, false otherwise
-     */
-    static boolean heroAttackAction(GameState state) {
-        CombatEngine combat = state.getCombatEngine();
-        Hero hero = state.getHero();
-        Backpack backpack = state.getBackpack();
-        var enemies = state.getCurrentEnemies();
-        Weapon weapon = null;
-        for (Item item : backpack.getItems().values()) {
-            if (item instanceof Weapon w) {
-                weapon = w;
-                break;
-            }
-        }
-        if (weapon == null)
-            return false;
-        for (Enemy enemy : enemies) {
-            if (enemy.isAlive()) {
-                return combat.heroAttack(hero, enemy, weapon);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Handles the hero's defend action during combat.
-     * 
-     * @param state the current game state
-     * @return true if the defend action was successfully used, false otherwise
-     */
-    static boolean heroDefendAction(GameState state) {
-        CombatEngine combat = state.getCombatEngine();
-        Hero hero = state.getHero();
-        Backpack backpack = state.getBackpack();
-        Armor armor = null;
-        for (Item item : backpack.getItems().values()) {
-            if (item instanceof Armor a) {
-                armor = a;
-                break;
-            }
-        }
-        if (armor == null)
-            return false;
-        return combat.heroDefend(hero, armor);
     }
 
     /**
@@ -186,8 +147,31 @@ public class Controller {
     static void afterHeroAction(ApplicationContext context, GameState state) {
         if (checkEndOfCombat(context, state))
             return;
+        processEnemiesTurn(context, state);
         View.draw(context, state);
     }
+    
+    static void processEnemiesTurn(ApplicationContext context, GameState state) {
+        var combat = state.getCombatEngine();
+        var hero = state.getHero();
+        var enemies = state.getCurrentEnemies();
+        if (hero.getEnergy() != 0) {
+            return;
+        }
+        for (Enemy enemy : enemies) {
+            if (enemy.isAlive()) {
+                combat.enemyTurn(hero, enemy);
+            }
+        }
+        if (!hero.isAlive()) {
+            IO.println("The hero is dead.");
+            state.endCombat();
+            View.draw(context, state);
+            return;
+        }
+        combat.heroTurn(hero, state.getBackpack());
+    }
+
 
     /**
      * Checks if the combat has ended and handles the end of combat logic.

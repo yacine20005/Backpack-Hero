@@ -10,6 +10,7 @@ import com.github.forax.zen.ApplicationContext;
 import fr.uge.backpackhero.model.Backpack;
 import fr.uge.backpackhero.model.GameState;
 import fr.uge.backpackhero.model.Enemy;
+import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
@@ -31,7 +32,7 @@ public class View {
     /** The size of each tile in pixels. */
     public static final int TILE_SIZE = 100;
     /** The width of the backpack display area in tiles. */
-    public static final int BACKPACK_WIDTH_IN_TILES = 3;
+    public static final int BACKPACK_WIDTH_IN_TILES = 5;
     /** The width of the backpack display area in pixels. */
     public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
 
@@ -83,8 +84,14 @@ public class View {
     private static void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor) {
         int x = cellPos.x() * TILE_SIZE;
         int y = (cellPos.y() * TILE_SIZE) + TILE_SIZE;
-
-        Color itemColor = new Color(100, 0, 0);
+        
+        Color itemColor;
+        if (item instanceof Armor) {
+            itemColor = new Color(139, 69, 19); 
+        } else {
+            itemColor = new Color(100, 0, 0);   
+        }
+        
         screen.setColor(itemColor);
         screen.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
 
@@ -265,11 +272,12 @@ public class View {
         screen.setColor(new Color(0, 0, 0, 180));
         screen.fillRect(x - 10, y - 25, panelWidth + 20, panelHeight + 40);
         var oldFont = screen.getFont();
-        screen.setFont(oldFont.deriveFont(18f));
+        screen.setFont(oldFont.deriveFont(50f));
         screen.setColor(Color.WHITE);
         int textX = x;
         int textY = y;
         screen.drawString("Combat", textX, textY);
+        screen.setFont(oldFont.deriveFont(18f));
         textY += 22;
         screen.drawString("Hero HP: " + hero.getHp(), textX, textY);
         textY += 20;
@@ -289,20 +297,5 @@ public class View {
             textY += 20;
             index++;
         }
-        int buttonWidth = 120;
-        int buttonHeight = 40;
-        int spacing = 20;
-        int totalWidth = 2 * buttonWidth + spacing;
-        int buttonY = (screenHeight - buttonHeight) / 2 + 100;
-        int startX = (width - totalWidth) / 2;
-        int attackX = startX;
-        int defendX = startX + buttonWidth + spacing;
-        screen.setColor(Color.DARK_GRAY);
-        screen.fillRect(attackX, buttonY, buttonWidth, buttonHeight);
-        screen.fillRect(defendX, buttonY, buttonWidth, buttonHeight);
-        screen.setColor(Color.WHITE);
-        screen.drawString("Attaquer", attackX + 10, buttonY + 25);
-        screen.drawString("Defendre", defendX + 10, buttonY + 25);
-        screen.setFont(oldFont);
     }
 }
