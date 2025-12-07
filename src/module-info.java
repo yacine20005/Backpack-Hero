@@ -12,5 +12,5 @@ module fr.uge.backpackhero {
 	exports fr.uge.backpackhero.model.loot;
 
 	requires java.desktop;
-	requires zen;
+	requires transitive zen;
 }
