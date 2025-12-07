@@ -73,7 +73,7 @@ public class Controller {
     static boolean useItemInCombat(GameState state, Item item) {
         var combat = state.getCombatEngine();
         var hero = state.getHero();
-        var enemies = state.getCurrentEnemies();
+        var enemies = combat.getCurrentEnemies();
 
         if (item instanceof Weapon weapon) {
             Enemy target = null;
@@ -118,8 +118,9 @@ public class Controller {
         if (room != null && room.getType() == RoomType.ENEMY) {
             var enemies = room.getEnemies();
             if (enemies != null && !enemies.isEmpty()) {
-                state.startCombat(enemies);
-                state.getCombatEngine().heroTurn(state.getHero(), state.getBackpack());
+                var combat = state.getCombatEngine();
+                combat.startCombat(enemies);
+                combat.heroTurn(state.getHero(), state.getBackpack());
             }
         }
         View.draw(context, state);
@@ -162,21 +163,25 @@ public class Controller {
     static void processEnemiesTurn(ApplicationContext context, GameState state) {
         var combat = state.getCombatEngine();
         var hero = state.getHero();
-        var enemies = state.getCurrentEnemies();
+        var enemies = combat.getCurrentEnemies();
         if (hero.getEnergy() != 0) {
             return;
         }
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
-                combat.enemyTurn(hero, enemy);
+                var action = combat.getEnemyIntent(enemy);
+                if (action != null) {
+                    combat.enemyTurn(hero, enemy, action);
+                }
             }
         }
         if (!hero.isAlive()) {
             IO.println("The hero is dead.");
-            state.endCombat();
+            combat.endCombat();
             View.draw(context, state);
             return;
         }
+        combat.decideEnemyIntents();
         combat.heroTurn(hero, state.getBackpack());
     }
 
@@ -190,19 +195,18 @@ public class Controller {
     static boolean checkEndOfCombat(ApplicationContext context, GameState state) {
         CombatEngine combat = state.getCombatEngine();
         Hero hero = state.getHero();
-        var enemies = state.getCurrentEnemies();
-        if (!combat.isCombatOver(hero, enemies))
+        if (!combat.isCombatOver(hero))
             return false;
         if (!hero.isAlive()) {
             IO.println("The hero is dead.");
-            state.endCombat();
+            combat.endCombat();
             View.draw(context, state);
             return true;
         }
         var floor = state.getCurrentFloor();
         var pos = state.getPosition();
         floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
-        state.endCombat();
+        combat.endCombat();
         IO.println("Combat won.");
         View.draw(context, state);
         return true;

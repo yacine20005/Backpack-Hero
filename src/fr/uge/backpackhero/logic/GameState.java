@@ -1,9 +1,7 @@
 package fr.uge.backpackhero.logic;
 
-import java.util.List;
 import java.util.Objects;
 
-import fr.uge.backpackhero.model.entity.Enemy;
 import fr.uge.backpackhero.model.entity.Hero;
 import fr.uge.backpackhero.model.item.Backpack;
 import fr.uge.backpackhero.model.level.Dungeon;
@@ -20,12 +18,10 @@ public class GameState {
 
     final Dungeon dungeon = new Dungeon();
     int floor = 0;
+    Position position = new Position(0, 0);
     final Hero hero = new Hero();
     Backpack backpack = new Backpack(5, 3);
-    Position position = new Position(0, 0);
-    boolean inCombat = false;
-    CombatEngine combatEngine = new CombatEngine(); 
-    List<Enemy> currentEnemies;
+    CombatEngine combatEngine = new CombatEngine();
 
     /**
      * Creates a new GameState with default initial values.
@@ -130,33 +126,6 @@ public class GameState {
      * @return true if the game is in combat, false otherwise
      */
     public boolean isInCombat() {
-        return inCombat;                      
+        return combatEngine.isInCombat();                      
     }                                         
-
-    /**
-     * Starts a combat with the given list of enemies.
-     * 
-     * @param enemies the list of enemies to engage in combat
-     */
-    public void startCombat(List<Enemy> enemies) {
-        this.currentEnemies = Objects.requireNonNull(enemies);
-        this.inCombat = true;                       
-    }                                     
-    
-    /**
-     * Ends the current combat by clearing the list of enemies and updating the combat status.
-     */
-    public void endCombat() {                
-        this.currentEnemies = null;          
-        this.inCombat = false;                
-    }                                         
-
-    /**
-     * Returns the list of current enemies engaged in combat.
-     * 
-     * @return the list of current enemies
-     */
-    public List<Enemy> getCurrentEnemies() { 
-        return currentEnemies;                
-    }                                       
 }

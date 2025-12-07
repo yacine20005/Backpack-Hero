@@ -7,6 +7,7 @@ import java.awt.geom.Rectangle2D;
 
 import com.github.forax.zen.ApplicationContext;
 
+import fr.uge.backpackhero.logic.EnemyAction;
 import fr.uge.backpackhero.logic.GameState;
 import fr.uge.backpackhero.model.entity.Enemy;
 import fr.uge.backpackhero.model.item.Armor;
@@ -248,8 +249,7 @@ public class View {
 
     /**
      * Draws the combat interface on the screen.
-     * 
-     * TODO : Why this method is so big ?
+     * Displays hero stats, enemy stats, and enemy intents.
      * 
      * @param screen       the graphics context to draw on
      * @param state        the current game state
@@ -257,7 +257,8 @@ public class View {
      */
     private static void drawCombat(Graphics2D screen, GameState state, int screenHeight) {
         var hero = state.getHero();
-        var enemies = state.getCurrentEnemies();
+        var combat = state.getCombatEngine();
+        var enemies = combat.getCurrentEnemies();
         if (enemies == null) {
             return;
         }
@@ -265,8 +266,8 @@ public class View {
         int width = BACKPACK_PIXEL_WIDTH
                 + state.getCurrentFloor().getWidth() * TILE_SIZE;
 
-        int panelWidth = 400;
-        int panelHeight = 80 + enemies.size() * 20;
+        int panelWidth = 500;
+        int panelHeight = 80 + enemies.size() * 40;
         int x = (width - panelWidth) / 2;
         int y = (screenHeight - panelHeight) / 2;
         screen.setColor(new Color(0, 0, 0, 180));
@@ -291,11 +292,48 @@ public class View {
 
         int index = 1;
         for (Enemy enemy : enemies) {
+            EnemyAction intent = combat.getEnemyIntent(enemy);
+            String intentStr = getIntentDisplay(intent, enemy);
+            
             screen.drawString(index + ". " + enemy.getName()
                     + " HP=" + enemy.getHp()
                     + " Block=" + enemy.getBlock(), textX, textY);
             textY += 20;
+            
+            screen.setColor(getIntentColor(intent));
+            screen.drawString("   → Intent: " + intentStr, textX, textY);
+            screen.setColor(Color.WHITE);
+            textY += 20;
             index++;
         }
+    }
+
+    /**
+     * Returns a display string for the enemy's intent.
+     * 
+     * @param intent the enemy action intent
+     * @param enemy the enemy (for damage/defense values)
+     * @return a formatted string describing the intent
+     */
+    private static String getIntentDisplay(EnemyAction intent, Enemy enemy) {
+        if (intent == null) return "???";
+        return switch (intent) {
+            case ATTACK -> "ATTACK (" + enemy.getAttack() + " dmg)";
+            case DEFEND -> "DEFEND (+" + enemy.getDefense() + " block)";
+        };
+    }
+
+    /**
+     * Returns a color for the enemy's intent.
+     * 
+     * @param intent the enemy action intent
+     * @return a color representing the intent type
+     */
+    private static Color getIntentColor(EnemyAction intent) {
+        if (intent == null) return Color.GRAY;
+        return switch (intent) {
+            case ATTACK -> new Color(255, 100, 100); // Red for attack
+            case DEFEND -> new Color(100, 150, 255); // Blue for defense
+        };
     }
 }
