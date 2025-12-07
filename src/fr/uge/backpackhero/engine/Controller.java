@@ -99,7 +99,11 @@ public class Controller {
      * @param pe      the pointer event representing the click
      */
     static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pe) {
-        int x = (int) ((pe.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
+        if (state.isInCombat()) {
+        	return;
+        }
+    	
+    	int x = (int) ((pe.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
         int y = (int) (pe.location().y() / View.TILE_SIZE);
         var clickedPos = new Position(x, y);
         var floor = state.getCurrentFloor();
