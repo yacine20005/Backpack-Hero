@@ -12,30 +12,31 @@ public class ManaStone extends Item {
 
     /**
      * Creates a new ManaStone item.
-     * We are not going to use this constructor directly since mana stones are
-     * always represented as a single unit in the backpack.
      * 
      * @param name         the name of the mana stone
      * @param manaProvided the amount of mana provided by the mana stone
      * @param shape        the shape of the mana stone in the backpack
+     * @param rarity       the rarity of the mana stone
+     * @param price        the price of the mana stone
      */
-    public ManaStone(String name, int manaProvided, Shape shape) {
-        
-    	super(name, shape);
-    	if (manaProvided < 0) {
+    public ManaStone(String name, int manaProvided, Shape shape, Rarity rarity, int price) {
+        super(name, shape, rarity, price);
+        if (manaProvided < 0) {
             throw new IllegalArgumentException("Mana provided cannot be negative");
         }
         this.manaProvided = manaProvided;
     }
 
-    /**
-     * Creates a new ManaStone item with a single shape.
-     * 
-     * @param name         the name of the mana stone
-     * @param manaProvided the amount of mana provided by the mana stone
-     */
-    public ManaStone(String name, int manaProvided) {
-        this(name, manaProvided, Shape.SINGLE);
+    public static ManaStone smallManaStone() {
+        return new ManaStone("Small Mana Stone", 3, Shape.SINGLE, Rarity.COMMON, 8);
+    }
+
+    public static ManaStone bigManaStone() {
+        return new ManaStone("Big Mana Stone", 5, Shape.SINGLE, Rarity.UNCOMMON, 15);
+    }
+
+    public static ManaStone blueCrystal() {
+        return new ManaStone("Blue Crystal", 8, Shape.SQUARE_2X2, Rarity.RARE, 25);
     }
 
     /**

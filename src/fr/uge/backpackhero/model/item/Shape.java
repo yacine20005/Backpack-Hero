@@ -12,6 +12,7 @@ import java.util.Objects;
  * The shape can be rotated to fit different orientations in the backpack.
  * 
  * @param cells the list of relative positions that define the shape
+ * 
  * @author Yacine
  */
 public record Shape(List<Position> cells) {
@@ -105,7 +106,7 @@ public record Shape(List<Position> cells) {
      * @param anchor the anchor position to translate the shape's positions
      * @return a set of absolute positions based on the anchor position
      */
-    public Set<Position> absolutePositions(Position anchor) {
+    public Set<Position> getAbsolutePositions(Position anchor) {
         Objects.requireNonNull(anchor, "anchor cannot be null");
         var result = new HashSet<Position>();
         for (var cell : cells) {
@@ -178,7 +179,7 @@ public record Shape(List<Position> cells) {
      * 
      * @return the width of the shape
      */
-    public int width() {
+    public int getWidth() {
         return cells.stream()
                 .mapToInt(Position::x)
                 .max()
@@ -190,20 +191,11 @@ public record Shape(List<Position> cells) {
      * 
      * @return the height of the shape
      */
-    public int height() {
+    public int getHeight() {
         return cells.stream()
                 .mapToInt(Position::y)
                 .max()
                 .orElse(0) + 1;
-    }
-
-    /**
-     * Returns the number of cells in the shape.
-     * 
-     * @return the size of the shape
-     */
-    public int size() {
-        return cells.size();
     }
 
     /**
@@ -214,8 +206,8 @@ public record Shape(List<Position> cells) {
     @Override
     public String toString() {
         var sb = new StringBuilder();
-        for (int y = 0; y < height(); y++) {
-            for (int x = 0; x < width(); x++) {
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
                 if (cells.contains(new Position(x, y))) {
                     sb.append("[X]");
                 } else {

@@ -18,8 +18,7 @@ import fr.uge.backpackhero.model.level.RoomType;
 /**
  * Controller class to handle user interactions and game logic.
  * It processes clicks in the backpack and dungeon areas, manages combat
- * actions,
- * and updates the game state accordingly.
+ * actions, and updates the game state accordingly.
  * 
  * @author @Naniiiii944
  */
@@ -34,12 +33,13 @@ public class Controller {
      * 
      * @param context the application context
      * @param state   the current game state
-     * @param pe      the pointer event representing the click
+     * @param pointerEvent      the pointer event representing the click
      */
-    static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pe) {
-        int x = (int) (pe.location().x() / View.TILE_SIZE);
-        int y = (int) ((pe.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
-        if (y < 0) return;
+    static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
+        int x = (int) (pointerEvent.location().x() / View.TILE_SIZE);
+        int y = (int) ((pointerEvent.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
+        if (y < 0)
+            return;
         var pos = new Position(x, y);
         var optItem = state.getBackpack().getItemAt(pos);
         if (optItem.isEmpty()) {
@@ -60,10 +60,11 @@ public class Controller {
 
         afterHeroAction(context, state);
     }
-    
+
     /**
      * Uses the given item during combat if possible.
-     * A weapon triggers an attack on the first alive enemy, an armor triggers a defend action.
+     * A weapon triggers an attack on the first alive enemy, an armor triggers a
+     * defend action.
      *
      * @param state the current game state
      * @param item  the item clicked in the backpack
@@ -72,14 +73,18 @@ public class Controller {
     static boolean useItemInCombat(GameState state, Item item) {
         var combat = state.getCombatEngine();
         var hero = state.getHero();
-        var enemies = state.getCurrentEnemies(); 
+        var enemies = state.getCurrentEnemies();
 
         if (item instanceof Weapon weapon) {
             Enemy target = null;
             for (Enemy enemy : enemies) {
-                if (enemy.isAlive()) { target = enemy; break; }
+                if (enemy.isAlive()) {
+                    target = enemy;
+                    break;
+                }
             }
-            if (target == null) return false;
+            if (target == null)
+                return false;
             return combat.heroAttack(hero, target, weapon);
         }
 
@@ -90,21 +95,20 @@ public class Controller {
         return false;
     }
 
-
     /**
      * Handles a click event in the dungeon area.
      * 
      * @param context the application context
      * @param state   the current game state
-     * @param pe      the pointer event representing the click
+     * @param pointerEvent      the pointer event representing the click
      */
-    static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pe) {
+    static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
         if (state.isInCombat()) {
-        	return;
+            return;
         }
-    	
-    	int x = (int) ((pe.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
-        int y = (int) (pe.location().y() / View.TILE_SIZE);
+
+        int x = (int) ((pointerEvent.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
+        int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
         var clickedPos = new Position(x, y);
         var floor = state.getCurrentFloor();
         if (!isMoveAllowed(state.getPosition(), clickedPos, floor))
@@ -134,7 +138,7 @@ public class Controller {
         if (!target.checkBounds(floor.getWidth(), floor.getHeight())) {
             return false;
         }
-    	if (floor.getRoom(target) == null) {
+        if (floor.getRoom(target) == null) {
             return false;
         }
         int deltaX = Math.abs(current.x() - target.x());
@@ -146,7 +150,7 @@ public class Controller {
      * Performs actions after the hero has taken an action in combat.
      * 
      * @param context the application context
-     * @param state the current game state
+     * @param state   the current game state
      */
     static void afterHeroAction(ApplicationContext context, GameState state) {
         if (checkEndOfCombat(context, state))
@@ -154,7 +158,7 @@ public class Controller {
         processEnemiesTurn(context, state);
         View.draw(context, state);
     }
-    
+
     static void processEnemiesTurn(ApplicationContext context, GameState state) {
         var combat = state.getCombatEngine();
         var hero = state.getHero();
@@ -176,12 +180,11 @@ public class Controller {
         combat.heroTurn(hero, state.getBackpack());
     }
 
-
     /**
      * Checks if the combat has ended and handles the end of combat logic.
      * 
      * @param context the application context
-     * @param state the current game state
+     * @param state   the current game state
      * @return true if the combat has ended, false otherwise
      */
     static boolean checkEndOfCombat(ApplicationContext context, GameState state) {

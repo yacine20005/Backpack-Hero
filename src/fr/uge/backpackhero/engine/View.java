@@ -84,14 +84,14 @@ public class View {
     private static void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor) {
         int x = cellPos.x() * TILE_SIZE;
         int y = (cellPos.y() * TILE_SIZE) + TILE_SIZE;
-        
+
         Color itemColor;
         if (item instanceof Armor) {
-            itemColor = new Color(139, 69, 19); 
+            itemColor = new Color(139, 69, 19);
         } else {
-            itemColor = new Color(100, 0, 0);   
+            itemColor = new Color(100, 0, 0);
         }
-        
+
         screen.setColor(itemColor);
         screen.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
 
@@ -135,7 +135,7 @@ public class View {
      */
     private static void drawItems(Graphics2D screen, Backpack backpack) {
         backpack.getItems().forEach((anchor, item) -> {
-            var cells = item.getShape().absolutePositions(anchor);
+            var cells = item.getShape().getAbsolutePositions(anchor);
             for (var cell : cells) {
                 drawItemCell(screen, item, cell, cell.equals(anchor));
             }

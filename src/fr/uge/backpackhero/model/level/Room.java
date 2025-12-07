@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import fr.uge.backpackhero.model.Enemy;
-import fr.uge.backpackhero.model.GameState;
 import fr.uge.backpackhero.model.item.Item;
 
 /**

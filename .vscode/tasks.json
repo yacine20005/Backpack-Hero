@@ -7,11 +7,11 @@
       "command": "javac",
       "args": [
         "--module-path",
-        "lib/zen-6.0.jar", // path to the zen library
+        "lib/zen-6.0.jar",
         "-d",
-        "bin", // the output directory
-        "src/module-info.java", // module descriptor
-        "src/fr/uge/backpackhero/**/*.java" // source files
+        "bin",
+        "src/module-info.java",
+        "src/fr/uge/backpackhero/**/*.java"
       ],
       "group": {
         "kind": "build",
@@ -20,21 +20,36 @@
       "problemMatcher": []
     },
     {
-      "label": "Run",
+      "label": "Create JAR",
       "type": "shell",
-      "command": "java",
+      "command": "jar",
       "args": [
-        "--module-path", 
-        "lib/zen-6.0.jar:bin", // classpath including zen library and compiled classes
-        "-m",
-        "fr.uge.backpackhero/fr.uge.backpackhero.main.Main" // main class to run
+        "--create",
+        "--file=backpack-hero.jar",
+        "--main-class=fr.uge.backpackhero.main.Main",
+        "-C",
+        "bin",
+        "."
       ],
       "dependsOn": "Compile",
       "problemMatcher": []
     },
     {
-      "label": "Compile and Run",
-      "dependsOn": ["Compile", "Run"],
+      "label": "Run JAR",
+      "type": "shell",
+      "command": "java",
+      "args": [
+        "--module-path",
+        "lib/zen-6.0.jar:backpack-hero.jar",
+        "-m",
+        "fr.uge.backpackhero/fr.uge.backpackhero.main.Main"
+      ],
+      "dependsOn": "Create JAR",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build and Run",
+      "dependsOn": ["Compile", "Create JAR", "Run JAR"],
       "dependsOrder": "sequence",
       "problemMatcher": []
     }

@@ -9,15 +9,16 @@ import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.item.ManaStone;
-import fr.uge.backpackhero.model.item.Shape;
 import fr.uge.backpackhero.model.item.Weapon;
 
 /**
  * Provides loot tables for different floors and enemy drops in the game.
- * This class contains methods to retrieve possible treasure items based on the floor index
+ * This class contains methods to retrieve possible treasure items based on the
+ * floor index
  * and to get loot dropped by enemies after combat.
  * 
- * TODO : We should maybe abandon this class in favor of a implementation that use the Enemy class and generate the loot directly from it.
+ * TODO : We should maybe abandon this class in favor of a implementation that
+ * use the Enemy class and generate the loot directly from it.
  * 
  * @author @Naniiiii944
  */
@@ -29,25 +30,25 @@ public final class LootTables {
    * Returns a list of possible treasure items for the given floor index.
    * 
    * @param floorIndex the index of the floor
-   * @param rng a random number generator
+   * @param rng        a random number generator
    * @return a list of possible treasure items
    */
   public static List<Item> treasureChoices(int floorIndex, Random rng) {
     var res = new ArrayList<Item>();
     switch (floorIndex) {
       case 0 -> { // FLOOR 1
-        res.add(new Weapon("Sword", 7, 1, 0, Shape.VERTICAL_3));
-        res.add(new Armor("Wooden Shield", 6, 1, Shape.SQUARE_2X2));
+        res.add(Weapon.woodSword());
+        res.add(Armor.woodenShield());
         res.add(new Gold(5));
       }
       case 1 -> { // FLOOR 2
-        res.add(new Weapon("Dart", 6, 1, 0, Shape.VERTICAL_2));
-        res.add(new Armor("Leather Armor", 2, 0, Shape.VERTICAL_2));
-        res.add(new ManaStone("Small Mana Stone", 3));
+        res.add(Weapon.montaintop());
+        res.add(Armor.liarshandshake());
+        res.add(ManaStone.smallManaStone());
       }
       case 2 -> { // FLOOR 3
-        res.add(new Weapon("Magic Wand", 2, 0, 8, Shape.VERTICAL_2));
-        res.add(new ManaStone("Big Mana Stone", 5, Shape.HORIZONTAL_2));
+        res.add(Weapon.telesto());
+        res.add(ManaStone.bigManaStone());
         res.add(new Gold(15));
       }
       default -> res.add(new Gold(3));
