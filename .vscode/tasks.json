@@ -4,15 +4,8 @@
     {
       "label": "Compile",
       "type": "shell",
-      "command": "javac",
-      "args": [
-        "--module-path",
-        "lib/zen-6.0.jar",
-        "-d",
-        "bin",
-        "src/module-info.java",
-        "src/fr/uge/backpackhero/**/*.java"
-      ],
+      "command": "javac --module-path lib/zen-6.0.jar -d bin $(find src -name '*.java')",
+      "args": [],
       "group": {
         "kind": "build",
         "isDefault": true

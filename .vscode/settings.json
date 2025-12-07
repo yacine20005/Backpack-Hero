@@ -1,5 +1,6 @@
 {
   "java.project.sourcePaths": ["src"],
   "java.project.outputPath": "bin",
-  "java.project.referencedLibraries": ["lib/zen-6.0.jar"]
+  "java.project.referencedLibraries": ["lib/zen-6.0.jar"],
+  "java.debug.settings.onBuildFailureProceed": true
 }

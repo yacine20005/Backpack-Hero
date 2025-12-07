@@ -16,8 +16,6 @@ import fr.uge.backpackhero.model.item.Weapon;
  * floor index
  * and to get loot dropped by enemies after combat.
  * 
- * TODO : We should maybe abandon this class in favor of a implementation that
- * use the Enemy class and generate the loot directly from it.
  * 
  * @author @Naniiiii944
  */

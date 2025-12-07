@@ -297,7 +297,7 @@ public class View {
             
             screen.drawString(index + ". " + enemy.getName()
                     + " HP=" + enemy.getHp()
-                    + " Block=" + enemy.getBlock(), textX, textY);
+                    + " Block=" + enemy.getDefense(), textX, textY);
             textY += 20;
             
             screen.setColor(getIntentColor(intent));
