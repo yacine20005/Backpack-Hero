@@ -46,8 +46,13 @@ public class Main {
             }
 
             if (event instanceof KeyboardEvent ke) {
-                if (ke.action() == KeyboardEvent.Action.KEY_PRESSED && ke.key() == KeyboardEvent.Key.Q) {
-                    break;
+                if (ke.action() == KeyboardEvent.Action.KEY_PRESSED) {
+                    if (ke.key() == KeyboardEvent.Key.Q) {
+                        break;
+                    }
+                    if (ke.key() == KeyboardEvent.Key.R) {
+                        Controller.handleRotateItem(context, state);
+                    }
                 }
             }
 

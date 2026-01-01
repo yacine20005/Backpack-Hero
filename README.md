@@ -28,8 +28,8 @@
 - [x] Classe `Backpack` avec grille **3 lignes × 5 colonnes = 15 cases** (selon le sujet)
 - [x] Placement d'items avec leur forme
 - [x] Vérification des collisions
-- [ ] Rotation des items (90°)
-- [ ] Translation des items
+- [x] Rotation des items (90°)
+- [x] Translation des items
 
 ### Équipements (SANS interactions pour Phase 1)
 
@@ -58,8 +58,8 @@
 - [x] Ennemi se défend (augmente son block)
 - [x] Vérification fin de combat
 - [x] Calcul de l'or gagné
-- [ ] **Intégration avec l'interface graphique** (le joueur clique sur ses items)
-- [ ] Afficher l'action annoncée par l'ennemi
+- [x] **Intégration avec l'interface graphique** (le joueur clique sur ses items)
+- [x] Afficher l'action annoncée par l'ennemi
 - [ ] Gestion du loot après victoire
 
 ### Donjon (3 étages, codé en dur pour Phase 1)
@@ -85,7 +85,7 @@
 - [x] Clic pour se déplacer (règle : passer uniquement par les couloirs)
 - [x] Affichage du sac à dos
 - [x] Clic pour utiliser un item
-- [ ] **Écran de combat** *(MANQUE)*
+- [ ] **Écran de combat**
   - [ ] Afficher le héros (HP, énergie, block)
   - [ ] Afficher les ennemis (HP, block, action annoncée)
   - [ ] Cliquer sur une arme → attaquer un ennemi

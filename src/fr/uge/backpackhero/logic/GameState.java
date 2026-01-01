@@ -4,13 +4,16 @@ import java.util.Objects;
 
 import fr.uge.backpackhero.model.entity.Hero;
 import fr.uge.backpackhero.model.item.Backpack;
+import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.level.Dungeon;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
 
 /**
- * GameState manages the overall state of the game, including the dungeon, hero, backpack, current position, and combat status.
- * It provides methods to access and modify these components as the game progresses.
+ * GameState manages the overall state of the game, including the dungeon, hero,
+ * backpack, current position, and combat status.
+ * It provides methods to access and modify these components as the game
+ * progresses.
  * 
  * @author Yacine
  */
@@ -22,6 +25,8 @@ public class GameState {
     final Hero hero = new Hero();
     Backpack backpack = new Backpack(5, 3);
     CombatEngine combatEngine = new CombatEngine();
+    private Position selectedItemAnchor = null;
+    private Item selectedItem = null;
 
     /**
      * Creates a new GameState with default initial values.
@@ -95,7 +100,9 @@ public class GameState {
 
     /**
      * Advances the game to the next floor and resets the hero's position.
-     * For simplicity, the hero's position is reset to (0,0) on the new floor but we will maybe modify that later when the map generation algorithm will be implemented.
+     * For simplicity, the hero's position is reset to (0,0) on the new floor but we
+     * will maybe modify that later when the map generation algorithm will be
+     * implemented.
      */
     public void exitFloor() {
         this.floor++;
@@ -116,9 +123,9 @@ public class GameState {
      * 
      * @return the combat engine
      */
-    public CombatEngine getCombatEngine() {   
-        return combatEngine;                  
-    }                                         
+    public CombatEngine getCombatEngine() {
+        return combatEngine;
+    }
 
     /**
      * Checks if the game is currently in combat.
@@ -126,6 +133,44 @@ public class GameState {
      * @return true if the game is in combat, false otherwise
      */
     public boolean isInCombat() {
-        return combatEngine.isInCombat();                      
-    }                                         
+        return combatEngine.isInCombat();
+    }
+
+    /**
+     * Returns the anchor position of the currently selected item in the backpack.
+     * 
+     * @return the anchor position of the selected item, or null if no item is
+     *         selected
+     */
+    public Position getSelectedItemAnchor() {
+        return selectedItemAnchor;
+    }
+
+    /**
+     * Returns the currently selected item in the backpack.
+     * 
+     * @return the selected item, or null if no item is selected
+     */
+    public Item getSelectedItem() {
+        return selectedItem;
+    }
+
+    /**
+     * Sets the currently selected item and its anchor position in the backpack.
+     * 
+     * @param anchor the anchor position of the selected item
+     * @param item   the selected item
+     */
+    public void setSelectedItem(Position anchor, Item item) {
+        this.selectedItemAnchor = anchor;
+        this.selectedItem = item;
+    }
+
+    /**
+     * Clears the current item selection in the backpack.
+     */
+    public void clearSelectedItem() {
+        this.selectedItemAnchor = null;
+        this.selectedItem = null;
+    }
 }

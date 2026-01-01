@@ -52,7 +52,7 @@ public class View {
             var height = (int) screenInfo.height();
 
             clearScreen(screen, width, height);
-            drawBackpack(screen, state.getBackpack(), height);
+            drawBackpack(screen, state);
             drawDungeon(screen, state.getCurrentFloor());
             drawHero(screen, state.getPosition());
 
@@ -77,12 +77,14 @@ public class View {
     /**
      * Draws a single cell of an item in the backpack.
      * 
-     * @param screen   the graphics context to draw on
-     * @param item     the item to draw
-     * @param cellPos  the position of the cell within the backpack
-     * @param isAnchor whether the cell is the anchor cell of the item
+     * @param screen     the graphics context to draw on
+     * @param item       the item to draw
+     * @param cellPos    the position of the cell within the backpack
+     * @param isAnchor   whether the cell is the anchor cell of the item
+     * @param isSelected whether the item is currently selected
      */
-    private static void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor) {
+    private static void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor,
+            boolean isSelected) {
         int x = cellPos.x() * TILE_SIZE;
         int y = (cellPos.y() * TILE_SIZE) + TILE_SIZE;
 
@@ -91,6 +93,11 @@ public class View {
             itemColor = new Color(139, 69, 19);
         } else {
             itemColor = new Color(100, 0, 0);
+        }
+
+        // If item is selected, make it brighter
+        if (isSelected) {
+            itemColor = itemColor.brighter().brighter();
         }
 
         screen.setColor(itemColor);
@@ -114,7 +121,11 @@ public class View {
      * @param backpack     the backpack to draw
      * @param screenHeight the height of the screen
      */
-    private static void drawBackpack(Graphics2D screen, Backpack backpack, int screenHeight) {
+    private static void drawBackpack(Graphics2D screen, GameState state) {
+        var backpack = state.getBackpack();
+        var screenInfo = screen.getDeviceConfiguration().getBounds();
+        int screenHeight = (int) screenInfo.getHeight();
+        
         screen.setColor(new Color(20, 20, 20));
         screen.fillRect(0, 0, BACKPACK_PIXEL_WIDTH, screenHeight);
 
@@ -125,7 +136,7 @@ public class View {
 
         drawBackpackGrid(screen, backpackHeightInTiles);
 
-        drawItems(screen, backpack);
+        drawItems(screen, backpack, state);
     }
 
     /**
@@ -133,12 +144,16 @@ public class View {
      * 
      * @param screen   the graphics context to draw on
      * @param backpack the backpack containing the items to draw
+     * @param state    the current game state
      */
-    private static void drawItems(Graphics2D screen, Backpack backpack) {
+    private static void drawItems(Graphics2D screen, Backpack backpack, GameState state) {
+        Position selectedAnchor = state.getSelectedItemAnchor();
+
         backpack.getItems().forEach((anchor, item) -> {
+            boolean isSelected = anchor.equals(selectedAnchor);
             var cells = item.getShape().getAbsolutePositions(anchor);
             for (var cell : cells) {
-                drawItemCell(screen, item, cell, cell.equals(anchor));
+                drawItemCell(screen, item, cell, cell.equals(anchor), isSelected);
             }
         });
     }
@@ -294,12 +309,12 @@ public class View {
         for (Enemy enemy : enemies) {
             EnemyAction intent = combat.getEnemyIntent(enemy);
             String intentStr = getIntentDisplay(intent, enemy);
-            
+
             screen.drawString(index + ". " + enemy.getName()
                     + " HP=" + enemy.getHp()
                     + " Block=" + enemy.getDefense(), textX, textY);
             textY += 20;
-            
+
             screen.setColor(getIntentColor(intent));
             screen.drawString("   → Intent: " + intentStr, textX, textY);
             screen.setColor(Color.WHITE);
@@ -312,11 +327,12 @@ public class View {
      * Returns a display string for the enemy's intent.
      * 
      * @param intent the enemy action intent
-     * @param enemy the enemy (for damage/defense values)
+     * @param enemy  the enemy (for damage/defense values)
      * @return a formatted string describing the intent
      */
     private static String getIntentDisplay(EnemyAction intent, Enemy enemy) {
-        if (intent == null) return "???";
+        if (intent == null)
+            return "???";
         return switch (intent) {
             case ATTACK -> "ATTACK (" + enemy.getAttack() + " dmg)";
             case DEFEND -> "DEFEND (+" + enemy.getDefense() + " block)";
@@ -330,7 +346,8 @@ public class View {
      * @return a color representing the intent type
      */
     private static Color getIntentColor(EnemyAction intent) {
-        if (intent == null) return Color.GRAY;
+        if (intent == null)
+            return Color.GRAY;
         return switch (intent) {
             case ATTACK -> new Color(255, 100, 100); // Red for attack
             case DEFEND -> new Color(100, 150, 255); // Blue for defense

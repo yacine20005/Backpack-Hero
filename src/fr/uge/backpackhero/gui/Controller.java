@@ -30,6 +30,7 @@ public class Controller {
 
     /**
      * Handles a click event in the backpack area.
+     * Left click: select/deselect or move items, or use in combat
      * 
      * @param context      the application context
      * @param state        the current game state
@@ -41,17 +42,20 @@ public class Controller {
         if (y < 0)
             return;
         var pos = new Position(x, y);
+
+        // If we're not in combat, handle item movement
+        if (!state.isInCombat()) {
+            handleItemMovement(context, state, pos);
+            return;
+        }
+
+        // In combat mode, use items
         var optItem = state.getBackpack().getItemAt(pos);
         if (optItem.isEmpty()) {
             return;
         }
 
         var item = optItem.get();
-        if (!state.isInCombat()) {
-            IO.println(item.toString());
-            return;
-        }
-
         if (!useItemInCombat(state, item)) {
             IO.println("Cannot use item in combat.");
             View.draw(context, state);
@@ -59,6 +63,66 @@ public class Controller {
         }
 
         afterHeroAction(context, state);
+    }
+
+    /**
+     * Handles item movement in the backpack (selection and placement).
+     * 
+     * @param context the application context
+     * @param state   the current game state
+     * @param pos     the clicked position in the backpack
+     */
+    private static void handleItemMovement(ApplicationContext context, GameState state, Position pos) {
+        var backpack = state.getBackpack();
+        var currentAnchor = backpack.getAnchorAt(pos);
+
+        // If no item is currently selected
+        if (state.getSelectedItemAnchor() == null) {
+            if (currentAnchor.isPresent()) {
+                var anchor = currentAnchor.get(); // Because currentAnchor is an Optional and we checked with isPresent
+                var item = backpack.getItems().get(anchor);
+                state.setSelectedItem(anchor, item);
+                View.draw(context, state);
+            }
+        }
+        // An item is selected, try to move it
+        else {
+            var selectedAnchor = state.getSelectedItemAnchor();
+            if (selectedAnchor.equals(pos)) {
+                // Clicked on the same item, deselect
+                state.clearSelectedItem();
+                View.draw(context, state);
+            } else {
+                // Try to move the item to the new position
+                if (backpack.move(selectedAnchor, pos)) {
+                    // Update the anchor position in the state
+                    state.setSelectedItem(pos, state.getSelectedItem());
+                } else {
+                    IO.println("Cannot move item to this position.");
+                }
+                View.draw(context, state);
+            }
+        }
+    }
+
+    /**
+     * Rotates the currently selected item in the backpack.
+     * 
+     * @param context the application context
+     * @param state   the current game state
+     */
+    public static void handleRotateItem(ApplicationContext context, GameState state) {
+        var selectedItemAnchor = state.getSelectedItemAnchor();
+        if (selectedItemAnchor == null) {
+            IO.println("No item selected.");
+            return;
+        }
+
+        var backpack = state.getBackpack();
+        if (!backpack.rotateItem(selectedItemAnchor)) {
+            IO.println("Cannot rotate item in current position.");
+        }
+        View.draw(context, state);
     }
 
     /**
