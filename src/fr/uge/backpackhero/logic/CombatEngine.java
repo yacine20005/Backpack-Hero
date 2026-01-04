@@ -254,10 +254,10 @@ public class CombatEngine {
         if (currentEnemies == null || currentEnemies.isEmpty()) {
             return 0;
         }
-        int gold = 0;
-        for (Enemy enemy : currentEnemies) {
-            gold += enemy.getGoldDrop();
-        }
-        return gold;
+        // Règle demandée : 50 or par ennemi vaincu.
+        // Chez toi, les ennemis restent dans currentEnemies même morts,
+        // donc size() = nombre total d'ennemis du combat.
+        return currentEnemies.size() * 25;
     }
+
 }

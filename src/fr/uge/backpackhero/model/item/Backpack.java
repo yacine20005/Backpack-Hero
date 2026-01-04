@@ -254,4 +254,48 @@ public class Backpack {
         return false;
     }
 
+	 /** @return the Gold item if it exists in the bag, otherwise null */
+	 public Gold findGold() {
+	     for (Item item : items.values()) {
+	         if (item instanceof Gold) {
+	             return (Gold) item;
+	         }
+	     }
+	     return null;
+	 }
+	
+	 /**
+      * Adds gold to the bag.
+      * - If Gold already exists, it is stacked.
+      * - Otherwise, one Gold is placed in the first available slot.
+      * @return true if added, false if bag is full.
+      */
+	 public boolean addGold(int amount) {
+	     if (amount <= 0) return true;
+	
+	     Gold gold = findGold();
+	     if (gold != null) {
+	         gold.setAmount(gold.getAmount() + amount);
+	         return true;
+	     }
+	
+	     for (int y = 0; y < height; y++) {
+	         for (int x = 0; x < width; x++) {
+	             Position p = new Position(x, y);
+	             if (!occupiedCells.contains(p)) {
+	                 return place(new Gold(amount), p);
+	             }
+	         }
+	     }
+	     return false;
+	 }
+	
+	 /** @return the total amount of gold (0 if there are no Gold items in the bag) */
+	 public int goldAmount() {
+	     Gold gold = findGold();
+	     return (gold == null) ? 0 : gold.getAmount();
+	 }
+
+    
+
 }

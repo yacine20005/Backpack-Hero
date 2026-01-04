@@ -130,7 +130,8 @@ public class View {
         screen.fillRect(0, 0, BACKPACK_PIXEL_WIDTH, screenHeight);
 
         screen.setColor(Color.WHITE);
-        screen.drawString("Backpack", 10, 20);
+        screen.drawString("Gold: " + backpack.goldAmount(), 10, 40);
+
 
         int backpackHeightInTiles = backpack.getHeight();
 

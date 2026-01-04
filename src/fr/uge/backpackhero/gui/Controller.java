@@ -270,6 +270,8 @@ public class Controller {
         var floor = state.getCurrentFloor();
         var pos = state.getPosition();
         floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+        int reward = combat.calculateGoldReward();
+        state.getBackpack().addGold(reward);
         combat.endCombat();
         IO.println("Combat won.");
         View.draw(context, state);
