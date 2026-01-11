@@ -295,6 +295,33 @@ public class Backpack {
 	     Gold gold = findGold();
 	     return (gold == null) ? 0 : gold.getAmount();
 	 }
+	 
+	 
+	 public boolean placeFirstFit(Item item) {
+		    for (int y = 0; y < height; y++) {
+		        for (int x = 0; x < width; x++) {
+		            Position p = new Position(x, y);
+		            if (canPlace(item, p)) {
+		                return place(item, p);
+		            }
+		        }
+		    }
+		    return false;
+		}
+	 
+	 
+	 public boolean spendGold(int cost) {
+		    if (cost <= 0) return true;
+		    Gold gold = findGold();
+		    if (gold == null) return false;
+		    int current = gold.getAmount();
+		    if (current < cost) return false;
+		    gold.setAmount(current - cost);
+		    return true;
+		}
+
+	 
+	 
 
     
 

@@ -14,6 +14,7 @@ import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
 import fr.uge.backpackhero.model.level.Room;
 import fr.uge.backpackhero.model.level.RoomType;
+import fr.uge.backpackhero.model.item.ManaStone;
 
 /**
  * Controller class to handle user interactions and game logic.
@@ -259,23 +260,112 @@ public class Controller {
     static boolean checkEndOfCombat(ApplicationContext context, GameState state) {
         CombatEngine combat = state.getCombatEngine();
         Hero hero = state.getHero();
+
         if (!combat.isCombatOver(hero))
             return false;
+
         if (!hero.isAlive()) {
             IO.println("The hero is dead.");
             combat.endCombat();
             View.draw(context, state);
             return true;
         }
+
         var floor = state.getCurrentFloor();
         var pos = state.getPosition();
         floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
         int reward = combat.calculateGoldReward();
         state.getBackpack().addGold(reward);
+        java.util.Random rng = new java.util.Random();
+
+        int r = rng.nextInt(100);
+        int lootCount;
+        if (r < 10) {
+            lootCount = 2;
+        } else if (r < 40) {
+            lootCount = 1;
+        } else {
+            lootCount = 0;
+        }
+        for (int i = 0; i < lootCount; i++) {
+            Item loot = rollLootItem(state.getFloor(), rng);
+            boolean placed = state.getBackpack().placeFirstFit(loot);
+
+            if (placed) {
+                IO.println("Loot obtained: " + loot.getName());
+            } else {
+                IO.println("Loot lost (backpack full): " + loot.getName());
+            }
+        }
         combat.endCombat();
         IO.println("Combat won.");
         View.draw(context, state);
         return true;
     }
+
+    public static Item rollLootItem(int floorIndex, java.util.Random rng) {
+        int r = rng.nextInt(100);
+
+        if (floorIndex == 0) {
+            if (r < 40) return Weapon.woodSword();
+            if (r < 60) return Armor.woodenShield();
+            if (r < 80) return Weapon.woodenBow();
+            return ManaStone.smallManaStone();
+        }
+        if (floorIndex == 1) {
+            if (r < 30) return Weapon.sturn();
+            if (r < 55) return Armor.emeraldShield();
+            if (r < 75) return Armor.luckypants();
+            return ManaStone.bigManaStone();
+        }
+        if (r < 30) return Weapon.telesto();
+        if (r < 55) return Weapon.montaintop();
+        if (r < 75) return Weapon.lastWord();
+        if (r < 90) return Armor.celestialnighthawk();
+        return Armor.liarshandshake();
+    }
+    public static boolean handleMerchantClick(GameState state, PointerEvent event) {
+        var room = state.getCurrentFloor().getRoom(state.getPosition());
+        if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
+            return false;
+        }
+        int mx = (int) event.location().x();
+        int my = (int) event.location().y();
+        int x = 520;
+        int y = 40;
+        int w = 250;
+        int h = 220;
+        if (mx < x || mx > x + w || my < y || my > y + h) {
+            return false;
+        }
+        var shop = room.getMerchantItems();
+        if (shop == null || shop.isEmpty()) return true;
+        var list = new java.util.ArrayList<>(shop.entrySet());
+        list.sort(java.util.Comparator.comparing(e -> e.getKey().getName()));
+        int lineStartY = y + 95;
+        int lineH = 22;
+        int index = (my - lineStartY) / lineH;
+        if (index < 0 || index >= list.size() || index >= 6) {
+            return true;
+        }
+        var entry = list.get(index);
+        Item item = entry.getKey();
+        int price = entry.getValue();
+        if (!state.getBackpack().spendGold(price)) {
+            IO.println("Not enough gold.");
+            return true;
+        }
+        boolean placed = state.getBackpack().placeFirstFit(item);
+        if (!placed) {
+            state.getBackpack().addGold(price);
+            IO.println("Backpack full. Purchase cancelled.");
+            return true;
+        }
+        shop.remove(item);
+        IO.println("Bought: " + item.getName() + " for " + price + "g");
+        return true;
+    }
+
+
 
 }

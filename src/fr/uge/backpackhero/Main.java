@@ -58,9 +58,12 @@ public class Main {
 
             if (event instanceof PointerEvent pe) {
                 if (pe.action() == PointerEvent.Action.POINTER_DOWN) {
+                    if (Controller.handleMerchantClick(state, pe)) {
+                        View.draw(context, state);
+                        continue;
+                    }
 
                     var x = pe.location().x();
-
                     if (x < View.BACKPACK_PIXEL_WIDTH) {
                         Controller.handleBackpackClick(context, state, pe);
                     } else {
@@ -68,6 +71,7 @@ public class Main {
                     }
                 }
             }
+
         }
 
         System.out.println("Thanks for playing !");

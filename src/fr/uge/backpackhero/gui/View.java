@@ -55,6 +55,7 @@ public class View {
             drawBackpack(screen, state);
             drawDungeon(screen, state.getCurrentFloor());
             drawHero(screen, state.getPosition());
+            drawMerchant(screen, state);
 
             if (state.isInCombat()) {
                 drawCombat(screen, state, height);
@@ -350,8 +351,50 @@ public class View {
         if (intent == null)
             return Color.GRAY;
         return switch (intent) {
-            case ATTACK -> new Color(255, 100, 100); // Red for attack
-            case DEFEND -> new Color(100, 150, 255); // Blue for defense
+            case ATTACK -> new Color(255, 100, 100); 
+            case DEFEND -> new Color(100, 150, 255); 
         };
     }
+    
+    private static void drawMerchant(Graphics2D screen, GameState state) {
+        var room = state.getCurrentFloor().getRoom(state.getPosition());
+        if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
+            return;
+        }
+
+        int x = 520;
+        int y = 40;
+        int w = 250;
+        int h = 220;
+
+        screen.setColor(new Color(30, 30, 30));
+        screen.fillRect(x, y, w, h);
+        screen.setColor(Color.WHITE);
+        screen.drawRect(x, y, w, h);
+        screen.setFont(screen.getFont().deriveFont(java.awt.Font.BOLD, 16f));
+        screen.drawString("MERCHANT", x + 10, y + 25);
+        screen.setFont(screen.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
+        screen.drawString("Click an item to buy", x + 10, y + 45);
+        screen.drawString("Gold: " + state.getBackpack().goldAmount(), x + 10, y + 65);
+
+        var items = room.getMerchantItems();
+        if (items == null || items.isEmpty()) {
+            screen.drawString("(empty)", x + 10, y + 95);
+            return;
+        }
+
+        var list = new java.util.ArrayList<>(items.entrySet());
+        list.sort(java.util.Comparator.comparing(e -> e.getKey().getName()));
+
+        int lineY = y + 95;
+        int lineH = 22;
+
+        for (int i = 0; i < list.size() && i < 6; i++) {
+            var entry = list.get(i);
+            String name = entry.getKey().getName();
+            int price = entry.getValue();
+            screen.drawString((i + 1) + ") " + name + " - " + price + "g", x + 10, lineY + i * lineH);
+        }
+    }
+
 }
