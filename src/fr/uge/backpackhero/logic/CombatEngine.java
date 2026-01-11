@@ -254,10 +254,7 @@ public class CombatEngine {
         if (currentEnemies == null || currentEnemies.isEmpty()) {
             return 0;
         }
-        // Règle demandée : 50 or par ennemi vaincu.
-        // Chez toi, les ennemis restent dans currentEnemies même morts,
-        // donc size() = nombre total d'ennemis du combat.
-        return currentEnemies.size() * 25;
+        return currentEnemies.size() * 7;
     }
 
 }
