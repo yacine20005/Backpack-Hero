@@ -27,6 +27,11 @@ public class GameState {
     CombatEngine combatEngine = new CombatEngine();
     private Position selectedItemAnchor = null;
     private Item selectedItem = null;
+    private boolean healerPromptOpen = false;
+    private Position healerReturnPos = null;
+    private int healerHealAmount = 0;
+    private int healerCost = 0;
+
 
     /**
      * Creates a new GameState with default initial values.
@@ -173,4 +178,35 @@ public class GameState {
         this.selectedItemAnchor = null;
         this.selectedItem = null;
     }
+    
+    public boolean isHealerPromptOpen() {
+        return healerPromptOpen;
+    }
+
+    public void openHealerPrompt(Position returnPos, int healAmount, int cost) {
+        this.healerPromptOpen = true;
+        this.healerReturnPos = Objects.requireNonNull(returnPos);
+        this.healerHealAmount = healAmount;
+        this.healerCost = cost;
+    }
+
+    public void closeHealerPrompt() {
+        this.healerPromptOpen = false;
+        this.healerReturnPos = null;
+        this.healerHealAmount = 0;
+        this.healerCost = 0;
+    }
+
+    public Position getHealerReturnPos() {
+        return healerReturnPos;
+    }
+
+    public int getHealerHealAmount() {
+        return healerHealAmount;
+    }
+
+    public int getHealerCost() {
+        return healerCost;
+    }
+
 }

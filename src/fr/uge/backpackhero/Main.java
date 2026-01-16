@@ -58,8 +58,8 @@ public class Main {
 
             if (event instanceof PointerEvent pe) {
                 if (pe.action() == PointerEvent.Action.POINTER_DOWN) {
-                    if (Controller.handleMerchantClick(state, pe)) {
-                        View.draw(context, state);
+
+                    if (Controller.handleHealerPromptClick(context, state, pe)) {
                         continue;
                     }
 

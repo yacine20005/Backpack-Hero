@@ -55,6 +55,7 @@ public class View {
             drawBackpack(screen, state);
             drawDungeon(screen, state.getCurrentFloor());
             drawHero(screen, state.getPosition());
+            drawHealerPrompt(screen, state);
             drawMerchant(screen, state);
 
             if (state.isInCombat()) {
@@ -396,5 +397,40 @@ public class View {
             screen.drawString((i + 1) + ") " + name + " - " + price + "g", x + 10, lineY + i * lineH);
         }
     }
+    
+    private static void drawHealerPrompt(Graphics2D screen, GameState state) {
+        if (!state.isHealerPromptOpen() || state.isInCombat()) return;
+
+        int boxX = BACKPACK_PIXEL_WIDTH + 60;
+        int boxY = 80;
+        int boxW = 320;
+        int boxH = 180;
+
+        screen.setColor(new Color(20, 20, 20));
+        screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+
+        screen.setColor(Color.WHITE);
+        screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+
+        int heal = state.getHealerHealAmount();
+        int cost = state.getHealerCost();
+
+        screen.drawString("HEALER", boxX + 20, boxY + 30);
+        screen.drawString("Heal: +" + heal + " HP", boxX + 20, boxY + 60);
+        screen.drawString("Cost: " + cost + " gold", boxX + 20, boxY + 80);
+        screen.drawString("Accept or Leave?", boxX + 20, boxY + 105);
+
+        drawButton(screen, boxX + 30, boxY + 120, 110, 35, "ACCEPT");
+        drawButton(screen, boxX + 180, boxY + 120, 110, 35, "LEAVE");
+    }
+
+    private static void drawButton(Graphics2D screen, int x, int y, int w, int h, String text) {
+        screen.setColor(new Color(60, 60, 60));
+        screen.fill(new Rectangle2D.Float(x, y, w, h));
+        screen.setColor(Color.WHITE);
+        screen.draw(new Rectangle2D.Float(x, y, w, h));
+        screen.drawString(text, x + 20, y + 23);
+    }
+
 
 }

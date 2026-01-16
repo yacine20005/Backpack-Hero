@@ -178,8 +178,19 @@ public class Controller {
         var floor = state.getCurrentFloor();
         if (!isMoveAllowed(state.getPosition(), clickedPos, floor))
             return;
+        var prevPos = state.getPosition();
+        state.setPosition(clickedPos);
         state.setPosition(clickedPos);
         var room = floor.getRoom(clickedPos);
+        
+        if (room != null && room.getType() == RoomType.HEALER) {
+            int heal = room.getHealAmount();
+            int cost = Math.max(1, heal / 2); 
+            state.openHealerPrompt(prevPos, heal, cost);
+            View.draw(context, state);
+            return;
+        }
+        
         if (room != null && room.getType() == RoomType.ENEMY) {
             var enemies = room.getEnemies();
             if (enemies != null && !enemies.isEmpty()) {
@@ -365,6 +376,52 @@ public class Controller {
         IO.println("Bought: " + item.getName() + " for " + price + "g");
         return true;
     }
+    
+    public static boolean handleHealerPromptClick(ApplicationContext context, GameState state, PointerEvent pe) {
+        if (!state.isHealerPromptOpen()) return false;
+        if (pe.action() != PointerEvent.Action.POINTER_DOWN) return true;
+
+        int mx = (int) pe.location().x();
+        int my = (int) pe.location().y();
+
+        int boxX = View.BACKPACK_PIXEL_WIDTH + 60;
+        int boxY = 80;
+        int boxW = 320;
+        int boxH = 180;
+
+        int acceptX = boxX + 30, acceptY = boxY + 120, btnW = 110, btnH = 35;
+        int leaveX  = boxX + 180, leaveY  = boxY + 120;
+
+        if (mx >= leaveX && mx <= leaveX + btnW && my >= leaveY && my <= leaveY + btnH) {
+            state.setPosition(state.getHealerReturnPos());
+            state.closeHealerPrompt();
+            View.draw(context, state);
+            return true;
+        }
+
+       
+        if (mx >= acceptX && mx <= acceptX + btnW && my >= acceptY && my <= acceptY + btnH) {
+            int cost = state.getHealerCost();
+            int heal = state.getHealerHealAmount();
+
+            if (!state.getBackpack().spendGold(cost)) {
+                IO.println("Not enough gold.");
+                View.draw(context, state);
+                return true;
+            }
+
+            var hero = state.getHero();
+            int before = hero.getHp();
+            hero.setHp(before + heal);
+
+            state.closeHealerPrompt();
+            View.draw(context, state);
+            return true;
+        }
+
+        return true; 
+    }
+
 
 
 
