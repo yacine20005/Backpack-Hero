@@ -53,6 +53,7 @@ public class View {
 
             clearScreen(screen, width, height);
             drawBackpack(screen, state);
+            drawStatsBox(screen, state);
             drawDungeon(screen, state.getCurrentFloor());
             drawHero(screen, state.getPosition());
             drawHealerPrompt(screen, state);
@@ -431,6 +432,32 @@ public class View {
         screen.draw(new Rectangle2D.Float(x, y, w, h));
         screen.drawString(text, x + 20, y + 23);
     }
+    
+    private static void drawStatsBox(Graphics2D screen, GameState state) {
+        int x = 10;
+        int y = 420; 
+        int w = BACKPACK_PIXEL_WIDTH - 20;
+        int h = 100;
+
+        var hero = state.getHero();
+        int hp = hero.getHp();
+        int maxHp = hero.getMaxHp();
+        int gold = state.getBackpack().goldAmount();
+
+        screen.setColor(new Color(20, 20, 20));
+        screen.fill(new Rectangle2D.Float(x, y, w, h));
+        screen.setColor(Color.WHITE);
+        screen.draw(new Rectangle2D.Float(x, y, w, h));
+
+       
+        screen.drawString("Hero : Bosphore", x + 10, y + 20);
+
+     
+        screen.drawString("HP: " + hp + "/" + maxHp, x + 10, y + 45);
+        screen.drawString("Gold: " + gold, x + 10, y + 70);
+    }
+
+
 
 
 }

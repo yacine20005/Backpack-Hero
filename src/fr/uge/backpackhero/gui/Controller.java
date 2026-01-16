@@ -272,8 +272,9 @@ public class Controller {
         CombatEngine combat = state.getCombatEngine();
         Hero hero = state.getHero();
 
-        if (!combat.isCombatOver(hero))
+        if (!combat.isCombatOver(hero)) {
             return false;
+        }
 
         if (!hero.isAlive()) {
             IO.println("The hero is dead.");
@@ -284,32 +285,14 @@ public class Controller {
 
         var floor = state.getCurrentFloor();
         var pos = state.getPosition();
+
         floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
         int reward = combat.calculateGoldReward();
         state.getBackpack().addGold(reward);
-        java.util.Random rng = new java.util.Random();
 
-        int r = rng.nextInt(100);
-        int lootCount;
-        if (r < 10) {
-            lootCount = 2;
-        } else if (r < 40) {
-            lootCount = 1;
-        } else {
-            lootCount = 0;
-        }
-        for (int i = 0; i < lootCount; i++) {
-            Item loot = rollLootItem(state.getFloor(), rng);
-            boolean placed = state.getBackpack().placeFirstFit(loot);
-
-            if (placed) {
-                IO.println("Loot obtained: " + loot.getName());
-            } else {
-                IO.println("Loot lost (backpack full): " + loot.getName());
-            }
-        }
         combat.endCombat();
-        IO.println("Combat won.");
+        IO.println("Combat won. Gained " + reward + " gold.");
         View.draw(context, state);
         return true;
     }
