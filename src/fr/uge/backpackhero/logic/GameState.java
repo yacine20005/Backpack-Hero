@@ -33,11 +33,8 @@ public class GameState {
     private int healerCost = 0;
 
 
-    /**
-     * Creates a new GameState with default initial values.
-     */
+ 
     public GameState() {
-        // Default constructor
     }
 
     /**
@@ -103,16 +100,14 @@ public class GameState {
         return dungeon.getFloor(floor);
     }
 
-    /**
-     * Advances the game to the next floor and resets the hero's position.
-     * For simplicity, the hero's position is reset to (0,0) on the new floor but we
-     * will maybe modify that later when the map generation algorithm will be
-     * implemented.
-     */
     public void exitFloor() {
+        if (floor + 1 >= dungeon.getFloorCount()) {
+            return;
+        }
         this.floor++;
         this.position = new Position(0, 0);
     }
+
 
     /**
      * Returns the backpack of the hero.
@@ -171,9 +166,6 @@ public class GameState {
         this.selectedItem = item;
     }
 
-    /**
-     * Clears the current item selection in the backpack.
-     */
     public void clearSelectedItem() {
         this.selectedItemAnchor = null;
         this.selectedItem = null;

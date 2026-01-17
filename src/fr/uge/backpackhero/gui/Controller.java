@@ -58,7 +58,7 @@ public class Controller {
 
         var item = optItem.get();
         if (!useItemInCombat(state, item)) {
-            IO.println("Cannot use item in combat.");
+            System.out.println("Cannot use item in combat.");
             View.draw(context, state);
             return;
         }
@@ -99,7 +99,7 @@ public class Controller {
                     // Update the anchor position in the state
                     state.setSelectedItem(pos, state.getSelectedItem());
                 } else {
-                    IO.println("Cannot move item to this position.");
+                    System.out.println("Cannot move item to this position.");
                 }
                 View.draw(context, state);
             }
@@ -115,13 +115,13 @@ public class Controller {
     public static void handleRotateItem(ApplicationContext context, GameState state) {
         var selectedItemAnchor = state.getSelectedItemAnchor();
         if (selectedItemAnchor == null) {
-            IO.println("No item selected.");
+            System.out.println("No item selected.");
             return;
         }
 
         var backpack = state.getBackpack();
         if (!backpack.rotateItem(selectedItemAnchor)) {
-            IO.println("Cannot rotate item in current position.");
+            System.out.println("Cannot rotate item in current position.");
         }
         View.draw(context, state);
     }
@@ -182,6 +182,8 @@ public class Controller {
         state.setPosition(clickedPos);
         state.setPosition(clickedPos);
         var room = floor.getRoom(clickedPos);
+        
+        
         
         if (room != null && room.getType() == RoomType.HEALER) {
             int heal = room.getHealAmount();
@@ -252,7 +254,7 @@ public class Controller {
             }
         }
         if (!hero.isAlive()) {
-            IO.println("The hero is dead.");
+            System.out.println("The hero is dead.");
             combat.endCombat();
             View.draw(context, state);
             return;
@@ -277,7 +279,7 @@ public class Controller {
         }
 
         if (!hero.isAlive()) {
-            IO.println("The hero is dead.");
+            System.out.println("The hero is dead.");
             combat.endCombat();
             View.draw(context, state);
             return true;
@@ -292,7 +294,7 @@ public class Controller {
         state.getBackpack().addGold(reward);
 
         combat.endCombat();
-        IO.println("Combat won. Gained " + reward + " gold.");
+        System.out.println("Combat won. Gained " + reward + " gold.");
         View.draw(context, state);
         return true;
     }
@@ -346,17 +348,17 @@ public class Controller {
         Item item = entry.getKey();
         int price = entry.getValue();
         if (!state.getBackpack().spendGold(price)) {
-            IO.println("Not enough gold.");
+            System.out.println("Not enough gold.");
             return true;
         }
         boolean placed = state.getBackpack().placeFirstFit(item);
         if (!placed) {
             state.getBackpack().addGold(price);
-            IO.println("Backpack full. Purchase cancelled.");
+            System.out.println("Backpack full. Purchase cancelled.");
             return true;
         }
         shop.remove(item);
-        IO.println("Bought: " + item.getName() + " for " + price + "g");
+        System.out.println("Bought: " + item.getName() + " for " + price + "g");
         return true;
     }
     
@@ -388,7 +390,7 @@ public class Controller {
             int heal = state.getHealerHealAmount();
 
             if (!state.getBackpack().spendGold(cost)) {
-                IO.println("Not enough gold.");
+                System.out.println("Not enough gold.");
                 View.draw(context, state);
                 return true;
             }

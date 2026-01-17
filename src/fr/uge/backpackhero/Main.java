@@ -59,7 +59,13 @@ public class Main {
             if (event instanceof PointerEvent pe) {
                 if (pe.action() == PointerEvent.Action.POINTER_DOWN) {
 
-                    if (Controller.handleHealerPromptClick(context, state, pe)) {
+                    if (state.isHealerPromptOpen()) {
+                        Controller.handleHealerPromptClick(context, state, pe);
+                        continue;
+                    }
+               
+                    if (Controller.handleMerchantClick(state, pe)) {
+                        View.draw(context, state);
                         continue;
                     }
 
@@ -71,7 +77,6 @@ public class Main {
                     }
                 }
             }
-
         }
 
         System.out.println("Thanks for playing !");
