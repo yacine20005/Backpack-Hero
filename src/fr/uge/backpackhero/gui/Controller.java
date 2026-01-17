@@ -38,6 +38,10 @@ public class Controller {
      * @param pointerEvent the pointer event representing the click
      */
     public static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
+    	if (state.isGameOver()) {
+    	    return;
+    	}
+
         int x = (int) (pointerEvent.location().x() / View.TILE_SIZE);
         int y = (int) ((pointerEvent.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
         if (y < 0)
@@ -171,6 +175,10 @@ public class Controller {
         if (state.isInCombat()) {
             return;
         }
+        if (state.isGameOver()) {
+            return;
+        }
+
 
         int x = (int) ((pointerEvent.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
         int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
@@ -284,6 +292,7 @@ public class Controller {
 
         if (!hero.isAlive()) {
             System.out.println("The hero is dead.");
+            state.setGameOver(true);
             combat.endCombat();
             View.draw(context, state);
             return true;
@@ -325,6 +334,10 @@ public class Controller {
         return Armor.liarshandshake();
     }
     public static boolean handleMerchantClick(GameState state, PointerEvent event) {
+    	if (state.isGameOver()) {
+    	    return true;
+    	}
+
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
             return false;
@@ -367,6 +380,10 @@ public class Controller {
     }
     
     public static boolean handleHealerPromptClick(ApplicationContext context, GameState state, PointerEvent pe) {
+    	if (state.isGameOver()) {
+    	    return true;
+    	}
+
         if (!state.isHealerPromptOpen()) return false;
         if (pe.action() != PointerEvent.Action.POINTER_DOWN) return true;
 

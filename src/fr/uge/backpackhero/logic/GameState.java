@@ -200,5 +200,16 @@ public class GameState {
     public int getHealerCost() {
         return healerCost;
     }
+    
+    private boolean gameOver = false;
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean value) {
+        this.gameOver = value;
+    }
+
 
 }

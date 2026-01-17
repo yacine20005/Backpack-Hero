@@ -41,7 +41,7 @@ public class Enemy {
 	 * @return a new Rat Loup enemy instance
 	 */
 	public static Enemy ratLoup() {
-		return new Enemy("Rat Loup", 10, 1, 1, 6);
+		return new Enemy("Rat Loup", 10, 1, 3, 6);
 	}
 
 	/**
@@ -53,6 +53,24 @@ public class Enemy {
 		return new Enemy("Petit Rat Loup", 5, 1, 0, 3);
 	}
 
+	public static Enemy Gobelin() {
+		return new Enemy("Gobelin", 25, 10, 5, 8);
+	}
+	
+	public static Enemy ChefGobelins() {
+		return new Enemy("Chef gobelin", 30, 11, 7, 10);
+	}
+	
+	public static Enemy Demon() {
+		return new Enemy("Demon", 40, 15, 10, 15);
+	}
+
+	public static Enemy RoiDemon() {
+		return new Enemy("Roi Demon", 50, 18, 13, 20);
+	}
+
+	
+	
 	/**
 	 * Returns the current health points of the enemy.
 	 * 
@@ -61,7 +79,7 @@ public class Enemy {
 	public int getHp() {
 		return hp;
 	}
-
+	
 	/**
 	 * Checks if the enemy is alive (hp > 0).
 	 * 

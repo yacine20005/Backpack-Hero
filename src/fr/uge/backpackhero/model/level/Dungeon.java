@@ -167,16 +167,20 @@ public class Dungeon {
 
     private List<Enemy> enemiesForFloor(int floorIndex, Random rng) {
         if (floorIndex == 0) {
-            return List.of(Enemy.petitRatLoup());
+            return rng.nextBoolean()
+                    ? List.of(Enemy.petitRatLoup())
+                    : List.of(Enemy.ratLoup());
         }
+
         if (floorIndex == 1) {
-            return (rng.nextInt(2) == 0)
-                    ? List.of(Enemy.ratLoup())
-                    : List.of(Enemy.petitRatLoup(), Enemy.ratLoup());
+            return rng.nextBoolean()
+                    ? List.of(Enemy.Gobelin())
+                    : List.of(Enemy.ChefGobelins());
         }
-        return (rng.nextInt(2) == 0)
-                ? List.of(Enemy.ratLoup(), Enemy.ratLoup())
-                : List.of(Enemy.ratLoup(), Enemy.ratLoup(), Enemy.petitRatLoup());
+
+        return rng.nextBoolean()
+                ? List.of(Enemy.Demon())
+                : List.of(Enemy.RoiDemon());
     }
 
     private List<Item> treasureItems(int floorIndex) {

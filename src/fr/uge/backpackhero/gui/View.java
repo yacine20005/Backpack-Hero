@@ -2,6 +2,7 @@ package fr.uge.backpackhero.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
@@ -61,6 +62,9 @@ public class View {
 
             if (state.isInCombat()) {
                 drawCombat(screen, state, height);
+            }
+            if (state.isGameOver()) {
+                drawGameOver(screen, width, height);
             }
         });
     }
@@ -450,11 +454,20 @@ public class View {
         screen.draw(new Rectangle2D.Float(x, y, w, h));
 
        
-        screen.drawString("Hero : Bosphore", x + 10, y + 20);
 
      
         screen.drawString("HP: " + hp + "/" + maxHp, x + 10, y + 45);
         screen.drawString("Gold: " + gold, x + 10, y + 70);
+    }
+    
+    private static void drawGameOver(Graphics2D screen, int width, int height) {
+        screen.setColor(Color.RED);
+        screen.setFont(new Font("Arial", Font.BOLD, 48));
+        screen.drawString("GAME OVER", width / 2 - 160, height - 120);
+
+        screen.setFont(new Font("Arial", Font.PLAIN, 18));
+        screen.drawString("Quit: Q", width / 2 - 70, height - 80);
+        screen.drawString("Restart: Z", width / 2 - 90, height - 55);
     }
 
 

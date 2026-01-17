@@ -53,6 +53,11 @@ public class Main {
                     if (ke.key() == KeyboardEvent.Key.R) {
                         Controller.handleRotateItem(context, state);
                     }
+
+                    if (ke.key() == KeyboardEvent.Key.Z && state.isGameOver()) {
+                        state = new GameState();
+                        View.draw(context, state);
+                    }
                 }
             }
 
