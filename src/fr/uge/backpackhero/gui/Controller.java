@@ -183,7 +183,11 @@ public class Controller {
         state.setPosition(clickedPos);
         var room = floor.getRoom(clickedPos);
         
-        
+        if (room != null && room.getType() == RoomType.EXIT) {
+            state.exitFloor();
+            View.draw(context, state);
+            return;
+        }
         
         if (room != null && room.getType() == RoomType.HEALER) {
             int heal = room.getHealAmount();
@@ -378,7 +382,6 @@ public class Controller {
         int leaveX  = boxX + 180, leaveY  = boxY + 120;
 
         if (mx >= leaveX && mx <= leaveX + btnW && my >= leaveY && my <= leaveY + btnH) {
-            state.setPosition(state.getHealerReturnPos());
             state.closeHealerPrompt();
             View.draw(context, state);
             return true;
