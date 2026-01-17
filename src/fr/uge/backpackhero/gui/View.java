@@ -59,8 +59,9 @@ public class View {
             drawHero(screen, state.getPosition());
             drawHealerPrompt(screen, state);
             drawMerchant(screen, state);
+            drawLootScreen(screen, state);
 
-            if (state.isInCombat()) {
+            if (state.isInCombat() && !state.isLootScreenOpen()) {
                 drawCombat(screen, state, height);
             }
             if (state.isGameOver()) {
@@ -458,6 +459,73 @@ public class View {
      
         screen.drawString("HP: " + hp + "/" + maxHp, x + 10, y + 45);
         screen.drawString("Gold: " + gold, x + 10, y + 70);
+    }
+    
+    private static void drawLootScreen(Graphics2D screen, GameState state) {
+        if (!state.isLootScreenOpen()) return;
+
+        int boxX = BACKPACK_PIXEL_WIDTH + 50;
+        int boxY = 60;
+        int boxW = 350;
+        int boxH = 420;
+
+        // Background box
+        screen.setColor(new Color(20, 20, 20));
+        screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+
+        // Outline
+        screen.setColor(Color.WHITE);
+        screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+
+        // Title
+        screen.setFont(screen.getFont().deriveFont(java.awt.Font.BOLD, 20f));
+        screen.drawString("VICTORY!", boxX + 120, boxY + 30);
+
+        // Instructions
+        screen.setFont(screen.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
+        screen.drawString("Choose items to take:", boxX + 10, boxY + 55);
+        screen.drawString("Click item, then click backpack position", boxX + 10, boxY + 75);
+
+        // Display loot items
+        var loot = state.getAvailableLoot();
+        if (loot != null && !loot.isEmpty()) {
+            int itemStartY = boxY + 100;
+            int itemHeight = 50;
+            
+            for (int i = 0; i < loot.size(); i++) {
+                Item item = loot.get(i);
+                int itemY = itemStartY + i * itemHeight;
+                
+                // Highlight selected item
+                boolean isSelected = item.equals(state.getSelectedLootItem());
+                if (isSelected) {
+                    screen.setColor(new Color(100, 100, 200, 100));
+                    screen.fill(new Rectangle2D.Float(boxX + 5, itemY - 5, boxW - 10, itemHeight));
+                }
+                
+                // Item box
+                screen.setColor(new Color(60, 60, 60));
+                screen.fill(new Rectangle2D.Float(boxX + 10, itemY, boxW - 20, itemHeight - 5));
+                screen.setColor(Color.WHITE);
+                screen.draw(new Rectangle2D.Float(boxX + 10, itemY, boxW - 20, itemHeight - 5));
+                
+                // Item name and info
+                screen.setFont(screen.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+                screen.drawString((i + 1) + ". " + item.getName(), boxX + 20, itemY + 20);
+                
+                screen.setFont(screen.getFont().deriveFont(java.awt.Font.PLAIN, 12f));
+                var shape = item.getShape();
+                screen.drawString("Size: " + shape.getWidth() + "x" + shape.getHeight() + 
+                                " | Rarity: " + item.getRarity(), boxX + 20, itemY + 38);
+            }
+        } else {
+            screen.drawString("No items remaining", boxX + 10, boxY + 120);
+        }
+
+        // Continue button
+        int continueX = boxX + boxW - 130;
+        int continueY = boxY + 370;
+        drawButton(screen, continueX, continueY, 120, 35, "CONTINUE");
     }
     
     private static void drawGameOver(Graphics2D screen, int width, int height) {

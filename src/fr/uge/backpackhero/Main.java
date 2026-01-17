@@ -68,13 +68,24 @@ public class Main {
                         Controller.handleHealerPromptClick(context, state, pe);
                         continue;
                     }
+                    
+                    var x = pe.location().x();
+                    
+                    // If loot screen is open we handle clicks on loot screen and backpack simultaneously
+                    if (state.isLootScreenOpen()) {
+                        if (x < View.BACKPACK_PIXEL_WIDTH) {
+                            Controller.handleBackpackClick(context, state, pe);
+                        } else {
+                            Controller.handleLootScreenClick(context, state, pe);
+                        }
+                        continue;
+                    }
                
                     if (Controller.handleMerchantClick(state, pe)) {
                         View.draw(context, state);
                         continue;
                     }
 
-                    var x = pe.location().x();
                     if (x < View.BACKPACK_PIXEL_WIDTH) {
                         Controller.handleBackpackClick(context, state, pe);
                     } else {

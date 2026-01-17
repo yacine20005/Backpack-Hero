@@ -14,7 +14,7 @@ import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
 import fr.uge.backpackhero.model.level.Room;
 import fr.uge.backpackhero.model.level.RoomType;
-import fr.uge.backpackhero.model.item.ManaStone;
+import fr.uge.backpackhero.model.loot.LootTables;
 
 /**
  * Controller class to handle user interactions and game logic.
@@ -47,6 +47,20 @@ public class Controller {
         if (y < 0)
             return;
         var pos = new Position(x, y);
+
+        // If we are in loot screen mode
+        if (state.isLootScreenOpen() && state.getSelectedLootItem() != null) {
+            var lootItem = state.getSelectedLootItem();
+            if (state.getBackpack().place(lootItem, pos)) {
+                state.removeLootItem(lootItem);
+                state.setSelectedLootItem(null);
+                IO.println("Placed loot item: " + lootItem.getName());
+            } else {
+                IO.println("Cannot place item here.");
+            }
+            View.draw(context, state);
+            return;
+        }
 
         // If we're not in combat, handle item movement
         if (!state.isInCombat()) {
@@ -298,41 +312,16 @@ public class Controller {
             return true;
         }
 
-        var floor = state.getCurrentFloor();
-        var pos = state.getPosition();
-
-        floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
-
+        var lootItems = LootTables.generateLootFromEnemies(combat.getCurrentEnemies(), state.getFloor());
         int reward = combat.calculateGoldReward();
         state.getBackpack().addGold(reward);
 
-        combat.endCombat();
-        System.out.println("Combat won. Gained " + reward + " gold.");
+        state.openLootScreen(lootItems);
+        IO.println("Combat won! Gained " + reward + " gold and " + lootItems.size() + " items to choose from.");
         View.draw(context, state);
         return true;
     }
 
-    public static Item rollLootItem(int floorIndex, java.util.Random rng) {
-        int r = rng.nextInt(100);
-
-        if (floorIndex == 0) {
-            if (r < 40) return Weapon.woodSword();
-            if (r < 60) return Armor.woodenShield();
-            if (r < 80) return Weapon.woodenBow();
-            return ManaStone.smallManaStone();
-        }
-        if (floorIndex == 1) {
-            if (r < 30) return Weapon.sturn();
-            if (r < 55) return Armor.emeraldShield();
-            if (r < 75) return Armor.luckypants();
-            return ManaStone.bigManaStone();
-        }
-        if (r < 30) return Weapon.telesto();
-        if (r < 55) return Weapon.montaintop();
-        if (r < 75) return Weapon.lastWord();
-        if (r < 90) return Armor.celestialnighthawk();
-        return Armor.liarshandshake();
-    }
     public static boolean handleMerchantClick(GameState state, PointerEvent event) {
     	if (state.isGameOver()) {
     	    return true;
@@ -392,8 +381,6 @@ public class Controller {
 
         int boxX = View.BACKPACK_PIXEL_WIDTH + 60;
         int boxY = 80;
-        int boxW = 320;
-        int boxH = 180;
 
         int acceptX = boxX + 30, acceptY = boxY + 120, btnW = 110, btnH = 35;
         int leaveX  = boxX + 180, leaveY  = boxY + 120;
@@ -425,6 +412,63 @@ public class Controller {
         }
 
         return true; 
+    }
+
+    public static boolean handleLootScreenClick(ApplicationContext context, GameState state, PointerEvent pe) {
+        if (state.isGameOver()) {
+            return true;
+        }
+
+        if (!state.isLootScreenOpen()) return false;
+        if (pe.action() != PointerEvent.Action.POINTER_DOWN) return true;
+
+        int mx = (int) pe.location().x();
+        int my = (int) pe.location().y();
+
+        int boxX = View.BACKPACK_PIXEL_WIDTH + 50;
+        int boxY = 60;
+        int boxW = 350;
+        
+        int continueX = boxX + boxW - 130;
+        int continueY = boxY + 370;
+        int btnW = 120;
+        int btnH = 35;
+
+        if (mx >= continueX && mx <= continueX + btnW && my >= continueY && my <= continueY + btnH) {
+            // Coutinue button clicked
+            state.closeLootScreen();
+            var combat = state.getCombatEngine();
+            combat.endCombat();
+            
+            var floor = state.getCurrentFloor();
+            var pos = state.getPosition();
+            floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+            
+            IO.println("Loot screen closed. Combat ended.");
+            View.draw(context, state);
+            return true;
+        }
+
+        var loot = state.getAvailableLoot();
+        if (loot != null && !loot.isEmpty()) {
+            int itemStartY = boxY + 100;
+            int itemHeight = 50;
+            
+            for (int i = 0; i < loot.size(); i++) {
+                int itemY = itemStartY + i * itemHeight;
+                if (mx >= boxX + 10 && mx <= boxX + boxW - 10 && 
+                    my >= itemY && my <= itemY + itemHeight) {
+                    // Loot item clicked
+                    Item clickedItem = loot.get(i);
+                    state.setSelectedLootItem(clickedItem);
+                    System.out.println("Selected loot item: " + clickedItem.getName());
+                    View.draw(context, state);
+                    return true;
+                }
+            }
+        }
+
+        return true;
     }
 
 

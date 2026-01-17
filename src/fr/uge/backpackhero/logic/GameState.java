@@ -1,5 +1,7 @@
 package fr.uge.backpackhero.logic;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import fr.uge.backpackhero.model.entity.Hero;
@@ -28,9 +30,12 @@ public class GameState {
     private Position selectedItemAnchor = null;
     private Item selectedItem = null;
     private boolean healerPromptOpen = false;
+    private boolean lootScreenOpen = false;
     private Position healerReturnPos = null;
     private int healerHealAmount = 0;
     private int healerCost = 0;
+    private List<Item> availableLoot = null;
+    private Item selectedLootItem = null;
 
 
  
@@ -211,5 +216,38 @@ public class GameState {
         this.gameOver = value;
     }
 
+    public boolean isLootScreenOpen() {
+        return lootScreenOpen;
+    }
+
+    public List<Item> getAvailableLoot() {
+        return availableLoot;
+    }
+
+    public void openLootScreen(List<Item> loot) {
+        this.lootScreenOpen = true;
+        this.availableLoot = new ArrayList<>(Objects.requireNonNull(loot));
+        this.selectedLootItem = null;
+    }
+
+    public void closeLootScreen() {
+        this.lootScreenOpen = false;
+        this.availableLoot = null;
+        this.selectedLootItem = null;
+    }
+
+    public Item getSelectedLootItem() {
+        return selectedLootItem;
+    }
+
+    public void setSelectedLootItem(Item item) {
+        this.selectedLootItem = item;
+    }
+
+    public void removeLootItem(Item item) {
+        if (availableLoot != null) {
+            availableLoot.remove(item);
+        }
+    }
 
 }
