@@ -223,12 +223,25 @@ public class Backpack {
         if (item == null) {
             return false;
         }
-        remove(fromAnchor);
-        if (place(item, toAnchor)) {
-            return true;
+        
+        var fromCells = item.getShape().getAbsolutePositions(fromAnchor);
+        var toCells = item.getShape().getAbsolutePositions(toAnchor);
+        
+        for (var cell : toCells) {
+            if (!cell.checkBounds(width, height)) {
+                return false;
+            }
         }
-        place(item, fromAnchor);
-        return false;
+        
+        for (var cell : toCells) {
+            if (occupiedCells.contains(cell) && !fromCells.contains(cell)) {
+                return false;
+            }
+        }
+        
+        remove(fromAnchor);
+        place(item, toAnchor);
+        return true;
     }
 
     /**

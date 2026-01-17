@@ -81,7 +81,7 @@ public class Weapon extends Item {
      * @return a new Wooden Bow weapon instance
      */
     public static Weapon woodenBow() {
-        return new Weapon("Wooden Bow", 4, 1, 0, Shape.L_SHAPE, Rarity.COMMON, 8);
+        return new Weapon("Wooden Bow", 4, 1, 0, Shape.HORIZONTAL_2, Rarity.COMMON, 8);
     }
 
     /**

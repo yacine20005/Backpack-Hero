@@ -107,15 +107,14 @@ public class Controller {
         // An item is selected, try to move it
         else {
             var selectedAnchor = state.getSelectedItemAnchor();
-            if (selectedAnchor.equals(pos)) {
+            if (currentAnchor.isPresent() && currentAnchor.get().equals(selectedAnchor)) {
                 // Clicked on the same item, deselect
                 state.clearSelectedItem();
                 View.draw(context, state);
             } else {
                 // Try to move the item to the new position
                 if (backpack.move(selectedAnchor, pos)) {
-                    // Update the anchor position in the state
-                    state.setSelectedItem(pos, state.getSelectedItem());
+                    state.clearSelectedItem();
                 } else {
                     System.out.println("Cannot move item to this position.");
                 }
