@@ -27,35 +27,35 @@ public class GameState {
     final Hero hero = new Hero();
     Backpack backpack = new Backpack(7, 5);
     CombatEngine combatEngine = new CombatEngine();
-    
+
     // Game state
     private State state = State.EXPLORATION;
-    private PopupType activePopup = null;  // null or SELL_CONFIRM, DISCARD_CONFIRM
+    private PopupType activePopup = null; // null or SELL_CONFIRM, DISCARD_CONFIRM
     private boolean gameOver = false;
     private boolean victory = false;
-    
+
     // Selection system
     private Position selectedItemAnchor = null;
     private Item selectedItem = null;
     private Item selectedLootItem = null;
     private Item selectedMerchantItem = null;
-    
+
     // Confirm popup context (for SELL_CONFIRM and DISCARD_CONFIRM popups)
     private Position confirmAnchor = null;
     private Item confirmItem = null;
-    
+
     // Cell unlock context (for CELL_UNLOCK state)
     private int cellsToUnlock = 0;
-    private boolean pendingUnlockMode = false;  // True if unlock mode should start after loot screen
-    
+    private boolean pendingUnlockMode = false; // True if unlock mode should start after loot screen
+
     // Merchant system
     private MerchantMode merchantMode = MerchantMode.BUY;
-    
+
     // Healer system
     private Position healerReturnPos = null;
     private int healerHealAmount = 0;
     private int healerCost = 0;
-    
+
     // Loot system
     private List<Item> availableLoot = null;
 
@@ -160,7 +160,7 @@ public class GameState {
     public State getState() {
         return state;
     }
-    
+
     /**
      * Sets the current game state.
      * 
@@ -260,7 +260,7 @@ public class GameState {
     public void closeLootScreen() {
         this.availableLoot = null;
         this.selectedLootItem = null;
-        
+
         // If there's a pending unlock mode, start it now
         if (pendingUnlockMode) {
             this.state = State.CELL_UNLOCK;
@@ -275,7 +275,7 @@ public class GameState {
     }
 
     public void setSelectedLootItem(Item item) {
-        this.selectedLootItem = Objects.requireNonNull(item, "item cannot be null");
+        this.selectedLootItem = item; // null is allowed to deselect
     }
 
     public void removeLootItem(Item item) {
@@ -322,7 +322,7 @@ public class GameState {
     }
 
     public void setSelectedMerchantItem(Item item) {
-        this.selectedMerchantItem = Objects.requireNonNull(item, "item cannot be null");
+        this.selectedMerchantItem = item; // null is allowed to deselect
     }
 
     public Item getDiscardConfirmItem() {
@@ -377,12 +377,12 @@ public class GameState {
      */
     public int calculateScore() {
         int score = hero.getHp();
-        
+
         // Sum all item prices in the backpack
         for (Item item : backpack.getItems().values()) {
             score += item.getPrice();
         }
-        
+
         return score;
     }
 
