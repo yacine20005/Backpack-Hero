@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import com.github.forax.zen.ApplicationContext;
 
+import fr.uge.backpackhero.Main;
 import fr.uge.backpackhero.logic.EnemyAction;
 import fr.uge.backpackhero.logic.GameState;
 import fr.uge.backpackhero.logic.MerchantMode;
@@ -120,10 +121,10 @@ public class View {
                 drawCombat(screen, state, height);
             }
             if (state.isGameOver()) {
-                drawGameOver(screen, width, height);
+                drawGameOver(screen, width, height, state);
             }
             if (state.isVictory()) {
-                drawVictory(screen, width, height);
+                drawVictory(screen, width, height, state);
             }
         });
     }
@@ -772,17 +773,27 @@ public class View {
         drawButton(screen, continueX, continueY, BUTTON_WIDTH + 10, BUTTON_HEIGHT, "CONTINUE (C)");
     }
 
-    private static void drawGameOver(Graphics2D screen, int width, int height) {
+    private static void drawGameOver(Graphics2D screen, int width, int height, GameState state) {
         screen.setColor(Color.RED);
         screen.setFont(new Font("Arial", Font.BOLD, 48));
-        screen.drawString("GAME OVER", width / 2 - 160, height - 120);
+        screen.drawString("GAME OVER", width / 2 - 160, height - 400);
 
+        // Show final score
+        screen.setColor(Color.WHITE);
+        screen.setFont(new Font("Arial", Font.PLAIN, 24));
+        int score = state.calculateScore();
+        screen.drawString("Final Score: " + score, width / 2 - 80, height - 340);
+        
+        // Show Hall of Fame
+        drawHallOfFame(screen, width, height - 280);
+
+        // Controls
         screen.setFont(new Font("Arial", Font.PLAIN, 18));
         screen.drawString("Quit: Q", width / 2 - 70, height - 80);
         screen.drawString("Restart: Z", width / 2 - 90, height - 55);
     }
 
-    private static void drawVictory(Graphics2D screen, int width, int height) {
+    private static void drawVictory(Graphics2D screen, int width, int height, GameState state) {
         // Background overlay
         screen.setColor(OVERLAY_BG);
         screen.fill(new Rectangle2D.Float(0, 0, width, height));
@@ -790,17 +801,66 @@ public class View {
         // Victory text
         screen.setColor(Color.YELLOW);
         screen.setFont(new Font("Arial", Font.BOLD, 60));
-        screen.drawString("VICTORY!", width / 2 - 150, height / 2 - 100);
+        screen.drawString("VICTORY!", width / 2 - 150, 100);
 
-        // Congratulations
+        // Show final score
         screen.setColor(Color.WHITE);
         screen.setFont(new Font("Arial", Font.PLAIN, 24));
-        screen.drawString("You escaped the dungeon!", width / 2 - 140, height / 2 - 40);
+        int score = state.calculateScore();
+        screen.drawString("Final Score: " + score, width / 2 - 80, 180);
+
+        // Congratulations
+        screen.setFont(new Font("Arial", Font.PLAIN, 20));
+        screen.drawString("You escaped the dungeon!", width / 2 - 120, 220);
+        
+        // Show Hall of Fame
+        drawHallOfFame(screen, width, 270);
 
         // Controls
         screen.setFont(new Font("Arial", Font.PLAIN, 18));
-        screen.drawString("Quit: Q", width / 2 - 70, height / 2 + 40);
-        screen.drawString("Restart: Z", width / 2 - 90, height / 2 + 70);
+        screen.drawString("Quit: Q", width / 2 - 70, height - 80);
+        screen.drawString("Restart: Z", width / 2 - 90, height - 50);
+    }
+    
+    /**
+     * Draws the Hall of Fame leaderboard.
+     * 
+     * @param screen the graphics context
+     * @param width the screen width
+     * @param startY the Y position to start drawing
+     */
+    private static void drawHallOfFame(Graphics2D screen, int width, int startY) {
+        var hallOfFame = Main.getHallOfFame();
+        var entries = hallOfFame.getTopScores();
+        
+        if (entries.isEmpty()) {
+            return;
+        }
+        
+        // Title
+        screen.setColor(Color.YELLOW);
+        screen.setFont(new Font("Arial", Font.BOLD, 32));
+        screen.drawString("HALL OF FAME", width / 2 - 100, startY);
+        
+        // Entries
+        screen.setFont(new Font("Arial", Font.PLAIN, 20));
+        int y = startY + 50;
+        
+        for (int i = 0; i < entries.size(); i++) {
+            var entry = entries.get(i);
+            String rankingTitle = switch (i) {
+                case 0 -> "[First Place] - ";
+                case 1 -> "[Second Place] - ";
+                case 2 -> "[Third Place] - ";
+                default -> (i + 1) + ".";
+            };
+            
+            screen.setColor(Color.WHITE);
+            String line = String.format("%s %s - Score: %d (Level %d)", 
+                rankingTitle, entry.playerName(), entry.score(), entry.level());
+            screen.drawString(line, width / 2 - 200, y);
+            y += 35;
+        }
     }
 
 }

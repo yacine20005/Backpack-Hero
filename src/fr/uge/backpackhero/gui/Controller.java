@@ -88,7 +88,8 @@ public class Controller {
         }
 
         // If in merchant BUY mode with selected item
-        if (state.getMerchantMode() == MerchantMode.BUY && state.getSelectedMerchantItem() != null && state.getState() != State.COMBAT) {
+        if (state.getMerchantMode() == MerchantMode.BUY && state.getSelectedMerchantItem() != null
+                && state.getState() != State.COMBAT) {
             var room = state.getCurrentFloor().getRoom(state.getPosition());
             if (room != null && room.getType() == RoomType.MERCHANT) {
                 var shop = room.getMerchantItems();
@@ -258,7 +259,8 @@ public class Controller {
         }
 
         // Block movement if any popup is open
-        if (state.getState() == State.HEALER_PROMPT || state.getActivePopup() == PopupType.SELL_CONFIRM || state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
+        if (state.getState() == State.HEALER_PROMPT || state.getActivePopup() == PopupType.SELL_CONFIRM
+                || state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
             return;
         }
 

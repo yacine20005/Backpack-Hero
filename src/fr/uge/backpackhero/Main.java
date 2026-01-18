@@ -13,6 +13,7 @@ import fr.uge.backpackhero.logic.GameState;
 import fr.uge.backpackhero.logic.MerchantMode;
 import fr.uge.backpackhero.logic.PopupType;
 import fr.uge.backpackhero.logic.State;
+import fr.uge.backpackhero.model.score.HOF;
 
 /**
  * Main class to start the Backpack Hero game.
@@ -26,6 +27,7 @@ public class Main {
     }
 
     private final static int EVENT_POLL_TIMEOUT_MS = 10;
+    private static final HOF HALL_OF_FAME = new HOF();
 
     /**
      * Main method to launch the game.
@@ -39,10 +41,19 @@ public class Main {
 
     private static void gameEntry(ApplicationContext context) {
         var state = new GameState();
+        boolean scoreSubmitted = false;
 
         View.draw(context, state);
 
         while (true) {
+            // Check for game over or victory and submit score once
+            if ((state.isGameOver() || state.isVictory()) && !scoreSubmitted) {
+                int score = state.calculateScore();
+                int level = state.getHero().getLevel();
+                HALL_OF_FAME.submitScore("Player", score, level);
+                scoreSubmitted = true;
+            }
+            
             var event = context.pollOrWaitEvent(EVENT_POLL_TIMEOUT_MS);
             if (event == null) {
                 continue;
@@ -75,6 +86,7 @@ public class Main {
 
                     if (ke.key() == KeyboardEvent.Key.Z && (state.isGameOver() || state.isVictory())) {
                         state = new GameState();
+                        scoreSubmitted = false;
                         View.draw(context, state);
                     }
 
@@ -200,6 +212,15 @@ public class Main {
 
         System.out.println("Thanks for playing !");
         context.dispose();
+    }
+    
+    /**
+     * Returns the Hall of Fame instance.
+     * 
+     * @return the Hall of Fame
+     */
+    public static HOF getHallOfFame() {
+        return HALL_OF_FAME;
     }
 
     /**

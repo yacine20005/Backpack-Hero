@@ -367,4 +367,21 @@ public class GameState {
         this.cellsToUnlock = 0;
     }
 
+    /**
+     * Calculates the player's score based on the formula:
+     * HP max + sum of equipment prices.
+     * 
+     * @return the calculated score
+     */
+    public int calculateScore() {
+        int score = hero.getHp();
+        
+        // Sum all item prices in the backpack
+        for (Item item : backpack.getItems().values()) {
+            score += item.getPrice();
+        }
+        
+        return score;
+    }
+
 }
