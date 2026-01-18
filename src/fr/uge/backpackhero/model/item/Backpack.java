@@ -223,22 +223,22 @@ public class Backpack {
         if (item == null) {
             return false;
         }
-        
+
         var fromCells = item.getShape().getAbsolutePositions(fromAnchor);
         var toCells = item.getShape().getAbsolutePositions(toAnchor);
-        
+
         for (var cell : toCells) {
             if (!cell.checkBounds(width, height)) {
                 return false;
             }
         }
-        
+
         for (var cell : toCells) {
             if (occupiedCells.contains(cell) && !fromCells.contains(cell)) {
                 return false;
             }
         }
-        
+
         remove(fromAnchor);
         place(item, toAnchor);
         return true;
@@ -267,75 +267,106 @@ public class Backpack {
         return false;
     }
 
-	 /** @return the Gold item if it exists in the bag, otherwise null */
-	 public Gold findGold() {
-	     for (Item item : items.values()) {
-	         if (item instanceof Gold) {
-	             return (Gold) item;
-	         }
-	     }
-	     return null;
-	 }
-	
-	 /**
-      * Adds gold to the bag.
-      * - If Gold already exists, it is stacked.
-      * - Otherwise, one Gold is placed in the first available slot.
-      * @return true if added, false if bag is full.
-      */
-	 public boolean addGold(int amount) {
-	     if (amount <= 0) return true;
-	
-	     Gold gold = findGold();
-	     if (gold != null) {
-	         gold.setAmount(gold.getAmount() + amount);
-	         return true;
-	     }
-	
-	     for (int y = 0; y < height; y++) {
-	         for (int x = 0; x < width; x++) {
-	             Position p = new Position(x, y);
-	             if (!occupiedCells.contains(p)) {
-	                 return place(new Gold(amount), p);
-	             }
-	         }
-	     }
-	     return false;
-	 }
-	
-	 /** @return the total amount of gold (0 if there are no Gold items in the bag) */
-	 public int goldAmount() {
-	     Gold gold = findGold();
-	     return (gold == null) ? 0 : gold.getAmount();
-	 }
-	 
-	 
-	 public boolean placeFirstFit(Item item) {
-		    for (int y = 0; y < height; y++) {
-		        for (int x = 0; x < width; x++) {
-		            Position p = new Position(x, y);
-		            if (canPlace(item, p)) {
-		                return place(item, p);
-		            }
-		        }
-		    }
-		    return false;
-		}
-	 
-	 
-	 public boolean spendGold(int cost) {
-		    if (cost <= 0) return true;
-		    Gold gold = findGold();
-		    if (gold == null) return false;
-		    int current = gold.getAmount();
-		    if (current < cost) return false;
-		    gold.setAmount(current - cost);
-		    return true;
-		}
+    /** @return the Gold item if it exists in the bag, otherwise null */
+    public Gold findGold() {
+        for (Item item : items.values()) {
+            switch (item) {
+                case Gold gold -> {
+                    return gold;
+                }
+                default -> {
+                }
+            }
+        }
+        return null;
+    }
 
-	 
-	 
+    /**
+     * Adds gold to the bag.
+     * - If Gold already exists, it is stacked.
+     * - Otherwise, one Gold is placed in the first available slot.
+     * 
+     * @return true if added, false if bag is full.
+     */
+    public boolean addGold(int amount) {
+        if (amount <= 0)
+            return true;
 
-    
+        Gold gold = findGold();
+        if (gold != null) {
+            gold.setAmount(gold.getAmount() + amount);
+            return true;
+        }
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Position p = new Position(x, y);
+                if (!occupiedCells.contains(p)) {
+                    return place(new Gold(amount), p);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return the total amount of gold (0 if there are no Gold items in the bag)
+     */
+    public int goldAmount() {
+        Gold gold = findGold();
+        return (gold == null) ? 0 : gold.getAmount();
+    }
+
+    public boolean placeFirstFit(Item item) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Position p = new Position(x, y);
+                if (canPlace(item, p)) {
+                    return place(item, p);
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean spendGold(int cost) {
+        if (cost <= 0)
+            return true;
+        Gold gold = findGold();
+        if (gold == null)
+            return false;
+        int current = gold.getAmount();
+        if (current < cost)
+            return false;
+        gold.setAmount(current - cost);
+        return true;
+    }
+
+    /**
+     * Finds the anchor position of the given item in the backpack.
+     * 
+     * @param item the item to find
+     * @return the anchor position of the item, or null if not found
+     */
+    public Position findAnchorFor(Item item) {
+        Objects.requireNonNull(item, "item cannot be null");
+        for (var entry : items.entrySet()) {
+            if (entry.getValue() == item) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes the item at the specified anchor position.
+     * 
+     * @param anchor the anchor position of the item to remove
+     * @return true if the item was removed, false otherwise
+     */
+    public boolean removeItem(Position anchor) {
+        Objects.requireNonNull(anchor, "anchor cannot be null");
+        return remove(anchor) != null;
+    }
 
 }

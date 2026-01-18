@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -37,6 +38,28 @@ public class View {
     public static final int BACKPACK_WIDTH_IN_TILES = 5;
     /** The width of the backpack display area in pixels. */
     public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
+
+    // Popup positioning constants
+    /** X position for all left sidebar popups. */
+    public static final int POPUP_X = 10;
+    /** Y position for all interactive popups. */
+    public static final int POPUP_Y = 350;
+    /** Width for all popups. */
+    public static final int POPUP_WIDTH = BACKPACK_PIXEL_WIDTH - 20;
+    /** Padding inside popups. */
+    public static final int POPUP_PADDING = 10;
+    /** Spacing between text lines in popups. */
+    public static final int POPUP_LINE_SPACING = 25;
+
+    // Button constants
+    /** Standard button width. */
+    public static final int BUTTON_WIDTH = 110;
+    /** Standard button height. */
+    public static final int BUTTON_HEIGHT = 35;
+    /** Small button width for mode switches. */
+    public static final int SMALL_BUTTON_WIDTH = 80;
+    /** Small button height for mode switches. */
+    public static final int SMALL_BUTTON_HEIGHT = 25;
 
     /**
      * Draws the entire game view including backpack, dungeon, hero, and combat
@@ -96,12 +119,10 @@ public class View {
         int x = cellPos.x() * TILE_SIZE;
         int y = (cellPos.y() * TILE_SIZE) + TILE_SIZE;
 
-        Color itemColor;
-        if (item instanceof Armor) {
-            itemColor = new Color(139, 69, 19);
-        } else {
-            itemColor = new Color(100, 0, 0);
-        }
+        Color itemColor = switch (item) {
+            case Armor armor -> new Color(139, 69, 19);
+            default -> new Color(100, 0, 0);
+        };
 
         // If item is selected, make it brighter
         if (isSelected) {
@@ -133,13 +154,12 @@ public class View {
         var backpack = state.getBackpack();
         var screenInfo = screen.getDeviceConfiguration().getBounds();
         int screenHeight = (int) screenInfo.getHeight();
-        
+
         screen.setColor(new Color(20, 20, 20));
         screen.fillRect(0, 0, BACKPACK_PIXEL_WIDTH, screenHeight);
 
         screen.setColor(Color.WHITE);
         screen.drawString("Gold: " + backpack.goldAmount(), 10, 40);
-
 
         int backpackHeightInTiles = backpack.getHeight();
 
@@ -358,58 +378,140 @@ public class View {
         if (intent == null)
             return Color.GRAY;
         return switch (intent) {
-            case ATTACK -> new Color(255, 100, 100); 
-            case DEFEND -> new Color(100, 150, 255); 
+            case ATTACK -> new Color(255, 100, 100);
+            case DEFEND -> new Color(100, 150, 255);
         };
     }
-    
+
     private static void drawMerchant(Graphics2D screen, GameState state) {
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
             return;
         }
 
-        int x = 520;
-        int y = 40;
-        int w = 250;
-        int h = 220;
+        int x = POPUP_X;
+        int y = POPUP_Y;
+        int w = POPUP_WIDTH;
+        int h = 280;
 
         screen.setColor(new Color(30, 30, 30));
         screen.fillRect(x, y, w, h);
         screen.setColor(Color.WHITE);
         screen.drawRect(x, y, w, h);
-        screen.setFont(screen.getFont().deriveFont(java.awt.Font.BOLD, 16f));
-        screen.drawString("MERCHANT", x + 10, y + 25);
-        screen.setFont(screen.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
-        screen.drawString("Click an item to buy", x + 10, y + 45);
-        screen.drawString("Gold: " + state.getBackpack().goldAmount(), x + 10, y + 65);
+        screen.setFont(screen.getFont().deriveFont(Font.BOLD, 16f));
+        screen.drawString("MERCHANT", x + POPUP_PADDING, y + 25);
+        screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 14f));
+        screen.drawString("Gold: " + state.getBackpack().goldAmount(), x + POPUP_PADDING, y + 45);
 
-        var items = room.getMerchantItems();
-        if (items == null || items.isEmpty()) {
-            screen.drawString("(empty)", x + 10, y + 95);
-            return;
+        // Draw BUY/SELL buttons
+        int btnY = y + 60;
+        int btnW = SMALL_BUTTON_WIDTH;
+        int btnH = SMALL_BUTTON_HEIGHT;
+        boolean isBuyMode = state.getMerchantMode().equals("BUY");
+
+        // BUY button
+        screen.setColor(isBuyMode ? new Color(0, 150, 0) : new Color(60, 60, 60));
+        screen.fillRect(x + POPUP_PADDING, btnY, btnW, btnH);
+        screen.setColor(Color.WHITE);
+        screen.drawRect(x + POPUP_PADDING, btnY, btnW, btnH);
+        screen.drawString("BUY (B)", x + POPUP_PADDING + 15, btnY + 18);
+
+        // SELL button
+        screen.setColor(!isBuyMode ? new Color(150, 0, 0) : new Color(60, 60, 60));
+        screen.fillRect(x + POPUP_PADDING + btnW + 10, btnY, btnW, btnH);
+        screen.setColor(Color.WHITE);
+        screen.drawRect(x + POPUP_PADDING + btnW + 10, btnY, btnW, btnH);
+        screen.drawString("SELL (S)", x + POPUP_PADDING + btnW + 23, btnY + 18);
+
+        int lineY = y + 105;
+
+        if (isBuyMode) {
+            var items = room.getMerchantItems();
+            if (items == null || items.isEmpty()) {
+                screen.drawString("(no items for sale)", x + POPUP_PADDING, lineY);
+                return;
+            }
+            var list = new ArrayList<>(items.entrySet());
+
+            String keys = "AZERTYUIOP".substring(0, Math.min(list.size(), 10));
+            screen.drawString("Press " + keys + " to select item", x + POPUP_PADDING, lineY);
+
+            int itemStartY = lineY + 25;
+            int itemHeight = 50;
+
+            String itemKeys = "AZERTYUIOP";
+            for (int i = 0; i < list.size() && i < 10; i++) {
+                var entry = list.get(i);
+                Item item = entry.getKey();
+                int price = entry.getValue();
+                int itemY = itemStartY + i * itemHeight;
+
+                // Highlight selected item
+                boolean isSelected = item.equals(state.getSelectedMerchantItem());
+                if (isSelected) {
+                    screen.setColor(new Color(100, 200, 100, 100));
+                    screen.fill(new Rectangle2D.Float(x + 5, itemY - 5, w - 10, itemHeight));
+                }
+
+                // Item box
+                screen.setColor(new Color(60, 60, 60));
+                screen.fill(new Rectangle2D.Float(x + POPUP_PADDING, itemY, w - POPUP_PADDING * 2, itemHeight - 5));
+                screen.setColor(Color.WHITE);
+                screen.draw(new Rectangle2D.Float(x + POPUP_PADDING, itemY, w - POPUP_PADDING * 2, itemHeight - 5));
+
+                // Item name and info
+                screen.setFont(screen.getFont().deriveFont(Font.BOLD, 14f));
+                screen.drawString(itemKeys.charAt(i) + ". " + item.getName(), x + POPUP_PADDING * 2, itemY + 20);
+
+                screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 12f));
+                var shape = item.getShape();
+                screen.drawString("Size: " + shape.getWidth() + "x" + shape.getHeight() +
+                        " | Price: " + price + "g", x + POPUP_PADDING * 2, itemY + 38);
+            }
+        } else {
+            // SELL mode: instruction to click on items
+            screen.drawString("Click on an item in your", x + POPUP_PADDING, lineY);
+            screen.drawString("backpack to sell it.", x + POPUP_PADDING, lineY + 25);
         }
 
-        var list = new java.util.ArrayList<>(items.entrySet());
-        list.sort(java.util.Comparator.comparing(e -> e.getKey().getName()));
-
-        int lineY = y + 95;
-        int lineH = 22;
-
-        for (int i = 0; i < list.size() && i < 6; i++) {
-            var entry = list.get(i);
-            String name = entry.getKey().getName();
-            int price = entry.getValue();
-            screen.drawString((i + 1) + ") " + name + " - " + price + "g", x + 10, lineY + i * lineH);
+        // Draw sell confirmation popup
+        if (state.isSellConfirmOpen()) {
+            drawSellConfirmPopup(screen, state);
         }
     }
-    
-    private static void drawHealerPrompt(Graphics2D screen, GameState state) {
-        if (!state.isHealerPromptOpen() || state.isInCombat()) return;
 
-        int boxX = BACKPACK_PIXEL_WIDTH + 60;
-        int boxY = 80;
-        int boxW = 320;
+    private static void drawSellConfirmPopup(Graphics2D screen, GameState state) {
+        var item = state.getSellConfirmItem();
+        if (item == null)
+            return;
+
+        int sellPrice = item.getPrice() / 2;
+        int boxX = POPUP_X;
+        int boxY = POPUP_Y;
+        int boxW = POPUP_WIDTH;
+        int boxH = 150;
+
+        screen.setColor(new Color(20, 20, 20));
+        screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+        screen.setColor(Color.WHITE);
+        screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+
+        screen.drawString("SELL ITEM?", boxX + POPUP_PADDING * 2, boxY + 30);
+        screen.drawString(item.getName(), boxX + POPUP_PADDING * 2, boxY + 55);
+        screen.drawString("Sell price: " + sellPrice + " gold", boxX + POPUP_PADDING * 2, boxY + 75);
+
+        drawButton(screen, boxX + POPUP_PADDING * 3, boxY + 100, BUTTON_WIDTH, BUTTON_HEIGHT, "YES (Y)");
+        drawButton(screen, boxX + POPUP_PADDING * 3 + BUTTON_WIDTH + 50, boxY + 100, BUTTON_WIDTH, BUTTON_HEIGHT,
+                "NO (N)");
+    }
+
+    private static void drawHealerPrompt(Graphics2D screen, GameState state) {
+        if (!state.isHealerPromptOpen() || state.isInCombat())
+            return;
+
+        int boxX = POPUP_X;
+        int boxY = POPUP_Y;
+        int boxW = POPUP_WIDTH;
         int boxH = 180;
 
         screen.setColor(new Color(20, 20, 20));
@@ -421,13 +523,14 @@ public class View {
         int heal = state.getHealerHealAmount();
         int cost = state.getHealerCost();
 
-        screen.drawString("HEALER", boxX + 20, boxY + 30);
-        screen.drawString("Heal: +" + heal + " HP", boxX + 20, boxY + 60);
-        screen.drawString("Cost: " + cost + " gold", boxX + 20, boxY + 80);
-        screen.drawString("Accept or Leave?", boxX + 20, boxY + 105);
+        screen.drawString("HEALER", boxX + POPUP_PADDING * 2, boxY + 30);
+        screen.drawString("Heal: +" + heal + " HP", boxX + POPUP_PADDING * 2, boxY + 60);
+        screen.drawString("Cost: " + cost + " gold", boxX + POPUP_PADDING * 2, boxY + 80);
+        screen.drawString("Accept or Leave?", boxX + POPUP_PADDING * 2, boxY + 105);
 
-        drawButton(screen, boxX + 30, boxY + 120, 110, 35, "ACCEPT");
-        drawButton(screen, boxX + 180, boxY + 120, 110, 35, "LEAVE");
+        drawButton(screen, boxX + POPUP_PADDING * 3, boxY + 120, BUTTON_WIDTH, BUTTON_HEIGHT, "ACCEPT (Y)");
+        drawButton(screen, boxX + POPUP_PADDING * 3 + BUTTON_WIDTH + 60, boxY + 120, BUTTON_WIDTH, BUTTON_HEIGHT,
+                "LEAVE (N)");
     }
 
     private static void drawButton(Graphics2D screen, int x, int y, int w, int h, String text) {
@@ -437,11 +540,11 @@ public class View {
         screen.draw(new Rectangle2D.Float(x, y, w, h));
         screen.drawString(text, x + 20, y + 23);
     }
-    
+
     private static void drawStatsBox(Graphics2D screen, GameState state) {
-        int x = 10;
-        int y = 420; 
-        int w = BACKPACK_PIXEL_WIDTH - 20;
+        int x = POPUP_X;
+        int y = 420;
+        int w = POPUP_WIDTH;
         int h = 100;
 
         var hero = state.getHero();
@@ -454,19 +557,17 @@ public class View {
         screen.setColor(Color.WHITE);
         screen.draw(new Rectangle2D.Float(x, y, w, h));
 
-       
-
-     
-        screen.drawString("HP: " + hp + "/" + maxHp, x + 10, y + 45);
-        screen.drawString("Gold: " + gold, x + 10, y + 70);
+        screen.drawString("HP: " + hp + "/" + maxHp, x + POPUP_PADDING, y + 45);
+        screen.drawString("Gold: " + gold, x + POPUP_PADDING, y + 70);
     }
-    
-    private static void drawLootScreen(Graphics2D screen, GameState state) {
-        if (!state.isLootScreenOpen()) return;
 
-        int boxX = BACKPACK_PIXEL_WIDTH + 50;
-        int boxY = 60;
-        int boxW = 350;
+    private static void drawLootScreen(Graphics2D screen, GameState state) {
+        if (!state.isLootScreenOpen())
+            return;
+
+        int boxX = POPUP_X;
+        int boxY = POPUP_Y;
+        int boxW = POPUP_WIDTH;
         int boxH = 420;
 
         // Background box
@@ -478,56 +579,61 @@ public class View {
         screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
 
         // Title
-        screen.setFont(screen.getFont().deriveFont(java.awt.Font.BOLD, 20f));
+        screen.setFont(screen.getFont().deriveFont(Font.BOLD, 20f));
         screen.drawString("VICTORY!", boxX + 120, boxY + 30);
 
         // Instructions
-        screen.setFont(screen.getFont().deriveFont(java.awt.Font.PLAIN, 14f));
-        screen.drawString("Choose items to take:", boxX + 10, boxY + 55);
-        screen.drawString("Click item, then click backpack position", boxX + 10, boxY + 75);
+        screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 14f));
+        screen.drawString("Choose items to take:", boxX + POPUP_PADDING, boxY + 55);
+
+        var loot = state.getAvailableLoot();
+        if (loot != null && !loot.isEmpty()) {
+            String keys = "AZERTYUIOP".substring(0, Math.min(loot.size(), 10));
+            screen.drawString("Press " + keys + " to select item", boxX + POPUP_PADDING, boxY + 75);
+        }
 
         // Display loot items
-        var loot = state.getAvailableLoot();
         if (loot != null && !loot.isEmpty()) {
             int itemStartY = boxY + 100;
             int itemHeight = 50;
-            
-            for (int i = 0; i < loot.size(); i++) {
+
+            String itemKeys = "AZERTYUIOP";
+            for (int i = 0; i < loot.size() && i < 10; i++) {
                 Item item = loot.get(i);
                 int itemY = itemStartY + i * itemHeight;
-                
+
                 // Highlight selected item
                 boolean isSelected = item.equals(state.getSelectedLootItem());
                 if (isSelected) {
                     screen.setColor(new Color(100, 100, 200, 100));
                     screen.fill(new Rectangle2D.Float(boxX + 5, itemY - 5, boxW - 10, itemHeight));
                 }
-                
+
                 // Item box
                 screen.setColor(new Color(60, 60, 60));
                 screen.fill(new Rectangle2D.Float(boxX + 10, itemY, boxW - 20, itemHeight - 5));
                 screen.setColor(Color.WHITE);
                 screen.draw(new Rectangle2D.Float(boxX + 10, itemY, boxW - 20, itemHeight - 5));
-                
+
                 // Item name and info
-                screen.setFont(screen.getFont().deriveFont(java.awt.Font.BOLD, 14f));
-                screen.drawString((i + 1) + ". " + item.getName(), boxX + 20, itemY + 20);
-                
-                screen.setFont(screen.getFont().deriveFont(java.awt.Font.PLAIN, 12f));
+                screen.setFont(screen.getFont().deriveFont(Font.BOLD, 14f));
+                screen.drawString(itemKeys.charAt(i) + ". " + item.getName(), boxX + POPUP_PADDING * 2, itemY + 20);
+
+                screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 12f));
                 var shape = item.getShape();
-                screen.drawString("Size: " + shape.getWidth() + "x" + shape.getHeight() + 
-                                " | Rarity: " + item.getRarity(), boxX + 20, itemY + 38);
+                screen.drawString("Size: " + shape.getWidth() + "x" + shape.getHeight() +
+                        " | Rarity: " + item.getRarity(), boxX + POPUP_PADDING * 2, itemY + 38);
             }
         } else {
-            screen.drawString("No items remaining", boxX + 10, boxY + 120);
+            screen.drawString("No items remaining", boxX + POPUP_PADDING, boxY + 120);
         }
 
         // Continue button
         int continueX = boxX + boxW - 130;
         int continueY = boxY + 370;
-        drawButton(screen, continueX, continueY, 120, 35, "CONTINUE");
+        drawButton(screen, continueX, continueY, BUTTON_WIDTH + 10, BUTTON_HEIGHT, "CONTINUE (C)");
     }
-    
+
     private static void drawGameOver(Graphics2D screen, int width, int height) {
         screen.setColor(Color.RED);
         screen.setFont(new Font("Arial", Font.BOLD, 48));
@@ -537,8 +643,5 @@ public class View {
         screen.drawString("Quit: Q", width / 2 - 70, height - 80);
         screen.drawString("Restart: Z", width / 2 - 90, height - 55);
     }
-
-
-
 
 }

@@ -36,9 +36,11 @@ public class GameState {
     private int healerCost = 0;
     private List<Item> availableLoot = null;
     private Item selectedLootItem = null;
+    private String merchantMode = "BUY"; // "BUY" or "SELL"
+    private Item sellConfirmItem = null;
+    private Position sellConfirmAnchor = null;
+    private Item selectedMerchantItem = null;
 
-
- 
     public GameState() {
     }
 
@@ -113,7 +115,6 @@ public class GameState {
         this.position = new Position(0, 0);
     }
 
-
     /**
      * Returns the backpack of the hero.
      * 
@@ -175,7 +176,7 @@ public class GameState {
         this.selectedItemAnchor = null;
         this.selectedItem = null;
     }
-    
+
     public boolean isHealerPromptOpen() {
         return healerPromptOpen;
     }
@@ -205,7 +206,7 @@ public class GameState {
     public int getHealerCost() {
         return healerCost;
     }
-    
+
     private boolean gameOver = false;
 
     public boolean isGameOver() {
@@ -248,6 +249,44 @@ public class GameState {
         if (availableLoot != null) {
             availableLoot.remove(item);
         }
+    }
+
+    public String getMerchantMode() {
+        return merchantMode;
+    }
+
+    public void setMerchantMode(String mode) {
+        this.merchantMode = Objects.requireNonNull(mode);
+    }
+
+    public Item getSellConfirmItem() {
+        return sellConfirmItem;
+    }
+
+    public Position getSellConfirmAnchor() {
+        return sellConfirmAnchor;
+    }
+
+    public void openSellConfirm(Item item, Position anchor) {
+        this.sellConfirmItem = Objects.requireNonNull(item);
+        this.sellConfirmAnchor = Objects.requireNonNull(anchor);
+    }
+
+    public void closeSellConfirm() {
+        this.sellConfirmItem = null;
+        this.sellConfirmAnchor = null;
+    }
+
+    public boolean isSellConfirmOpen() {
+        return sellConfirmItem != null;
+    }
+
+    public Item getSelectedMerchantItem() {
+        return selectedMerchantItem;
+    }
+
+    public void setSelectedMerchantItem(Item item) {
+        this.selectedMerchantItem = item;
     }
 
 }

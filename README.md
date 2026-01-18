@@ -60,7 +60,7 @@
 - [x] Calcul de l'or gagné
 - [x] **Intégration avec l'interface graphique** (le joueur clique sur ses items)
 - [x] Afficher l'action annoncée par l'ennemi
-- [ ] Gestion du loot après victoire
+- [x] Gestion du loot après victoire
 
 ### Donjon (3 étages, codé en dur pour Phase 1)
 
@@ -75,8 +75,9 @@
   - [x] Trésor (×2 par étage)
   - [x] Porte de sortie (×1 par étage)
 - [x] Contenu des salles (ennemis, loot) codé en dur
-- [ ] Logique du marchand (acheter/vendre)
-- [ ] Logique du guérisseur (soigner contre or)
+- [w] Logique du marchand (acheter/vendre)
+- [x] Logique du guérisseur (soigner contre or)
+- [ ] Logique du trésor (ramasser le loot)
 
 ### Interface graphique (Vue & Contrôleur)
 
@@ -85,13 +86,13 @@
 - [x] Clic pour se déplacer (règle : passer uniquement par les couloirs)
 - [x] Affichage du sac à dos
 - [x] Clic pour utiliser un item
-- [ ] **Écran de combat**
-  - [ ] Afficher le héros (HP, énergie, block)
-  - [ ] Afficher les ennemis (HP, block, action annoncée)
-  - [ ] Cliquer sur une arme → attaquer un ennemi
-  - [ ] Cliquer sur une armure → se défendre
+- [x] **Écran de combat**
+  - [x] Afficher le héros (HP, énergie, block)
+  - [x] Afficher les ennemis (HP, block, action annoncée)
+  - [x] Cliquer sur une arme → attaquer un ennemi
+  - [x] Cliquer sur une armure → se défendre
   - [ ] Bouton "Fin de tour"
-- [ ] Affichage du loot après combat
+- [x] Affichage du loot après combat
 - [ ] Écran de victoire/défaite
 
 ---

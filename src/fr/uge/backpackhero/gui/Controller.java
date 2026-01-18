@@ -1,5 +1,7 @@
 package fr.uge.backpackhero.gui;
 
+import java.util.ArrayList;
+
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.PointerEvent;
 
@@ -10,6 +12,7 @@ import fr.uge.backpackhero.model.entity.Hero;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Item;
 import fr.uge.backpackhero.model.item.Weapon;
+import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
 import fr.uge.backpackhero.model.level.Room;
@@ -38,9 +41,9 @@ public class Controller {
      * @param pointerEvent the pointer event representing the click
      */
     public static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
-    	if (state.isGameOver()) {
-    	    return;
-    	}
+        if (state.isGameOver()) {
+            return;
+        }
 
         int x = (int) (pointerEvent.location().x() / View.TILE_SIZE);
         int y = (int) ((pointerEvent.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
@@ -48,7 +51,7 @@ public class Controller {
             return;
         var pos = new Position(x, y);
 
-        // If we are in loot screen mode
+        // If we are in loot screen mode with a selected loot item
         if (state.isLootScreenOpen() && state.getSelectedLootItem() != null) {
             var lootItem = state.getSelectedLootItem();
             if (state.getBackpack().place(lootItem, pos)) {
@@ -60,6 +63,47 @@ public class Controller {
             }
             View.draw(context, state);
             return;
+        }
+
+        // If in loot screen mode without selected item, allow item movement in backpack
+        if (state.isLootScreenOpen() && state.getSelectedLootItem() == null) {
+            handleItemMovement(context, state, pos);
+            return;
+        }
+
+        // If in merchant BUY mode with selected item
+        if (state.getMerchantMode().equals("BUY") && state.getSelectedMerchantItem() != null && !state.isInCombat()) {
+            var room = state.getCurrentFloor().getRoom(state.getPosition());
+            if (room != null && room.getType() == RoomType.MERCHANT) {
+                var shop = room.getMerchantItems();
+                if (shop != null) {
+                    var selectedItem = state.getSelectedMerchantItem();
+                    Integer price = shop.get(selectedItem);
+                    if (price != null) {
+                        if (!state.getBackpack().spendGold(price)) {
+                            IO.println("Not enough gold.");
+                        } else if (state.getBackpack().place(selectedItem, pos)) {
+                            shop.remove(selectedItem);
+                            state.setSelectedMerchantItem(null);
+                            IO.println("Bought: " + selectedItem.getName() + " for " + price + "g");
+                        } else {
+                            state.getBackpack().addGold(price);
+                            IO.println("Cannot place item here.");
+                        }
+                    }
+                }
+                View.draw(context, state);
+                return;
+            }
+        }
+
+        // If in merchant SELL mode, clicking on item opens sell confirmation
+        if (state.getMerchantMode().equals("SELL") && !state.isInCombat()) {
+            var room = state.getCurrentFloor().getRoom(state.getPosition());
+            if (room != null && room.getType() == RoomType.MERCHANT) {
+                handleBackpackSellClick(context, state, pos);
+                return;
+            }
         }
 
         // If we're not in combat, handle item movement
@@ -82,6 +126,33 @@ public class Controller {
         }
 
         afterHeroAction(context, state);
+    }
+
+    private static void handleBackpackSellClick(ApplicationContext context, GameState state, Position pos) {
+        var backpack = state.getBackpack();
+        var anchor = backpack.getAnchorAt(pos);
+        if (anchor.isEmpty()) {
+            return;
+        }
+
+        var item = backpack.getItems().get(anchor.get());
+        if (item == null) {
+            return;
+        }
+
+        // Prevent selling Gold
+        switch (item) {
+            case Gold gold -> {
+                System.out.println("Cannot sell gold!");
+                View.draw(context, state);
+                return;
+            }
+            default -> {
+            }
+        }
+
+        state.openSellConfirm(item, anchor.get());
+        View.draw(context, state);
     }
 
     /**
@@ -157,24 +228,22 @@ public class Controller {
         var hero = state.getHero();
         var enemies = combat.getCurrentEnemies();
 
-        if (item instanceof Weapon weapon) {
-            Enemy target = null;
-            for (Enemy enemy : enemies) {
-                if (enemy.isAlive()) {
-                    target = enemy;
-                    break;
+        return switch (item) {
+            case Weapon weapon -> {
+                Enemy target = null;
+                for (Enemy enemy : enemies) {
+                    if (enemy.isAlive()) {
+                        target = enemy;
+                        break;
+                    }
                 }
+                if (target == null)
+                    yield false;
+                yield combat.heroAttack(hero, target, weapon);
             }
-            if (target == null)
-                return false;
-            return combat.heroAttack(hero, target, weapon);
-        }
-
-        if (item instanceof Armor armor) {
-            return combat.heroDefend(hero, armor);
-        }
-
-        return false;
+            case Armor armor -> combat.heroDefend(hero, armor);
+            default -> false;
+        };
     }
 
     /**
@@ -192,7 +261,6 @@ public class Controller {
             return;
         }
 
-
         int x = (int) ((pointerEvent.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
         int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
         var clickedPos = new Position(x, y);
@@ -203,21 +271,21 @@ public class Controller {
         state.setPosition(clickedPos);
         state.setPosition(clickedPos);
         var room = floor.getRoom(clickedPos);
-        
+
         if (room != null && room.getType() == RoomType.EXIT) {
             state.exitFloor();
             View.draw(context, state);
             return;
         }
-        
+
         if (room != null && room.getType() == RoomType.HEALER) {
             int heal = room.getHealAmount();
-            int cost = Math.max(1, heal / 2); 
+            int cost = Math.max(1, heal / 2);
             state.openHealerPrompt(prevPos, heal, cost);
             View.draw(context, state);
             return;
         }
-        
+
         if (room != null && room.getType() == RoomType.ENEMY) {
             var enemies = room.getEnemies();
             if (enemies != null && !enemies.isEmpty()) {
@@ -322,9 +390,9 @@ public class Controller {
     }
 
     public static boolean handleMerchantClick(GameState state, PointerEvent event) {
-    	if (state.isGameOver()) {
-    	    return true;
-    	}
+        if (state.isGameOver()) {
+            return true;
+        }
 
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
@@ -332,85 +400,80 @@ public class Controller {
         }
         int mx = (int) event.location().x();
         int my = (int) event.location().y();
-        int x = 520;
-        int y = 40;
-        int w = 250;
-        int h = 220;
+        int x = View.POPUP_X;
+        int y = View.POPUP_Y;
+        int w = View.POPUP_WIDTH;
+        int h = 280;
         if (mx < x || mx > x + w || my < y || my > y + h) {
             return false;
         }
-        var shop = room.getMerchantItems();
-        if (shop == null || shop.isEmpty()) return true;
-        var list = new java.util.ArrayList<>(shop.entrySet());
-        list.sort(java.util.Comparator.comparing(e -> e.getKey().getName()));
-        int lineStartY = y + 95;
-        int lineH = 22;
-        int index = (my - lineStartY) / lineH;
-        if (index < 0 || index >= list.size() || index >= 6) {
-            return true;
-        }
-        var entry = list.get(index);
-        Item item = entry.getKey();
-        int price = entry.getValue();
-        if (!state.getBackpack().spendGold(price)) {
-            System.out.println("Not enough gold.");
-            return true;
-        }
-        boolean placed = state.getBackpack().placeFirstFit(item);
-        if (!placed) {
-            state.getBackpack().addGold(price);
-            System.out.println("Backpack full. Purchase cancelled.");
-            return true;
-        }
-        shop.remove(item);
-        System.out.println("Bought: " + item.getName() + " for " + price + "g");
+
         return true;
     }
-    
-    public static boolean handleHealerPromptClick(ApplicationContext context, GameState state, PointerEvent pe) {
-    	if (state.isGameOver()) {
-    	    return true;
-    	}
 
-        if (!state.isHealerPromptOpen()) return false;
-        if (pe.action() != PointerEvent.Action.POINTER_DOWN) return true;
+    public static void handleSellConfirmYes(GameState state) {
+        if (!state.isSellConfirmOpen())
+            return;
 
-        int mx = (int) pe.location().x();
-        int my = (int) pe.location().y();
+        var item = state.getSellConfirmItem();
+        var anchor = state.getSellConfirmAnchor();
+        if (item != null && anchor != null) {
+            int sellPrice = item.getPrice() / 2;
+            state.getBackpack().removeItem(anchor);
+            state.getBackpack().addGold(sellPrice);
+            System.out.println("Sold: " + item.getName() + " for " + sellPrice + "g");
+        }
+        state.closeSellConfirm();
+    }
 
-        int boxX = View.BACKPACK_PIXEL_WIDTH + 60;
-        int boxY = 80;
+    public static void handleSellConfirmNo(GameState state) {
+        if (!state.isSellConfirmOpen())
+            return;
+        state.closeSellConfirm();
+    }
 
-        int acceptX = boxX + 30, acceptY = boxY + 120, btnW = 110, btnH = 35;
-        int leaveX  = boxX + 180, leaveY  = boxY + 120;
+    public static void handleHealerAccept(ApplicationContext context, GameState state) {
+        if (!state.isHealerPromptOpen())
+            return;
 
-        if (mx >= leaveX && mx <= leaveX + btnW && my >= leaveY && my <= leaveY + btnH) {
-            state.closeHealerPrompt();
+        int cost = state.getHealerCost();
+        int heal = state.getHealerHealAmount();
+
+        if (!state.getBackpack().spendGold(cost)) {
+            System.out.println("Not enough gold.");
             View.draw(context, state);
-            return true;
+            return;
         }
 
-       
-        if (mx >= acceptX && mx <= acceptX + btnW && my >= acceptY && my <= acceptY + btnH) {
-            int cost = state.getHealerCost();
-            int heal = state.getHealerHealAmount();
+        var hero = state.getHero();
+        int before = hero.getHp();
+        hero.setHp(before + heal);
 
-            if (!state.getBackpack().spendGold(cost)) {
-                System.out.println("Not enough gold.");
-                View.draw(context, state);
-                return true;
-            }
+        state.closeHealerPrompt();
+        View.draw(context, state);
+    }
 
-            var hero = state.getHero();
-            int before = hero.getHp();
-            hero.setHp(before + heal);
+    public static void handleHealerDecline(ApplicationContext context, GameState state) {
+        if (!state.isHealerPromptOpen())
+            return;
+        state.closeHealerPrompt();
+        View.draw(context, state);
+    }
 
-            state.closeHealerPrompt();
-            View.draw(context, state);
-            return true;
-        }
+    public static void handleLootContinue(ApplicationContext context, GameState state) {
+        if (!state.isLootScreenOpen())
+            return;
 
-        return true; 
+        state.closeLootScreen();
+        var combat = state.getCombatEngine();
+        combat.endCombat();
+
+        var floor = state.getCurrentFloor();
+        var pos = state.getPosition();
+        floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        IO.println("Loot screen closed. Combat ended.");
+        View.draw(context, state);
     }
 
     public static boolean handleLootScreenClick(ApplicationContext context, GameState state, PointerEvent pe) {
@@ -418,59 +481,59 @@ public class Controller {
             return true;
         }
 
-        if (!state.isLootScreenOpen()) return false;
-        if (pe.action() != PointerEvent.Action.POINTER_DOWN) return true;
-
-        int mx = (int) pe.location().x();
-        int my = (int) pe.location().y();
-
-        int boxX = View.BACKPACK_PIXEL_WIDTH + 50;
-        int boxY = 60;
-        int boxW = 350;
-        
-        int continueX = boxX + boxW - 130;
-        int continueY = boxY + 370;
-        int btnW = 120;
-        int btnH = 35;
-
-        if (mx >= continueX && mx <= continueX + btnW && my >= continueY && my <= continueY + btnH) {
-            // Coutinue button clicked
-            state.closeLootScreen();
-            var combat = state.getCombatEngine();
-            combat.endCombat();
-            
-            var floor = state.getCurrentFloor();
-            var pos = state.getPosition();
-            floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
-            
-            IO.println("Loot screen closed. Combat ended.");
-            View.draw(context, state);
+        if (!state.isLootScreenOpen())
+            return false;
+        if (pe.action() != PointerEvent.Action.POINTER_DOWN)
             return true;
-        }
-
-        var loot = state.getAvailableLoot();
-        if (loot != null && !loot.isEmpty()) {
-            int itemStartY = boxY + 100;
-            int itemHeight = 50;
-            
-            for (int i = 0; i < loot.size(); i++) {
-                int itemY = itemStartY + i * itemHeight;
-                if (mx >= boxX + 10 && mx <= boxX + boxW - 10 && 
-                    my >= itemY && my <= itemY + itemHeight) {
-                    // Loot item clicked
-                    Item clickedItem = loot.get(i);
-                    state.setSelectedLootItem(clickedItem);
-                    System.out.println("Selected loot item: " + clickedItem.getName());
-                    View.draw(context, state);
-                    return true;
-                }
-            }
-        }
 
         return true;
     }
 
+    public static void handleMerchantItemSelection(ApplicationContext context, GameState state, int index) {
+        var room = state.getCurrentFloor().getRoom(state.getPosition());
+        if (room == null || room.getType() != RoomType.MERCHANT) {
+            return;
+        }
 
+        var items = room.getMerchantItems();
+        if (items == null || items.isEmpty()) {
+            return;
+        }
 
+        var list = new ArrayList<>(items.entrySet());
+
+        if (index < list.size()) {
+            Item selectedItem = list.get(index).getKey();
+            // Toggle selection: deselect if already selected
+            if (selectedItem.equals(state.getSelectedMerchantItem())) {
+                state.setSelectedMerchantItem(null);
+                System.out.println("Deselected merchant item: " + selectedItem.getName());
+            } else {
+                state.setSelectedMerchantItem(selectedItem);
+                System.out.println("Selected merchant item: " + selectedItem.getName());
+            }
+            View.draw(context, state);
+        }
+    }
+
+    public static void handleLootItemSelection(ApplicationContext context, GameState state, int index) {
+        var loot = state.getAvailableLoot();
+        if (loot == null || loot.isEmpty()) {
+            return;
+        }
+
+        if (index < loot.size()) {
+            Item selectedItem = loot.get(index);
+            // Toggle selection: deselect if already selected
+            if (selectedItem.equals(state.getSelectedLootItem())) {
+                state.setSelectedLootItem(null);
+                System.out.println("Deselected loot item: " + selectedItem.getName());
+            } else {
+                state.setSelectedLootItem(selectedItem);
+                System.out.println("Selected loot item: " + selectedItem.getName());
+            }
+            View.draw(context, state);
+        }
+    }
 
 }
