@@ -370,7 +370,11 @@ public class Backpack {
         return false;
     }
 
-    /** @return the Gold item if it exists in the bag, otherwise null */
+    /**
+     * Finds the Gold item in the backpack, if it exists.
+     * 
+     * @return the Gold item if found, otherwise null
+     */
     public Gold findGold() {
         for (Item item : items.values()) {
             switch (item) {
@@ -385,11 +389,12 @@ public class Backpack {
     }
 
     /**
-     * Adds gold to the bag.
-     * - If Gold already exists, it is stacked.
-     * - Otherwise, one Gold is placed in the first available slot.
+     * Adds gold to the backpack.
+     * If a Gold item already exists, the amount is added to it.
+     * Otherwise, a new Gold item is placed in the first available slot.
      * 
-     * @return true if added, false if bag is full.
+     * @param amount the amount of gold to add
+     * @return true if the gold was added (or merged), false if the backpack is full and no existing gold stack was found
      */
     public boolean addGold(int amount) {
         if (amount <= 0)
@@ -413,13 +418,22 @@ public class Backpack {
     }
 
     /**
-     * @return the total amount of gold (0 if there are no Gold items in the bag)
+     * Returns the total amount of gold currently in the backpack.
+     * 
+     * @return the total amount of gold, or 0 if no gold is present
      */
     public int goldAmount() {
         Gold gold = findGold();
         return (gold == null) ? 0 : gold.getAmount();
     }
 
+    /**
+     * Attempts to place an item in the first available spot in the backpack.
+     * Scans from top-left to bottom-right.
+     * 
+     * @param item the item to place
+     * @return true if the item was successfully placed, false otherwise
+     */
     public boolean placeFirstFit(Item item) {
         Objects.requireNonNull(item, "item cannot be null");
         for (int y = 0; y < height; y++) {
@@ -433,6 +447,12 @@ public class Backpack {
         return false;
     }
 
+    /**
+     * Spends a specified amount of gold from the backpack.
+     * 
+     * @param cost the amount of gold to spend
+     * @return true if the gold was successfully spent, false if there wasn't enough gold
+     */
     public boolean spendGold(int cost) {
         if (cost <= 0)
             return true;

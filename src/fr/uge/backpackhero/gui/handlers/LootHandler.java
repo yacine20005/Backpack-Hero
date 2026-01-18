@@ -19,6 +19,11 @@ public class LootHandler {
         this.view = Objects.requireNonNull(view);
     }
 
+    /**
+     * Handles the continue action from the loot screen, closing it.
+     * 
+     * @param context the application context
+     */
     public void handleLootContinue(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.LOOT_SCREEN)
@@ -40,6 +45,13 @@ public class LootHandler {
         view.draw(context);
     }
 
+    /**
+     * Handles clicks on the loot screen to prevent interaction with underlying elements.
+     * 
+     * @param context the application context
+     * @param pe the pointer event representing the click
+     * @return true if the click was handled/consumed, false otherwise
+     */
     public boolean handleLootScreenClick(ApplicationContext context, PointerEvent pe) {
         Objects.requireNonNull(context, "context cannot be null");
         Objects.requireNonNull(pe, "pe cannot be null");
@@ -55,6 +67,12 @@ public class LootHandler {
         return true;
     }
 
+    /**
+     * Handles the selection of a loot item by index.
+     * 
+     * @param context the application context
+     * @param index the index of the selected item
+     */
     public void handleLootItemSelection(ApplicationContext context, int index) {
         Objects.requireNonNull(context, "context cannot be null");
         var loot = state.getAvailableLoot();

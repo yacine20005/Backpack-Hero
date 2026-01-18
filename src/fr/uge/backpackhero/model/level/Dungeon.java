@@ -213,6 +213,13 @@ public class Dungeon {
         return shop;
     }
 
+    /**
+     * Returns the floor at the specified index.
+     * 
+     * @param index the index of the floor to retrieve
+     * @return the floor at the specified index
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
     public Floor getFloor(int index) {
         if (index < 0 || index >= floors.size()) {
             throw new IndexOutOfBoundsException("Floor index out of bounds: " + index);
@@ -220,6 +227,11 @@ public class Dungeon {
         return floors.get(index);
     }
 
+    /**
+     * Returns the total number of floors in the dungeon.
+     * 
+     * @return the number of floors
+     */
     public int getFloorCount() {
         return floors.size();
     }

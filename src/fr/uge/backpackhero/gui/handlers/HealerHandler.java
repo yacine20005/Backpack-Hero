@@ -15,6 +15,11 @@ public class HealerHandler {
         this.view = Objects.requireNonNull(view);
     }
 
+    /**
+     * Handles the acceptance of the healer's offer.
+     * 
+     * @param context the application context
+     */
     public void handleHealerAccept(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.HEALER_PROMPT)
@@ -37,6 +42,11 @@ public class HealerHandler {
         view.draw(context);
     }
 
+    /**
+     * Handles the decline of the healer's offer.
+     * 
+     * @param context the application context
+     */
     public void handleHealerDecline(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.HEALER_PROMPT)

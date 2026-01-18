@@ -63,6 +63,11 @@ public class Hero {
         this.hp = Math.min(Math.max(hp, 0), MAX_HP);
     }
 
+    /**
+     * Returns the maximum health points of the hero.
+     * 
+     * @return the maximum health points
+     */
     public int getMaxHp() {
         return MAX_HP;
     }

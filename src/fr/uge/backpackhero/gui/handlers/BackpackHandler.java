@@ -24,6 +24,12 @@ public class BackpackHandler {
         this.combatHandler = Objects.requireNonNull(combatHandler);
     }
 
+    /**
+     * Handles clicks on the backpack area.
+     * 
+     * @param context the application context
+     * @param pointerEvent the pointer event representing the click
+     */
     public void handleBackpackClick(ApplicationContext context, PointerEvent pointerEvent) {
         Objects.requireNonNull(context, "context cannot be null");
         Objects.requireNonNull(pointerEvent, "pointerEvent cannot be null");
@@ -190,6 +196,11 @@ public class BackpackHandler {
         }
     }
 
+    /**
+     * Handles the rotation of the currently selected item.
+     * 
+     * @param context the application context
+     */
     public void handleRotateItem(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         var selectedItemAnchor = state.getSelectedItemAnchor();
@@ -209,6 +220,11 @@ public class BackpackHandler {
         return state.getCombatEngine().useItem(state.getHero(), item);
     }
 
+    /**
+     * Handles the request to discard the currently selected item.
+     * 
+     * @param context the application context
+     */
     public void handleDiscardItem(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         // Only block if another popup is already open or game is over
@@ -242,6 +258,11 @@ public class BackpackHandler {
         view.draw(context);
     }
 
+    /**
+     * Confirms the discard action.
+     * 
+     * @param context the application context
+     */
     public void handleDiscardConfirmYes(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
@@ -258,6 +279,11 @@ public class BackpackHandler {
         view.draw(context);
     }
 
+    /**
+     * Cancels the discard action.
+     * 
+     * @param context the application context
+     */
     public void handleDiscardConfirmNo(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)

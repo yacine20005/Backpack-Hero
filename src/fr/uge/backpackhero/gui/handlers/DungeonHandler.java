@@ -20,6 +20,12 @@ public class DungeonHandler {
         this.view = Objects.requireNonNull(view);
     }
 
+    /**
+     * Handles clicks on the dungeon grid.
+     * 
+     * @param context the application context
+     * @param pointerEvent the pointer event representing the click
+     */
     public void handleDungeonClick(ApplicationContext context, PointerEvent pointerEvent) {
         Objects.requireNonNull(context, "context cannot be null");
         Objects.requireNonNull(pointerEvent, "pointerEvent cannot be null");

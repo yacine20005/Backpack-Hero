@@ -19,6 +19,11 @@ public class CombatHandler {
         this.view = Objects.requireNonNull(view);
     }
 
+    /**
+     * Handles the end turn action initiated by the user.
+     * 
+     * @param context the application context
+     */
     public void handleEndTurn(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.COMBAT) {
@@ -32,6 +37,11 @@ public class CombatHandler {
         view.draw(context);
     }
 
+    /**
+     * Handles game logic after a hero action (e.g., using an item).
+     * 
+     * @param context the application context
+     */
     public void afterHeroAction(ApplicationContext context) {
         if (checkEndOfCombat(context))
             return;

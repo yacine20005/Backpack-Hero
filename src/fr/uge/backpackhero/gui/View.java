@@ -485,6 +485,11 @@ public class View {
         };
     }
 
+    /**
+     * Draws the merchant interface, including buy/sell modes and item listings.
+     * 
+     * @param screen the graphics context
+     */
     private void drawMerchant(Graphics2D screen) {
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT || state.getState() == State.COMBAT) {
@@ -587,6 +592,11 @@ public class View {
         }
     }
 
+    /**
+     * Draws the confirmation popup for discarding an item.
+     * 
+     * @param screen the graphics context
+     */
     private void drawDiscardConfirmPopup(Graphics2D screen) {
         var item = state.getDiscardConfirmItem();
         if (item == null)
@@ -615,6 +625,11 @@ public class View {
                 "NO (N)");
     }
 
+    /**
+     * Draws the confirmation popup for selling an item.
+     * 
+     * @param screen the graphics context
+     */
     private void drawSellConfirmPopup(Graphics2D screen) {
         var item = state.getSellConfirmItem();
         if (item == null)
@@ -640,6 +655,11 @@ public class View {
                 "NO (N)");
     }
 
+    /**
+     * Draws the healer prompt interface.
+     * 
+     * @param screen the graphics context
+     */
     private void drawHealerPrompt(Graphics2D screen) {
         if (state.getState() != State.HEALER_PROMPT || state.getState() == State.COMBAT)
             return;
@@ -668,6 +688,16 @@ public class View {
                 "LEAVE (N)");
     }
 
+    /**
+     * Helper method to draw a button with text.
+     * 
+     * @param screen the graphics context
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param w the width of the button
+     * @param h the height of the button
+     * @param text the text to display on the button
+     */
     private void drawButton(Graphics2D screen, int x, int y, int w, int h, String text) {
         screen.setColor(BOX_GRAY);
         screen.fill(new Rectangle2D.Float(x, y, w, h));
@@ -676,6 +706,11 @@ public class View {
         screen.drawString(text, x + BUTTON_TEXT_X, y + BUTTON_TEXT_Y);
     }
 
+    /**
+     * Draws the stats box displaying hero information.
+     * 
+     * @param screen the graphics context
+     */
     private void drawStatsBox(Graphics2D screen) {
         int x = POPUP_X;
         int y = 510;
@@ -708,6 +743,11 @@ public class View {
         }
     }
 
+    /**
+     * Draws the loot screen interface.
+     * 
+     * @param screen the graphics context
+     */
     private void drawLootScreen(Graphics2D screen) {
         if (state.getState() != State.LOOT_SCREEN)
             return;
@@ -782,6 +822,14 @@ public class View {
         drawButton(screen, continueX, continueY, BUTTON_WIDTH + 10, BUTTON_HEIGHT, "CONTINUE (C)");
     }
 
+    /**
+     * Draws the Game Over screen.
+     * 
+     * @param screen the graphics context
+     * @param width the screen width
+     * @param height the screen height
+     * @param state the game state
+     */
     private void drawGameOver(Graphics2D screen, int width, int height, GameState state) {
         screen.setColor(Color.RED);
         screen.setFont(new Font("Arial", Font.BOLD, 48));
@@ -802,6 +850,14 @@ public class View {
         screen.drawString("Restart: Z", width / 2 - 90, height - 55);
     }
 
+    /**
+     * Draws the Victory screen.
+     * 
+     * @param screen the graphics context
+     * @param width the screen width
+     * @param height the screen height
+     * @param state the game state
+     */
     private void drawVictory(Graphics2D screen, int width, int height, GameState state) {
         // Background overlay
         screen.setColor(OVERLAY_BG);

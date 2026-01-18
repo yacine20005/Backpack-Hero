@@ -20,6 +20,12 @@ public class MerchantHandler {
         this.view = Objects.requireNonNull(view);
     }
 
+    /**
+     * Handles clicks on the merchant popup area.
+     * 
+     * @param event the pointer event representing the click
+     * @return true if the click was inside the merchant popup, false otherwise
+     */
     public boolean handleMerchantClick(PointerEvent event) {
         Objects.requireNonNull(event, "event cannot be null");
         if (state.isGameOver()) {
@@ -43,6 +49,9 @@ public class MerchantHandler {
         return true;
     }
 
+    /**
+     * Confirms the sale of an item.
+     */
     public void handleSellConfirmYes() {
         if (state.getActivePopup() != PopupType.SELL_CONFIRM)
             return;
@@ -58,12 +67,21 @@ public class MerchantHandler {
         state.closeSellConfirm();
     }
 
+    /**
+     * Cancels the sale of an item.
+     */
     public void handleSellConfirmNo() {
         if (state.getActivePopup() != PopupType.SELL_CONFIRM)
             return;
         state.closeSellConfirm();
     }
 
+    /**
+     * Handles the selection of a merchant item by index.
+     * 
+     * @param context the application context
+     * @param index the index of the selected item
+     */
     public void handleMerchantItemSelection(ApplicationContext context, int index) {
         Objects.requireNonNull(context, "context cannot be null");
         var room = state.getCurrentFloor().getRoom(state.getPosition());
