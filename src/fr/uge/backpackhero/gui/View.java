@@ -43,58 +43,55 @@ public class View {
         this.state = Objects.requireNonNull(state, "state cannot be null");
     }
 
-    /** The size of each tile in pixels. */
-    public static final int TILE_SIZE = 100;
     /** The width of the backpack display area in tiles. */
-    public static final int BACKPACK_WIDTH_IN_TILES = 7;
+    private static final int BACKPACK_WIDTH_IN_TILES = 7;
     /** The width of the backpack display area in pixels. */
-    public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
+    private static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * 100;
 
     // Popup positioning constants
     /** X position for all left sidebar popups. */
-    public static final int POPUP_X = 10;
+    private static final int POPUP_X = 10;
     /** Y position for all interactive popups. */
-    public static final int POPUP_Y = 670;
+    private static final int POPUP_Y = 670;
     /** Width for all popups. */
-    public static final int POPUP_WIDTH = BACKPACK_PIXEL_WIDTH - 20;
+    private static final int POPUP_WIDTH = BACKPACK_PIXEL_WIDTH - 20;
     /** Padding inside popups. */
-    public static final int POPUP_PADDING = 10;
+    private static final int POPUP_PADDING = 10;
     /** Spacing between text lines in popups. */
-    public static final int POPUP_LINE_SPACING = 25;
+    private static final int POPUP_LINE_SPACING = 25;
     /** Standard popup height. */
-    public static final int POPUP_HEIGHT = 150;
-
+    private static final int POPUP_HEIGHT = 150;
     // Button constants
     /** Standard button width. */
-    public static final int BUTTON_WIDTH = 110;
+    private static final int BUTTON_WIDTH = 110;
     /** Standard button height. */
-    public static final int BUTTON_HEIGHT = 35;
+    private static final int BUTTON_HEIGHT = 35;
     /** Small button width for mode switches. */
-    public static final int SMALL_BUTTON_WIDTH = 80;
+    private static final int SMALL_BUTTON_WIDTH = 80;
     /** Small button height for mode switches. */
-    public static final int SMALL_BUTTON_HEIGHT = 25;
+    private static final int SMALL_BUTTON_HEIGHT = 25;
     /** Button spacing (horizontal gap between buttons). */
-    public static final int BUTTON_SPACING = 50;
+    private static final int BUTTON_SPACING = 50;
     /** Button text offset X. */
-    public static final int BUTTON_TEXT_X = 20;
+    private static final int BUTTON_TEXT_X = 20;
     /** Button text offset Y. */
-    public static final int BUTTON_TEXT_Y = 23;
+    private static final int BUTTON_TEXT_Y = 23;
     
     // Common colors
     /** Dark background for popups. */
-    public static final Color DARK_BG = new Color(20, 20, 20);
+    private static final Color DARK_BG = new Color(20, 20, 20);
     /** Semi-transparent dark overlay. */
-    public static final Color OVERLAY_BG = new Color(0, 0, 0, 180);
+    private static final Color OVERLAY_BG = new Color(0, 0, 0, 180);
     /** Button/box gray. */
-    public static final Color BOX_GRAY = new Color(60, 60, 60);
+    private static final Color BOX_GRAY = new Color(60, 60, 60);
     
     // Font sizes
     /** Large title font size. */
-    public static final float FONT_LARGE = 20f;
+    private static final float FONT_LARGE = 20f;
     /** Medium font size. */
-    public static final float FONT_MEDIUM = 14f;
+    private static final float FONT_MEDIUM = 14f;
     /** Small font size. */
-    public static final float FONT_SMALL = 12f;
+    private static final float FONT_SMALL = 12f;
 
     /**
      * Draws the entire game view including backpack, dungeon, hero, and combat
@@ -159,8 +156,8 @@ public class View {
      */
     private void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor,
             boolean isSelected) {
-        int x = cellPos.x() * TILE_SIZE;
-        int y = cellPos.y() * TILE_SIZE;
+        int x = cellPos.x() * 100;
+        int y = cellPos.y() * 100;
 
         Color itemColor = switch (item) {
             case Armor _ -> new Color(139, 69, 19);
@@ -173,12 +170,11 @@ public class View {
         }
 
         screen.setColor(itemColor);
-        screen.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+        screen.fillRect(x + 2, y + 2, 100 - 4, 100 - 4);
 
         screen.setColor(itemColor.brighter());
         screen.setStroke(new BasicStroke(2));
-        screen.drawRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
-
+        screen.drawRect(x + 2, y + 2, 100 - 4, 100 - 4);
         if (isAnchor) {
             screen.setColor(Color.WHITE);
             String name = item.getName();
@@ -249,27 +245,27 @@ public class View {
                     // Unlockable cells are highlighted in green
                     screen.setColor(new Color(0, 150, 0, 100));
                     screen.fillRect(
-                            x * TILE_SIZE,
-                            y * TILE_SIZE,
-                            TILE_SIZE,
-                            TILE_SIZE);
+                            x * 100,
+                            y * 100,
+                            100,
+                            100);
                 } else if (!isUnlocked) {
                     // Locked cells are dark gray
                     screen.setColor(new Color(50, 50, 50));
                     screen.fillRect(
-                            x * TILE_SIZE,
-                            y * TILE_SIZE,
-                            TILE_SIZE,
-                            TILE_SIZE);
+                            x * 100,
+                            y * 100,
+                            100,
+                            100);
                 }
                 
                 // Draw cell border
                 screen.setColor(canUnlock ? Color.GREEN : (isUnlocked ? Color.GRAY : new Color(80, 80, 80)));
                 screen.drawRect(
-                        x * TILE_SIZE,
-                        y * TILE_SIZE,
-                        TILE_SIZE,
-                        TILE_SIZE);
+                        x * 100,
+                        y * 100,
+                        100,
+                        100);
             }
         }
     }
@@ -302,10 +298,10 @@ public class View {
      */
     private void drawOneRoom(Graphics2D screen, Room room, int x, int y, int xOffset) {
         var rect = new Rectangle2D.Float(
-                (x * TILE_SIZE) + xOffset,
-                y * TILE_SIZE,
-                TILE_SIZE,
-                TILE_SIZE);
+                (x * 100) + xOffset,
+                y * 100,
+                100,
+                100);
 
         screen.setColor(getColorForRoom(room.getType()));
         screen.fill(rect);
@@ -315,8 +311,8 @@ public class View {
 
         screen.drawString(
                 room.getType().getSymbol(),
-                (x * TILE_SIZE) + xOffset + 15,
-                y * TILE_SIZE + 25);
+                (x * 100) + xOffset + 15,
+                y * 100 + 25);
     }
 
     /**
@@ -330,10 +326,10 @@ public class View {
             return;
 
         var heroRect = new Rectangle2D.Float(
-                (heroPos.x() * TILE_SIZE) + BACKPACK_PIXEL_WIDTH + 10,
-                heroPos.y() * TILE_SIZE + 10,
-                TILE_SIZE - 40,
-                TILE_SIZE - 40);
+                (heroPos.x() * 100) + BACKPACK_PIXEL_WIDTH + 10,
+                heroPos.y() * 100 + 10,
+                100 - 40,
+                100 - 40);
 
         screen.setColor(Color.BLUE);
         screen.fill(heroRect);
@@ -374,7 +370,7 @@ public class View {
         }
 
         int width = BACKPACK_PIXEL_WIDTH
-                + state.getCurrentFloor().getWidth() * TILE_SIZE;
+                + state.getCurrentFloor().getWidth() * 100;
 
         int panelWidth = 500;
         int panelHeight = 80 + enemies.size() * 40;

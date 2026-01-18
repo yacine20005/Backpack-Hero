@@ -52,8 +52,8 @@ public class DungeonHandler {
             return;
         }
 
-        int x = (int) ((pointerEvent.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
-        int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
+        int x = (int) ((pointerEvent.location().x() - 700) / 100);
+        int y = (int) (pointerEvent.location().y() / 100);
         var clickedPos = new Position(x, y);
         var floor = state.getCurrentFloor();
         if (!isMoveAllowed(state.getPosition(), clickedPos, floor))

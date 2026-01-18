@@ -1,5 +1,7 @@
 package fr.uge.backpackhero.model.entity;
 
+import java.util.Objects;
+
 import fr.uge.backpackhero.model.item.Backpack;
 
 /**
@@ -113,6 +115,7 @@ public class Hero {
      * @param backpack the backpack containing mana items
      */
     public void refreshManaAmount(Backpack backpack) {
+        Objects.requireNonNull(backpack, "backpack cannot be null");
         this.mana = backpack.getMana();
     }
 

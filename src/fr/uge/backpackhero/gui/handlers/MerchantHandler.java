@@ -48,9 +48,9 @@ public class MerchantHandler {
         }
         int mx = (int) event.location().x();
         int my = (int) event.location().y();
-        int x = View.POPUP_X;
-        int y = View.POPUP_Y;
-        int w = View.POPUP_WIDTH;
+        int x = 10;
+        int y = 670;
+        int w = 680;
         int h = 280;
         if (mx < x || mx > x + w || my < y || my > y + h) {
             return false;

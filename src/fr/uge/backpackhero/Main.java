@@ -217,7 +217,7 @@ public class Main {
                     // If loot screen is open we handle clicks on loot screen and backpack
                     // simultaneously
                     if (state.getState() == State.LOOT_SCREEN) {
-                        if (x < View.BACKPACK_PIXEL_WIDTH) {
+                        if (x < 700) {
                             controller.handleBackpackClick(context, pe);
                         } else {
                             controller.handleLootScreenClick(context, pe);
@@ -230,7 +230,7 @@ public class Main {
                         continue;
                     }
 
-                    if (x < View.BACKPACK_PIXEL_WIDTH) {
+                    if (x < 700) {
                         controller.handleBackpackClick(context, pe);
                     } else {
                         controller.handleDungeonClick(context, pe);

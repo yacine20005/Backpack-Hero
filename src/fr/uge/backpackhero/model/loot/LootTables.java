@@ -34,6 +34,7 @@ public final class LootTables {
    * @return a list of random items
    */
   public static List<Item> generateLoot(int floorIndex, int count, Random rng) {
+    Objects.requireNonNull(rng, "rng cannot be null");
     var loot = new ArrayList<Item>();
     for (int i = 0; i < count; i++) {
       loot.add(rollLootItem(floorIndex, rng));
@@ -75,6 +76,7 @@ public final class LootTables {
    * @return a random item appropriate for the floor
    */
   public static Item rollLootItem(int floorIndex, Random rng) {
+    Objects.requireNonNull(rng, "rng cannot be null");
     int r = rng.nextInt(100);
 
     if (floorIndex == 0) {

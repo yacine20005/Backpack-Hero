@@ -49,8 +49,8 @@ public class BackpackHandler {
             return;
         }
 
-        int x = (int) (pointerEvent.location().x() / View.TILE_SIZE);
-        int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
+        int x = (int) (pointerEvent.location().x() / 100);
+        int y = (int) (pointerEvent.location().y() / 100);
         if (y < 0)
             return;
         var pos = new Position(x, y);
