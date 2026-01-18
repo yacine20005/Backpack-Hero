@@ -1,7 +1,9 @@
 package fr.uge.backpackhero.model.item;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +27,7 @@ public class Backpack {
     private int mana; // TODO : move the mana management to Hero
     private final Map<Position, Item> items;
     private final Set<Position> occupiedCells; // We use a set to track occupied cells faster
+    private final Set<Position> unlockedCells; // Cells that can be used
 
     /**
      * Creates a new Backpack with the specified width and height.
@@ -40,9 +43,21 @@ public class Backpack {
         this.height = height;
         this.items = new HashMap<>();
         this.occupiedCells = new HashSet<>();
+        this.unlockedCells = new HashSet<>();
         this.mana = 0;
-        place(Weapon.woodSword(), new Position(0, 0));
-        place(Armor.woodenShield(), new Position(1, 0));
+
+        // Start with 9 unlocked cells in a 3x3 square in the center
+        // For a 7x5 backpack (7 cols, 5 rows), center is at columns 2-4, rows 1-3
+        int startCol = (width - 3) / 2; // (7-3)/2 = 2
+        int startRow = (height - 3) / 2; // (5-3)/2 = 1
+        for (int row = startRow; row < startRow + 3; row++) {
+            for (int col = startCol; col < startCol + 3; col++) {
+                unlockedCells.add(new Position(col, row));
+            }
+        }
+
+        place(Weapon.woodSword(), new Position(startCol, startRow));
+        place(Armor.woodenShield(), new Position(startCol + 1, startRow));
     }
 
     /**
@@ -80,6 +95,88 @@ public class Backpack {
      */
     public Set<Position> getOccupiedCells() {
         return occupiedCells;
+    }
+
+    /**
+     * Returns a set of positions that are unlocked (usable) in the backpack.
+     * 
+     * @return a set of unlocked positions in the backpack
+     */
+    public Set<Position> getUnlockedCells() {
+        return unlockedCells;
+    }
+
+    /**
+     * Checks if a cell is unlocked (usable).
+     * 
+     * @param pos the position to check
+     * @return true if the cell is unlocked, false otherwise
+     */
+    public boolean isUnlocked(Position pos) {
+        return unlockedCells.contains(pos);
+    }
+
+    /**
+     * Checks if a cell can be unlocked (is locked and adjacent to an unlocked
+     * cell).
+     * 
+     * @param pos the position to check
+     * @return true if the cell can be unlocked, false otherwise
+     */
+    public boolean canUnlockCell(Position pos) {
+        Objects.requireNonNull(pos, "pos cannot be null");
+        if (!pos.checkBounds(width, height)) {
+            return false;
+        }
+        return !unlockedCells.contains(pos) && hasAdjacentUnlockedCell(pos);
+    }
+
+    /**
+     * Unlocks a specific cell if it's adjacent to an unlocked cell.
+     * 
+     * @param pos the position to unlock
+     * @return true if the cell was unlocked, false otherwise
+     */
+    public boolean unlockCell(Position pos) {
+        Objects.requireNonNull(pos, "pos cannot be null");
+        if (!canUnlockCell(pos)) {
+            return false;
+        }
+        unlockedCells.add(pos);
+        return true;
+    }
+
+    /**
+     * Gets all positions that can be unlocked (locked cells adjacent to unlocked
+     * ones).
+     * 
+     * @return a list of positions that can be unlocked
+     */
+    public List<Position> getUnlockableCells() {
+        var candidates = new ArrayList<Position>();
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                var pos = new Position(col, row);
+                if (canUnlockCell(pos)) {
+                    candidates.add(pos);
+                }
+            }
+        }
+        return candidates;
+    }
+
+    /**
+     * Checks if a position has at least one adjacent unlocked cell.
+     */
+    private boolean hasAdjacentUnlockedCell(Position pos) {
+        int[][] deltas = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+        for (var delta : deltas) {
+            var adjacent = new Position(pos.x() + delta[0], pos.y() + delta[1]);
+            if (adjacent.checkBounds(width, height) && unlockedCells.contains(adjacent)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -128,6 +225,9 @@ public class Backpack {
         var cells = item.getShape().getAbsolutePositions(anchor);
         for (var cell : cells) {
             if (!cell.checkBounds(width, height)) {
+                return false;
+            }
+            if (!unlockedCells.contains(cell)) {
                 return false;
             }
             if (occupiedCells.contains(cell)) {
@@ -231,6 +331,9 @@ public class Backpack {
             if (!cell.checkBounds(width, height)) {
                 return false;
             }
+            if (!unlockedCells.contains(cell)) {
+                return false;
+            }
         }
 
         for (var cell : toCells) {
@@ -301,7 +404,7 @@ public class Backpack {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Position p = new Position(x, y);
-                if (!occupiedCells.contains(p)) {
+                if (!occupiedCells.contains(p) && isUnlocked(p)) {
                     return place(new Gold(amount), p);
                 }
             }

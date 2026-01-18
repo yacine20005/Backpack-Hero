@@ -46,10 +46,25 @@ public class Controller {
         }
 
         int x = (int) (pointerEvent.location().x() / View.TILE_SIZE);
-        int y = (int) ((pointerEvent.location().y() - View.TILE_SIZE) / View.TILE_SIZE);
+        int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
         if (y < 0)
             return;
         var pos = new Position(x, y);
+
+        // If in cell unlock mode, try to unlock the clicked cell
+        if (state.isCellUnlockMode()) {
+            if (state.getBackpack().canUnlockCell(pos)) {
+                state.unlockCellAt(pos);
+                IO.println("Cell unlocked! " + state.getCellsToUnlock() + " remaining.");
+                if (!state.isCellUnlockMode()) {
+                    IO.println("All cells unlocked!");
+                }
+            } else {
+                IO.println("Cannot unlock this cell. Choose an adjacent cell.");
+            }
+            View.draw(context, state);
+            return;
+        }
 
         // If we are in loot screen mode with a selected loot item
         if (state.isLootScreenOpen() && state.getSelectedLootItem() != null) {
@@ -403,12 +418,32 @@ public class Controller {
             return true;
         }
 
+        // Calculate rewards
         var lootItems = LootTables.generateLootFromEnemies(combat.getCurrentEnemies(), state.getFloor());
-        int reward = combat.calculateGoldReward();
-        state.getBackpack().addGold(reward);
+        int goldReward = combat.calculateGoldReward();
+        int xpReward = combat.calculateXpReward();
+        
+        // Give rewards
+        state.getBackpack().addGold(goldReward);
+        int levelsGained = hero.addXp(xpReward);
+        
+        // Handle level up - enter cell unlock mode
+        if (levelsGained > 0) {
+            // Calculate total cells to unlock for all levels
+            int totalCells = 0;
+            for (int i = 0; i < levelsGained; i++) {
+                int levelNum = hero.getLevel() - levelsGained + i + 1;
+                totalCells += (levelNum % 2 == 0) ? 4 : 3;
+            }
+            state.startCellUnlockMode(totalCells);
+            IO.println("LEVEL UP! Level " + hero.getLevel() + " - Choose " + totalCells + " cells to unlock!");
+        }
 
         state.openLootScreen(lootItems);
-        IO.println("Combat won! Gained " + reward + " gold and " + lootItems.size() + " items to choose from.");
+        IO.println("Combat won! Gained " + goldReward + " gold, " + xpReward + " XP and " + lootItems.size() + " items to choose from.");
+        if (levelsGained > 0) {
+            IO.println("You gained " + levelsGained + " level(s)! Now level " + hero.getLevel());
+        }
         View.draw(context, state);
         return true;
     }

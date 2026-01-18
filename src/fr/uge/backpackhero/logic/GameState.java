@@ -25,7 +25,7 @@ public class GameState {
     int floor = 0;
     Position position = new Position(0, 0);
     final Hero hero = new Hero();
-    Backpack backpack = new Backpack(5, 3);
+    Backpack backpack = new Backpack(7, 5);
     CombatEngine combatEngine = new CombatEngine();
     private Position selectedItemAnchor = null;
     private Item selectedItem = null;
@@ -42,6 +42,8 @@ public class GameState {
     private Item selectedMerchantItem = null;
     private Item discardConfirmItem = null;
     private Position discardConfirmAnchor = null;
+    private boolean cellUnlockMode = false;
+    private int cellsToUnlock = 0;
 
     public GameState() {
     }
@@ -321,6 +323,33 @@ public class GameState {
 
     public boolean isDiscardConfirmOpen() {
         return discardConfirmItem != null;
+    }
+
+    public boolean isCellUnlockMode() {
+        return cellUnlockMode;
+    }
+
+    public int getCellsToUnlock() {
+        return cellsToUnlock;
+    }
+
+    public void startCellUnlockMode(int count) {
+        this.cellUnlockMode = true;
+        this.cellsToUnlock = count;
+    }
+
+    public void unlockCellAt(Position pos) {
+        if (backpack.unlockCell(pos)) {
+            cellsToUnlock--;
+            if (cellsToUnlock <= 0) {
+                cellUnlockMode = false;
+            }
+        }
+    }
+
+    public void endCellUnlockMode() {
+        this.cellUnlockMode = false;
+        this.cellsToUnlock = 0;
     }
 
 }

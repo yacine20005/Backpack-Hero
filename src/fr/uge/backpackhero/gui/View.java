@@ -35,7 +35,7 @@ public class View {
     /** The size of each tile in pixels. */
     public static final int TILE_SIZE = 100;
     /** The width of the backpack display area in tiles. */
-    public static final int BACKPACK_WIDTH_IN_TILES = 5;
+    public static final int BACKPACK_WIDTH_IN_TILES = 7;
     /** The width of the backpack display area in pixels. */
     public static final int BACKPACK_PIXEL_WIDTH = BACKPACK_WIDTH_IN_TILES * TILE_SIZE;
 
@@ -43,13 +43,15 @@ public class View {
     /** X position for all left sidebar popups. */
     public static final int POPUP_X = 10;
     /** Y position for all interactive popups. */
-    public static final int POPUP_Y = 500;
+    public static final int POPUP_Y = 670;
     /** Width for all popups. */
     public static final int POPUP_WIDTH = BACKPACK_PIXEL_WIDTH - 20;
     /** Padding inside popups. */
     public static final int POPUP_PADDING = 10;
     /** Spacing between text lines in popups. */
     public static final int POPUP_LINE_SPACING = 25;
+    /** Standard popup height. */
+    public static final int POPUP_HEIGHT = 150;
 
     // Button constants
     /** Standard button width. */
@@ -60,6 +62,28 @@ public class View {
     public static final int SMALL_BUTTON_WIDTH = 80;
     /** Small button height for mode switches. */
     public static final int SMALL_BUTTON_HEIGHT = 25;
+    /** Button spacing (horizontal gap between buttons). */
+    public static final int BUTTON_SPACING = 50;
+    /** Button text offset X. */
+    public static final int BUTTON_TEXT_X = 20;
+    /** Button text offset Y. */
+    public static final int BUTTON_TEXT_Y = 23;
+    
+    // Common colors
+    /** Dark background for popups. */
+    public static final Color DARK_BG = new Color(20, 20, 20);
+    /** Semi-transparent dark overlay. */
+    public static final Color OVERLAY_BG = new Color(0, 0, 0, 180);
+    /** Button/box gray. */
+    public static final Color BOX_GRAY = new Color(60, 60, 60);
+    
+    // Font sizes
+    /** Large title font size. */
+    public static final float FONT_LARGE = 20f;
+    /** Medium font size. */
+    public static final float FONT_MEDIUM = 14f;
+    /** Small font size. */
+    public static final float FONT_SMALL = 12f;
 
     /**
      * Draws the entire game view including backpack, dungeon, hero, and combat
@@ -125,7 +149,7 @@ public class View {
     private static void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor,
             boolean isSelected) {
         int x = cellPos.x() * TILE_SIZE;
-        int y = (cellPos.y() * TILE_SIZE) + TILE_SIZE;
+        int y = cellPos.y() * TILE_SIZE;
 
         Color itemColor = switch (item) {
             case Armor armor -> new Color(139, 69, 19);
@@ -163,15 +187,12 @@ public class View {
         var screenInfo = screen.getDeviceConfiguration().getBounds();
         int screenHeight = (int) screenInfo.getHeight();
 
-        screen.setColor(new Color(20, 20, 20));
+        screen.setColor(DARK_BG);
         screen.fillRect(0, 0, BACKPACK_PIXEL_WIDTH, screenHeight);
-
-        screen.setColor(Color.WHITE);
-        screen.drawString("Gold: " + backpack.goldAmount(), 10, 40);
 
         int backpackHeightInTiles = backpack.getHeight();
 
-        drawBackpackGrid(screen, backpackHeightInTiles);
+        drawBackpackGrid(screen, backpack, state, backpackHeightInTiles);
 
         drawItems(screen, backpack, state);
     }
@@ -196,20 +217,46 @@ public class View {
     }
 
     /**
-     * Draws the grid of the backpack.
+     * Draws the grid of the backpack with locked cells grayed out.
      * 
      * @param screen        the graphics context to draw on
+     * @param backpack      the backpack to get unlocked cells from
+     * @param state         the game state to check for unlock mode
      * @param heightInTiles the height of the backpack in tiles
      */
-    private static void drawBackpackGrid(Graphics2D screen, int heightInTiles) {
-        screen.setColor(Color.GRAY);
+    private static void drawBackpackGrid(Graphics2D screen, Backpack backpack, GameState state, int heightInTiles) {
         screen.setStroke(new BasicStroke(1));
 
         for (int y = 0; y < heightInTiles; y++) {
             for (int x = 0; x < BACKPACK_WIDTH_IN_TILES; x++) {
+                var pos = new Position(x, y);
+                boolean isUnlocked = backpack.isUnlocked(pos);
+                boolean canUnlock = state.isCellUnlockMode() && backpack.canUnlockCell(pos);
+                
+                // Draw cell background
+                if (canUnlock) {
+                    // Unlockable cells are highlighted in green
+                    screen.setColor(new Color(0, 150, 0, 100));
+                    screen.fillRect(
+                            x * TILE_SIZE,
+                            y * TILE_SIZE,
+                            TILE_SIZE,
+                            TILE_SIZE);
+                } else if (!isUnlocked) {
+                    // Locked cells are dark gray
+                    screen.setColor(new Color(50, 50, 50));
+                    screen.fillRect(
+                            x * TILE_SIZE,
+                            y * TILE_SIZE,
+                            TILE_SIZE,
+                            TILE_SIZE);
+                }
+                
+                // Draw cell border
+                screen.setColor(canUnlock ? Color.GREEN : (isUnlocked ? Color.GRAY : new Color(80, 80, 80)));
                 screen.drawRect(
                         x * TILE_SIZE,
-                        (y * TILE_SIZE) + (TILE_SIZE),
+                        y * TILE_SIZE,
                         TILE_SIZE,
                         TILE_SIZE);
             }
@@ -322,8 +369,8 @@ public class View {
         int panelHeight = 80 + enemies.size() * 40;
         int x = (width - panelWidth) / 2;
         int y = (screenHeight - panelHeight) / 2;
-        screen.setColor(new Color(0, 0, 0, 180));
-        screen.fillRect(x - 10, y - 25, panelWidth + 20, panelHeight + 40);
+        screen.setColor(OVERLAY_BG);
+        screen.fillRect(x - POPUP_PADDING, y - POPUP_LINE_SPACING, panelWidth + POPUP_PADDING * 2, panelHeight + 40);
         var oldFont = screen.getFont();
         screen.setFont(oldFont.deriveFont(50f));
         screen.setColor(Color.WHITE);
@@ -340,7 +387,7 @@ public class View {
         textY += 20;
 
         // Display end turn hint
-        screen.setFont(oldFont.deriveFont(14f));
+        screen.setFont(oldFont.deriveFont(FONT_MEDIUM));
         screen.setColor(Color.YELLOW);
         screen.drawString("Press X to end turn | CTRL to cycle target", textX, textY);
         screen.setColor(Color.WHITE);
@@ -440,9 +487,9 @@ public class View {
         screen.fillRect(x, y, w, h);
         screen.setColor(Color.WHITE);
         screen.drawRect(x, y, w, h);
-        screen.setFont(screen.getFont().deriveFont(Font.BOLD, 16f));
-        screen.drawString("MERCHANT", x + POPUP_PADDING, y + 25);
-        screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 14f));
+        screen.setFont(screen.getFont().deriveFont(Font.BOLD, FONT_LARGE - 4f));
+        screen.drawString("MERCHANT", x + POPUP_PADDING, y + POPUP_LINE_SPACING);
+        screen.setFont(screen.getFont().deriveFont(Font.PLAIN, FONT_MEDIUM));
         screen.drawString("Gold: " + state.getBackpack().goldAmount(), x + POPUP_PADDING, y + 45);
 
         // Draw BUY/SELL buttons
@@ -452,18 +499,18 @@ public class View {
         boolean isBuyMode = state.getMerchantMode().equals("BUY");
 
         // BUY button
-        screen.setColor(isBuyMode ? new Color(0, 150, 0) : new Color(60, 60, 60));
+        screen.setColor(isBuyMode ? new Color(0, 150, 0) : BOX_GRAY);
         screen.fillRect(x + POPUP_PADDING, btnY, btnW, btnH);
         screen.setColor(Color.WHITE);
         screen.drawRect(x + POPUP_PADDING, btnY, btnW, btnH);
         screen.drawString("BUY (B)", x + POPUP_PADDING + 15, btnY + 18);
 
         // SELL button
-        screen.setColor(!isBuyMode ? new Color(150, 0, 0) : new Color(60, 60, 60));
-        screen.fillRect(x + POPUP_PADDING + btnW + 10, btnY, btnW, btnH);
+        screen.setColor(!isBuyMode ? new Color(150, 0, 0) : BOX_GRAY);
+        screen.fillRect(x + POPUP_PADDING + btnW + POPUP_PADDING, btnY, btnW, btnH);
         screen.setColor(Color.WHITE);
-        screen.drawRect(x + POPUP_PADDING + btnW + 10, btnY, btnW, btnH);
-        screen.drawString("SELL (S)", x + POPUP_PADDING + btnW + 23, btnY + 18);
+        screen.drawRect(x + POPUP_PADDING + btnW + POPUP_PADDING, btnY, btnW, btnH);
+        screen.drawString("SELL (S)", x + POPUP_PADDING + btnW + BUTTON_TEXT_X + 3, btnY + 18);
 
         int lineY = y + 105;
 
@@ -496,16 +543,16 @@ public class View {
                 }
 
                 // Item box
-                screen.setColor(new Color(60, 60, 60));
+                screen.setColor(BOX_GRAY);
                 screen.fill(new Rectangle2D.Float(x + POPUP_PADDING, itemY, w - POPUP_PADDING * 2, itemHeight - 5));
                 screen.setColor(Color.WHITE);
                 screen.draw(new Rectangle2D.Float(x + POPUP_PADDING, itemY, w - POPUP_PADDING * 2, itemHeight - 5));
 
                 // Item name and info
-                screen.setFont(screen.getFont().deriveFont(Font.BOLD, 14f));
-                screen.drawString(itemKeys.charAt(i) + ". " + item.getName(), x + POPUP_PADDING * 2, itemY + 20);
+                screen.setFont(screen.getFont().deriveFont(Font.BOLD, FONT_MEDIUM));
+                screen.drawString(itemKeys.charAt(i) + ". " + item.getName(), x + POPUP_PADDING * 2, itemY + BUTTON_TEXT_X);
 
-                screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 12f));
+                screen.setFont(screen.getFont().deriveFont(Font.PLAIN, FONT_SMALL));
                 var shape = item.getShape();
                 screen.drawString("Size: " + shape.getWidth() + "x" + shape.getHeight() +
                         " | Price: " + price + "g", x + POPUP_PADDING * 2, itemY + 38);
@@ -564,9 +611,9 @@ public class View {
         int boxX = POPUP_X;
         int boxY = POPUP_Y;
         int boxW = POPUP_WIDTH;
-        int boxH = 150;
+        int boxH = POPUP_HEIGHT;
 
-        screen.setColor(new Color(20, 20, 20));
+        screen.setColor(DARK_BG);
         screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
         screen.setColor(Color.WHITE);
         screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
@@ -587,9 +634,9 @@ public class View {
         int boxX = POPUP_X;
         int boxY = POPUP_Y;
         int boxW = POPUP_WIDTH;
-        int boxH = 180;
+        int boxH = POPUP_HEIGHT + 30; // Slightly taller for heal info
 
-        screen.setColor(new Color(20, 20, 20));
+        screen.setColor(DARK_BG);
         screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
 
         screen.setColor(Color.WHITE);
@@ -609,31 +656,43 @@ public class View {
     }
 
     private static void drawButton(Graphics2D screen, int x, int y, int w, int h, String text) {
-        screen.setColor(new Color(60, 60, 60));
+        screen.setColor(BOX_GRAY);
         screen.fill(new Rectangle2D.Float(x, y, w, h));
         screen.setColor(Color.WHITE);
         screen.draw(new Rectangle2D.Float(x, y, w, h));
-        screen.drawString(text, x + 20, y + 23);
+        screen.drawString(text, x + BUTTON_TEXT_X, y + BUTTON_TEXT_Y);
     }
 
     private static void drawStatsBox(Graphics2D screen, GameState state) {
         int x = POPUP_X;
-        int y = 420;
+        int y = 510;
         int w = POPUP_WIDTH;
-        int h = 100;
+        int h = 150;
 
         var hero = state.getHero();
         int hp = hero.getHp();
         int maxHp = hero.getMaxHp();
         int gold = state.getBackpack().goldAmount();
+        int level = hero.getLevel();
+        int xp = hero.getXp();
+        int xpToNext = hero.getXpToNextLevel();
 
-        screen.setColor(new Color(20, 20, 20));
+        screen.setColor(DARK_BG);
         screen.fill(new Rectangle2D.Float(x, y, w, h));
         screen.setColor(Color.WHITE);
         screen.draw(new Rectangle2D.Float(x, y, w, h));
 
-        screen.drawString("HP: " + hp + "/" + maxHp, x + POPUP_PADDING, y + 45);
-        screen.drawString("Gold: " + gold, x + POPUP_PADDING, y + 70);
+        screen.drawString("HP: " + hp + "/" + maxHp, x + POPUP_PADDING, y + 30);
+        screen.drawString("Gold: " + gold, x + POPUP_PADDING, y + 55);
+        screen.drawString("Level: " + level, x + POPUP_PADDING, y + 80);
+        screen.drawString("XP: " + xp + "/" + xpToNext, x + POPUP_PADDING, y + 105);
+        
+        // Show unlock mode message
+        if (state.isCellUnlockMode()) {
+            screen.setColor(Color.GREEN);
+            screen.drawString("Click " + state.getCellsToUnlock() + " cells to unlock", x + POPUP_PADDING, y + h - 10);
+            screen.setColor(Color.WHITE);
+        }
     }
 
     private static void drawLootScreen(Graphics2D screen, GameState state) {
@@ -646,7 +705,7 @@ public class View {
         int boxH = 420;
 
         // Background box
-        screen.setColor(new Color(20, 20, 20));
+        screen.setColor(DARK_BG);
         screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
 
         // Outline
@@ -654,12 +713,12 @@ public class View {
         screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
 
         // Title
-        screen.setFont(screen.getFont().deriveFont(Font.BOLD, 20f));
+        screen.setFont(screen.getFont().deriveFont(Font.BOLD, FONT_LARGE));
         String title = state.isInCombat() ? "VICTORY!" : "TREASURE!";
         screen.drawString(title, boxX + 120, boxY + 30);
 
         // Instructions
-        screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 14f));
+        screen.setFont(screen.getFont().deriveFont(Font.PLAIN, FONT_MEDIUM));
         screen.drawString("Choose items to take:", boxX + POPUP_PADDING, boxY + 55);
 
         var loot = state.getAvailableLoot();
@@ -686,16 +745,16 @@ public class View {
                 }
 
                 // Item box
-                screen.setColor(new Color(60, 60, 60));
-                screen.fill(new Rectangle2D.Float(boxX + 10, itemY, boxW - 20, itemHeight - 5));
+                screen.setColor(BOX_GRAY);
+                screen.fill(new Rectangle2D.Float(boxX + POPUP_PADDING, itemY, boxW - POPUP_PADDING * 2, itemHeight - 5));
                 screen.setColor(Color.WHITE);
-                screen.draw(new Rectangle2D.Float(boxX + 10, itemY, boxW - 20, itemHeight - 5));
+                screen.draw(new Rectangle2D.Float(boxX + POPUP_PADDING, itemY, boxW - POPUP_PADDING * 2, itemHeight - 5));
 
                 // Item name and info
-                screen.setFont(screen.getFont().deriveFont(Font.BOLD, 14f));
-                screen.drawString(itemKeys.charAt(i) + ". " + item.getName(), boxX + POPUP_PADDING * 2, itemY + 20);
+                screen.setFont(screen.getFont().deriveFont(Font.BOLD, FONT_MEDIUM));
+                screen.drawString(itemKeys.charAt(i) + ". " + item.getName(), boxX + POPUP_PADDING * 2, itemY + BUTTON_TEXT_X);
 
-                screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 12f));
+                screen.setFont(screen.getFont().deriveFont(Font.PLAIN, FONT_SMALL));
                 var shape = item.getShape();
                 screen.drawString("Size: " + shape.getWidth() + "x" + shape.getHeight() +
                         " | Rarity: " + item.getRarity(), boxX + POPUP_PADDING * 2, itemY + 38);
@@ -722,7 +781,7 @@ public class View {
 
     private static void drawVictory(Graphics2D screen, int width, int height) {
         // Background overlay
-        screen.setColor(new Color(0, 0, 0, 150));
+        screen.setColor(OVERLAY_BG);
         screen.fill(new Rectangle2D.Float(0, 0, width, height));
 
         // Victory text

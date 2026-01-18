@@ -91,7 +91,7 @@
   - [x] Afficher les ennemis (HP, block, action annoncée)
   - [x] Cliquer sur une arme → attaquer un ennemi
   - [x] Cliquer sur une armure → se défendre
-  - [ ] Bouton "Fin de tour"
+  - [x] Bouton "Fin de tour"
 - [x] Affichage du loot après combat
 - [x] Écran de victoire/défaite
 

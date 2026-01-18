@@ -262,6 +262,24 @@ public class CombatEngine {
     }
 
     /**
+     * Calculates the total XP reward from all defeated enemies.
+     * 
+     * @return the total XP reward
+     */
+    public int calculateXpReward() {
+        if (currentEnemies == null || currentEnemies.isEmpty()) {
+            return 0;
+        }
+        int totalXp = 0;
+        for (var enemy : currentEnemies) {
+            if (!enemy.isAlive()) {
+                totalXp += enemy.getXpDrop();
+            }
+        }
+        return totalXp;
+    }
+
+    /**
      * Gets the currently selected enemy target.
      * 
      * @return the selected enemy, or null if none available

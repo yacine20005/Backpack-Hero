@@ -18,6 +18,9 @@ public class Hero {
     private int energy;
     private int mana;
     private int block;
+    private int level;
+    private int xp;
+    private int xpToNextLevel;
 
     /**
      * Creates a new Hero with default attributes.
@@ -28,7 +31,9 @@ public class Hero {
         this.energy = MAX_ENERGY;
         this.mana = 0;
         this.block = 0;
-
+        this.level = 1;
+        this.xp = 0;
+        this.xpToNextLevel = 10;
     }
 
     /**
@@ -126,12 +131,63 @@ public class Hero {
     }
 
     /**
+     * Returns the current level of the hero.
+     * 
+     * @return the current level
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Returns the current XP of the hero.
+     * 
+     * @return the current XP
+     */
+    public int getXp() {
+        return xp;
+    }
+
+    /**
+     * Returns the XP needed to reach the next level.
+     * 
+     * @return the XP needed for next level
+     */
+    public int getXpToNextLevel() {
+        return xpToNextLevel;
+    }
+
+    /**
+     * Adds XP to the hero and returns the number of levels gained.
+     * 
+     * @param amount the amount of XP to add
+     * @return the number of levels gained (0 if no level up)
+     */
+    public int addXp(int amount) {
+        if (amount <= 0) {
+            return 0;
+        }
+        xp += amount;
+        int levelsGained = 0;
+        
+        while (xp >= xpToNextLevel) {
+            xp -= xpToNextLevel;
+            level++;
+            levelsGained++;
+            // Each level requires 10 more XP than the previous
+            xpToNextLevel = 10 + (level - 1) * 5;
+        }
+        
+        return levelsGained;
+    }
+
+    /**
      * Returns a string representation of the hero's current state.
      * 
      * @return a string representation of the hero
      */
     @Override
     public String toString() {
-        return "Hero - HP=" + hp + "/" + MAX_HP + ", Energy=" + energy + ", Block=" + block;
+        return "Hero - HP=" + hp + "/" + MAX_HP + ", Energy=" + energy + ", Block=" + block + ", Level=" + level + ", XP=" + xp + "/" + xpToNextLevel;
     }
 }

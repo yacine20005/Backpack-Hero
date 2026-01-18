@@ -16,6 +16,7 @@ public class Enemy {
 	private int block;
 	private final int maxHp;
 	private final int goldDrop;
+	private final int xpDrop;
 
 	/**
 	 * Creates a new Enemy with the specified attributes.
@@ -25,14 +26,16 @@ public class Enemy {
 	 * @param attack   the attack value of the enemy
 	 * @param defense  the defense value of the enemy
 	 * @param goldDrop the amount of gold dropped by the enemy upon defeat
+	 * @param xpDrop   the amount of XP dropped by the enemy upon defeat
 	 */
-	public Enemy(String name, int maxHp, int attack, int defense, int goldDrop) {
+	public Enemy(String name, int maxHp, int attack, int defense, int goldDrop, int xpDrop) {
 		this.name = Objects.requireNonNull(name);
 		this.maxHp = maxHp;
 		this.hp = maxHp;
 		this.attack = attack;
 		this.defense = defense;
 		this.goldDrop = goldDrop;
+		this.xpDrop = xpDrop;
 		this.block = 0;
 	}
 
@@ -42,7 +45,7 @@ public class Enemy {
 	 * @return a new Rat Loup enemy instance
 	 */
 	public static Enemy ratLoup() {
-		return new Enemy("Rat Loup", 10, 1, 3, 6);
+		return new Enemy("Rat Loup", 10, 1, 3, 6, 3);
 	}
 
 	/**
@@ -51,23 +54,23 @@ public class Enemy {
 	 * @return a new Petit Rat Loup enemy instance
 	 */
 	public static Enemy petitRatLoup() {
-		return new Enemy("Petit Rat Loup", 5, 1, 0, 3);
+		return new Enemy("Petit Rat Loup", 5, 1, 0, 3, 2);
 	}
 
 	public static Enemy Gobelin() {
-		return new Enemy("Gobelin", 18, 8, 3, 8);
+		return new Enemy("Gobelin", 18, 8, 3, 8, 5);
 	}
 
 	public static Enemy ChefGobelins() {
-		return new Enemy("Chef gobelin", 22, 9, 5, 10);
+		return new Enemy("Chef gobelin", 22, 9, 5, 10, 7);
 	}
 
 	public static Enemy Demon() {
-		return new Enemy("Demon", 30, 12, 7, 15);
+		return new Enemy("Demon", 30, 12, 7, 15, 10);
 	}
 
 	public static Enemy RoiDemon() {
-		return new Enemy("Roi Demon", 35, 14, 9, 20);
+		return new Enemy("Roi Demon", 35, 14, 9, 20, 15);
 	}
 
 	/**
@@ -158,6 +161,15 @@ public class Enemy {
 	 */
 	public int getGoldDrop() {
 		return goldDrop;
+	}
+
+	/**
+	 * Returns the amount of XP dropped by the enemy upon defeat.
+	 * 
+	 * @return the XP drop amount
+	 */
+	public int getXpDrop() {
+		return xpDrop;
 	}
 
 	/**
