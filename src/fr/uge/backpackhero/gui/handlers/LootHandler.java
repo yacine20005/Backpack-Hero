@@ -1,0 +1,78 @@
+package fr.uge.backpackhero.gui.handlers;
+
+import java.util.Objects;
+import com.github.forax.zen.ApplicationContext;
+import com.github.forax.zen.PointerEvent;
+import fr.uge.backpackhero.gui.View;
+import fr.uge.backpackhero.logic.GameState;
+import fr.uge.backpackhero.logic.State;
+import fr.uge.backpackhero.model.level.Room;
+import fr.uge.backpackhero.model.level.RoomType;
+import fr.uge.backpackhero.model.item.Item;
+
+public class LootHandler {
+    private final GameState state;
+    private final View view;
+
+    public LootHandler(GameState state, View view) {
+        this.state = Objects.requireNonNull(state);
+        this.view = Objects.requireNonNull(view);
+    }
+
+    public void handleLootContinue(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
+        if (state.getState() != State.LOOT_SCREEN)
+            return;
+
+        state.closeLootScreen();
+
+        // Only end combat if we were in combat
+        if (state.getState() == State.LOOT_SCREEN) {
+            var combat = state.getCombatEngine();
+            combat.endCombat();
+        }
+
+        var floor = state.getCurrentFloor();
+        var pos = state.getPosition();
+        floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
+
+        IO.println("Loot screen closed.");
+        view.draw(context);
+    }
+
+    public boolean handleLootScreenClick(ApplicationContext context, PointerEvent pe) {
+        Objects.requireNonNull(context, "context cannot be null");
+        Objects.requireNonNull(pe, "pe cannot be null");
+        if (state.isGameOver()) {
+            return true;
+        }
+
+        if (state.getState() != State.LOOT_SCREEN)
+            return false;
+        if (pe.action() != PointerEvent.Action.POINTER_DOWN)
+            return true;
+
+        return true;
+    }
+
+    public void handleLootItemSelection(ApplicationContext context, int index) {
+        Objects.requireNonNull(context, "context cannot be null");
+        var loot = state.getAvailableLoot();
+        if (loot == null || loot.isEmpty()) {
+            return;
+        }
+
+        if (index < loot.size()) {
+            Item selectedItem = loot.get(index);
+            // Toggle selection: deselect if already selected
+            if (selectedItem.equals(state.getSelectedLootItem())) {
+                state.setSelectedLootItem(null);
+                System.out.println("Deselected loot item: " + selectedItem.getName());
+            } else {
+                state.setSelectedLootItem(selectedItem);
+                System.out.println("Selected loot item: " + selectedItem.getName());
+            }
+            view.draw(context);
+        }
+    }
+}
