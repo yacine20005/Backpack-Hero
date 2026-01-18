@@ -6,6 +6,8 @@ package fr.uge.backpackhero.logic;
  * @author Yacine
  */
 public enum MerchantMode {
+    /** The player is buying items from the merchant. */
     BUY,
+    /** The player is selling items to the merchant. */
     SELL
 }

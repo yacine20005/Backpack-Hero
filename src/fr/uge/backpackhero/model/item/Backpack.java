@@ -33,6 +33,7 @@ public class Backpack {
      * Creates a new Backpack with the specified width and height.
      * ckpack
      * 
+     * @param width  the width of the backpack
      * @param height the height of the backpack
      */
     public Backpack(int width, int height) {

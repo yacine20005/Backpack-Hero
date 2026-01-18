@@ -97,6 +97,11 @@ public final class Armor implements Item {
         return new Armor("Golden Shield", 8, 2, 0, Shape.SQUARE_2X2, Rarity.RARE, 30);
     }
 
+    /**
+     * Creates a Diamond Shield armor.
+     * 
+     * @return a Diamond Shield armor
+     */
     public static Armor diamondShield() {
         return new Armor("Diamond Shield", 12, 3, 0, Shape.SQUARE_2X2, Rarity.EPIC, 50);
     }

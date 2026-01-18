@@ -11,10 +11,20 @@ import fr.uge.backpackhero.model.level.Position;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.RoomType;
 
+/**
+ * Handler for dungeon interactions.
+ * Manages player movement and room interactions (enemies, treasure, healer, merchant).
+ */
 public class DungeonHandler {
     private final GameState state;
     private final View view;
 
+    /**
+     * Creates a new DungeonHandler.
+     * 
+     * @param state the game state
+     * @param view  the view to update
+     */
     public DungeonHandler(GameState state, View view) {
         this.state = Objects.requireNonNull(state);
         this.view = Objects.requireNonNull(view);

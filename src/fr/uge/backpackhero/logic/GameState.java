@@ -59,6 +59,10 @@ public class GameState {
     // Loot system
     private List<Item> availableLoot = null;
 
+    /**
+     * Creates a new GameState with default values.
+     * Initializes the dungeon, hero, backpack, and combat engine.
+     */
     public GameState() {
     }
 

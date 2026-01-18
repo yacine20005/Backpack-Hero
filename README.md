@@ -139,9 +139,9 @@
 
 ### Score & Hall of Fame (PRIORITÉ 1)
 
-- [ ] Formule de score (HP max + somme prix équipements)
-- [ ] Hall of Fame avec les 3 meilleures parties
-- [ ] Sauvegarder/charger avec `java.nio` (PAS `java.io.File` !)
+- [x] Formule de score (HP max + somme prix équipements)
+- [x] Hall of Fame avec les 3 meilleures parties
+- [x] Sauvegarder/charger avec `java.nio` (PAS `java.io.File` !)
 
 ### Nouveaux ennemis
 

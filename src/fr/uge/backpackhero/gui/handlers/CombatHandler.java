@@ -10,10 +10,20 @@ import fr.uge.backpackhero.model.entity.Enemy;
 import fr.uge.backpackhero.model.entity.Hero;
 import fr.uge.backpackhero.model.loot.LootTables;
 
+/**
+ * Handler for combat interactions.
+ * Manages turn progression and combat actions.
+ */
 public class CombatHandler {
     private final GameState state;
     private final View view;
 
+    /**
+     * Creates a new CombatHandler.
+     * 
+     * @param state the game state
+     * @param view  the view to update
+     */
     public CombatHandler(GameState state, View view) {
         this.state = Objects.requireNonNull(state);
         this.view = Objects.requireNonNull(view);
@@ -65,7 +75,7 @@ public class CombatHandler {
             }
         }
         if (!hero.isAlive()) {
-            System.out.println("The hero is dead.");
+            IO.println("The hero is dead.");
             state.setGameOver(true);
             state.setState(State.EXPLORATION);
             combat.endCombat();
@@ -85,7 +95,7 @@ public class CombatHandler {
         }
 
         if (!hero.isAlive()) {
-            System.out.println("The hero is dead.");
+            IO.println("The hero is dead.");
             state.setGameOver(true);
             state.setState(State.EXPLORATION);
             combat.endCombat();

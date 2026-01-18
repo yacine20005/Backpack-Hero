@@ -6,6 +6,8 @@ package fr.uge.backpackhero.logic;
  * @author Yacine
  */
 public enum EnemyAction {
+    /** The enemy intends to attack the hero. */
     ATTACK,
+    /** The enemy intends to defend itself. */
     DEFEND
 }

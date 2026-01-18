@@ -1,0 +1,41 @@
+<project name="BackpackHero" default="jar" basedir=".">
+
+    <!-- Target CLEAN : We delete generated files from the project -->
+    <target name="clean">
+        <delete dir="classes"/>
+        <delete dir="docs/doc"/>
+        <delete file="BackpackHero.jar"/>
+    </target>
+
+    <!-- Target COMPILE : We compile the files from the src folder to the classes folder -->
+    <target name="compile">
+        <mkdir dir="classes"/>
+        <javac srcdir="src" destdir="classes" includeantruntime="false" encoding="UTF-8">
+            <!-- We specify where the Zen library is so the compiler doesn't complain -->
+            <modulepath location="lib/zen-6.0.jar"/>
+        </javac>
+    </target>
+
+    <!-- Target JAR : We create the executable -->
+    <target name="jar" depends="compile">
+        <jar destfile="BackpackHero.jar" basedir="classes">
+            <manifest>
+                <!-- The class that contains the main method -->
+                <attribute name="Main-Class" value="fr.uge.backpackhero.Main"/>
+                <!-- Where to find the Zen library when running the jar -->
+                <attribute name="Class-Path" value="lib/zen-6.0.jar"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Target JAVADOC : We generate the doc in docs/doc -->
+    <target name="javadoc">
+        <mkdir dir="docs/doc"/>
+        <javadoc sourcepath="src" destdir="docs/doc" locale="en_US">
+            <modulepath location="lib/zen-6.0.jar"/>
+            <!-- We say to take all .java files in src -->
+            <fileset dir="src" includes="**/*.java"/>
+        </javadoc>
+    </target>
+
+</project>

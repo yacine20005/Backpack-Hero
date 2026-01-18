@@ -13,11 +13,22 @@ import fr.uge.backpackhero.model.level.RoomType;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.item.Item;
 
+/**
+ * Handler for backpack interactions.
+ * Manages item placement, rotation, and usage within the backpack.
+ */
 public class BackpackHandler {
     private final GameState state;
     private final View view;
     private final CombatHandler combatHandler;
 
+    /**
+     * Creates a new BackpackHandler.
+     * 
+     * @param state         the game state
+     * @param view          the view to update
+     * @param combatHandler the combat handler for item usage in combat
+     */
     public BackpackHandler(GameState state, View view, CombatHandler combatHandler) {
         this.state = Objects.requireNonNull(state);
         this.view = Objects.requireNonNull(view);
@@ -129,7 +140,7 @@ public class BackpackHandler {
 
         var item = optItem.get();
         if (!useItemInCombat(state, item)) {
-            System.out.println("Cannot use item in combat.");
+            IO.println("Cannot use item in combat.");
             view.draw(context);
             return;
         }
@@ -152,7 +163,7 @@ public class BackpackHandler {
         // Prevent selling Gold
         switch (item) {
             case Gold gold -> {
-                System.out.println("Cannot sell gold!");
+                IO.println("Cannot sell gold!");
                 view.draw(context);
                 return;
             }
@@ -189,7 +200,7 @@ public class BackpackHandler {
                 if (backpack.move(selectedAnchor, pos)) {
                     state.clearSelectedItem();
                 } else {
-                    System.out.println("Cannot move item to this position.");
+                    IO.println("Cannot move item to this position.");
                 }
                 view.draw(context);
             }
@@ -205,13 +216,13 @@ public class BackpackHandler {
         Objects.requireNonNull(context, "context cannot be null");
         var selectedItemAnchor = state.getSelectedItemAnchor();
         if (selectedItemAnchor == null) {
-            System.out.println("No item selected.");
+            IO.println("No item selected.");
             return;
         }
 
         var backpack = state.getBackpack();
         if (!backpack.rotateItem(selectedItemAnchor)) {
-            System.out.println("Cannot rotate item in current position.");
+            IO.println("Cannot rotate item in current position.");
         }
         view.draw(context);
     }
@@ -235,7 +246,7 @@ public class BackpackHandler {
 
         var selectedAnchor = state.getSelectedItemAnchor();
         if (selectedAnchor == null) {
-            System.out.println("No item selected to discard.");
+            IO.println("No item selected to discard.");
             return;
         }
 
@@ -246,7 +257,7 @@ public class BackpackHandler {
         // Prevent discarding Gold
         switch (item) {
             case Gold gold -> {
-                System.out.println("Cannot discard gold!");
+                IO.println("Cannot discard gold!");
                 view.draw(context);
                 return;
             }
@@ -273,7 +284,7 @@ public class BackpackHandler {
         if (item != null && anchor != null) {
             state.getBackpack().removeItem(anchor);
             state.clearSelectedItem();
-            System.out.println("Discarded: " + item.getName());
+            IO.println("Discarded: " + item.getName());
         }
         state.closeDiscardConfirm();
         view.draw(context);

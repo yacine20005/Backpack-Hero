@@ -125,6 +125,15 @@ public class Room {
         return collected;
     }
 
+    /**
+     * Attempts to retrieve an item from the room's treasure and place it in the backpack.
+     * 
+     * @param backpack the backpack to place the item in
+     * @param position the position in the backpack to place the item
+     * @param item     the item to retrieve
+     * @return true if the item was successfully placed in the backpack, false otherwise
+     * @throws IllegalArgumentException if the item is not in the room's treasure
+     */
     public boolean getFromTreasure(Backpack backpack, Position position, Item item) {
         Objects.requireNonNull(backpack, "backpack cannot be null");
         Objects.requireNonNull(position, "position cannot be null");

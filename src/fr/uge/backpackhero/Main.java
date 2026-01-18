@@ -32,7 +32,7 @@ public class Main {
     private final static int EVENT_POLL_TIMEOUT_MS = 10;
     private static final HOF HALL_OF_FAME = initializeHOF();
     private static String playerName = "Player";
-    
+
     /**
      * Initializes the Hall of Fame, handling potential I/O errors.
      * 
@@ -83,7 +83,7 @@ public class Main {
                 }
                 scoreSubmitted = true;
             }
-            
+
             var event = context.pollOrWaitEvent(EVENT_POLL_TIMEOUT_MS);
             if (event == null) {
                 continue;
@@ -99,7 +99,8 @@ public class Main {
                     }
 
                     // Handle End Turn in combat with X
-                    if (ke.key() == KeyboardEvent.Key.X && state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
+                    if (ke.key() == KeyboardEvent.Key.X && state.getState() == State.COMBAT
+                            && state.getState() != State.LOOT_SCREEN) {
                         controller.handleEndTurn(context);
                         continue;
                     }
@@ -108,8 +109,7 @@ public class Main {
                     if ((ke.key() == KeyboardEvent.Key.CTRL)
                             && state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
                         state.getCombatEngine().cycleEnemyTarget();
-                        System.out
-                                .println("Switched target to: " + state.getCombatEngine().getSelectedEnemy().getName());
+                        IO.println("Switched target to: " + state.getCombatEngine().getSelectedEnemy().getName());
                         view.draw(context);
                         continue;
                     }
@@ -240,10 +240,10 @@ public class Main {
             }
         }
 
-        System.out.println("Thanks for playing !");
+        IO.println("Thanks for playing !");
         context.dispose();
     }
-    
+
     /**
      * Returns the Hall of Fame instance.
      * 

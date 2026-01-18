@@ -10,10 +10,20 @@ import fr.uge.backpackhero.model.level.Room;
 import fr.uge.backpackhero.model.level.RoomType;
 import fr.uge.backpackhero.model.item.Item;
 
+/**
+ * Handler for loot interactions.
+ * Manages item selection and collection from the loot screen.
+ */
 public class LootHandler {
     private final GameState state;
     private final View view;
 
+    /**
+     * Creates a new LootHandler.
+     * 
+     * @param state the game state
+     * @param view  the view to update
+     */
     public LootHandler(GameState state, View view) {
         this.state = Objects.requireNonNull(state);
         this.view = Objects.requireNonNull(view);
@@ -85,10 +95,10 @@ public class LootHandler {
             // Toggle selection: deselect if already selected
             if (selectedItem.equals(state.getSelectedLootItem())) {
                 state.setSelectedLootItem(null);
-                System.out.println("Deselected loot item: " + selectedItem.getName());
+                IO.println("Deselected loot item: " + selectedItem.getName());
             } else {
                 state.setSelectedLootItem(selectedItem);
-                System.out.println("Selected loot item: " + selectedItem.getName());
+                IO.println("Selected loot item: " + selectedItem.getName());
             }
             view.draw(context);
         }

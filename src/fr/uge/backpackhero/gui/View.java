@@ -102,7 +102,6 @@ public class View {
      * interface.
      * 
      * @param context the application context
-     * @param state   the current game state
      */
     public void draw(ApplicationContext context) {
         Objects.requireNonNull(context, "context cannot be null");

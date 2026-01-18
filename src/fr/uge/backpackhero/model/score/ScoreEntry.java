@@ -7,6 +7,9 @@ import java.util.Objects;
  * Each entry contains a player name, score, and level reached.
  * 
  * @author Yacine
+ * @param playerName the name of the player
+ * @param score      the score achieved
+ * @param level      the level reached
  */
 public record ScoreEntry(String playerName, int score, int level)
         implements Comparable<ScoreEntry> {

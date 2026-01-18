@@ -1,8 +1,0 @@
-module:fr.uge.backpackhero
-fr.uge.backpackhero
-fr.uge.backpackhero.gui
-fr.uge.backpackhero.logic
-fr.uge.backpackhero.model.entity
-fr.uge.backpackhero.model.item
-fr.uge.backpackhero.model.level
-fr.uge.backpackhero.model.loot

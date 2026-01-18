@@ -6,10 +6,20 @@ import fr.uge.backpackhero.gui.View;
 import fr.uge.backpackhero.logic.GameState;
 import fr.uge.backpackhero.logic.State;
 
+/**
+ * Handler for healer interactions.
+ * Manages the healer prompt logic.
+ */
 public class HealerHandler {
     private final GameState state;
     private final View view;
 
+    /**
+     * Creates a new HealerHandler.
+     * 
+     * @param state the game state
+     * @param view  the view to update
+     */
     public HealerHandler(GameState state, View view) {
         this.state = Objects.requireNonNull(state);
         this.view = Objects.requireNonNull(view);
@@ -29,7 +39,7 @@ public class HealerHandler {
         int heal = state.getHealerHealAmount();
 
         if (!state.getBackpack().spendGold(cost)) {
-            System.out.println("Not enough gold.");
+            IO.println("Not enough gold.");
             view.draw(context);
             return;
         }

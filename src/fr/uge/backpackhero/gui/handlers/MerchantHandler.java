@@ -11,10 +11,20 @@ import fr.uge.backpackhero.logic.PopupType;
 import fr.uge.backpackhero.model.level.RoomType;
 import fr.uge.backpackhero.model.item.Item;
 
+/**
+ * Handler for merchant interactions.
+ * Manages buying and selling items.
+ */
 public class MerchantHandler {
     private final GameState state;
     private final View view;
 
+    /**
+     * Creates a new MerchantHandler.
+     * 
+     * @param state the game state
+     * @param view  the view to update
+     */
     public MerchantHandler(GameState state, View view) {
         this.state = Objects.requireNonNull(state);
         this.view = Objects.requireNonNull(view);
@@ -62,7 +72,7 @@ public class MerchantHandler {
             int sellPrice = item.getPrice() / 2;
             state.getBackpack().removeItem(anchor);
             state.getBackpack().addGold(sellPrice);
-            System.out.println("Sold: " + item.getName() + " for " + sellPrice + "g");
+            IO.println("Sold: " + item.getName() + " for " + sellPrice + "g");
         }
         state.closeSellConfirm();
     }
@@ -101,10 +111,10 @@ public class MerchantHandler {
             // Toggle selection: deselect if already selected
             if (selectedItem.equals(state.getSelectedMerchantItem())) {
                 state.setSelectedMerchantItem(null);
-                System.out.println("Deselected merchant item: " + selectedItem.getName());
+                IO.println("Deselected merchant item: " + selectedItem.getName());
             } else {
                 state.setSelectedMerchantItem(selectedItem);
-                System.out.println("Selected merchant item: " + selectedItem.getName());
+                IO.println("Selected merchant item: " + selectedItem.getName());
             }
             view.draw(context);
         }

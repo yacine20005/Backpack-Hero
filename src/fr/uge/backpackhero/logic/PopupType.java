@@ -7,6 +7,8 @@ package fr.uge.backpackhero.logic;
  * @author Yacine
  */
 public enum PopupType {
+    /** Popup to confirm selling an item. */
     SELL_CONFIRM,
+    /** Popup to confirm discarding an item. */
     DISCARD_CONFIRM
 }

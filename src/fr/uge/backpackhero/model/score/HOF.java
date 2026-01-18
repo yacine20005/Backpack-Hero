@@ -73,13 +73,13 @@ public class HOF {
         boolean madeIt = addScore(playerName, score, level);
 
         if (madeIt) {
-            System.out.println("Congratulations! You made it to the Hall of Fame!");
-            System.out.println("Score: " + score + " (Level " + level + ")");
+            IO.println("Congratulations! You made it to the Hall of Fame!");
+            IO.println("Score: " + score + " (Level " + level + ")");
         } else {
-            System.out.println("Final Score: " + score + " (Level " + level + ")");
-            System.out.println("Minimum score for Hall of Fame: " + getMinimumScore());
+            IO.println("Final Score: " + score + " (Level " + level + ")");
+            IO.println("Minimum score for Hall of Fame: " + getMinimumScore());
         }
-        System.out.println("\n" + this.toString());
+        IO.println("\n" + this.toString());
     }
 
     /**
@@ -139,7 +139,7 @@ public class HOF {
                 entries.add(entry);
             } catch (IllegalArgumentException e) { // In case of a malformed line that would crash with the
                                                    // fromSaveString call
-                System.err.println("Skipping invalid score entry: " + line);
+                IO.println("Skipping invalid score entry: " + line);
             }
         }
 

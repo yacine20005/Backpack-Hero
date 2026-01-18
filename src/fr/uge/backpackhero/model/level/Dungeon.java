@@ -28,6 +28,9 @@ public class Dungeon {
     private final List<Floor> floors;
     private final Random rng;
 
+    /**
+     * Creates a new Dungeon with procedurally generated floors.
+     */
     public Dungeon() {
         this.floors = new ArrayList<>();
         this.rng = new Random();

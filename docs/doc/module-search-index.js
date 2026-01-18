@@ -1,1 +1,0 @@
-moduleSearchIndex = [{"l":"fr.uge.backpackhero"}];updateSearchResults();
