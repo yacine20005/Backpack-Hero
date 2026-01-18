@@ -11,8 +11,10 @@
     <target name="compile">
         <mkdir dir="classes"/>
         <javac srcdir="src" destdir="classes" includeantruntime="false" encoding="UTF-8">
-            <!-- We specify where the Zen library is so the compiler doesn't complain -->
+            <!-- We indicate where the Zen library is so the compiler doesn't complain -->
             <modulepath location="lib/zen-6.0.jar"/>
+            <!-- We suppress the warning about the require transitive directive because we can't fix it and it is beyond our reach (we are not Remi Forax prime) -->
+            <compilerarg value="-Xlint:-requires-transitive-automatic"/>
         </javac>
     </target>
 
