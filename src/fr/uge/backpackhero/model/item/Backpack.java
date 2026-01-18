@@ -56,7 +56,7 @@ public class Backpack {
             }
         }
 
-        place(Weapon.woodSword(), new Position(startCol, startRow));
+        place(Weapon.woodenSword(), new Position(startCol, startRow));
         place(Armor.woodenShield(), new Position(startCol + 1, startRow));
     }
 

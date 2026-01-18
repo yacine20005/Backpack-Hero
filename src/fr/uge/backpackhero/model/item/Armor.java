@@ -43,12 +43,25 @@ public class Armor extends Item {
     }
 
     /**
-     * Creates an Emerald Shield armor.
+     * Creates a Iron Shield armor.
      * 
-     * @return an Emerald Shield armor
+     * @return an Iron Shield armor
      */
-    public static Armor emeraldShield() {
-        return new Armor("Emerald Shield", 4, 1, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
+    public static Armor ironShield() {
+        return new Armor("Iron Shield", 5, 2, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
+    }
+
+    /**
+     * Creates a Golden Shield armor.
+     * 
+     * @return a Golden Shield armor
+     */
+    public static Armor goldenShield() {
+        return new Armor("Golden Shield", 8, 2, 0, Shape.SQUARE_2X2, Rarity.RARE, 30);
+    }
+
+    public static Armor diamondShield() {
+        return new Armor("Diamond Shield", 12, 3, 0, Shape.SQUARE_2X2, Rarity.EPIC, 50);
     }
 
     /**
@@ -57,16 +70,7 @@ public class Armor extends Item {
      * @return a Celestial Nighthawk armor
      */
     public static Armor celestialnighthawk() {
-        return new Armor("Celestial Nighthawk", 5, 2, 0, Shape.SQUARE_2X2, Rarity.UNCOMMON, 15);
-    }
-
-    /**
-     * Creates a Liar's Handshake armor from Destiny 2.
-     * 
-     * @return a Liar's Handshake armor
-     */
-    public static Armor liarshandshake() {
-        return new Armor("Liar's Handshake", 7, 0, 2, Shape.HORIZONTAL_3, Rarity.RARE, 30);
+        return new Armor("Celestial Nighthawk", 18, 3, 0, Shape.SQUARE_3X3, Rarity.EXOTIC, 100);
     }
 
     /**
@@ -75,7 +79,7 @@ public class Armor extends Item {
      * @return Lucky Pants armor
      */
     public static Armor luckypants() {
-        return new Armor("Lucky Pants", 10, 3, 0, Shape.VERTICAL_3, Rarity.EPIC, 50);
+        return new Armor("Lucky Pants", 15, 2, 0, Shape.VERTICAL_3, Rarity.EXOTIC, 80);
     }
 
     /**

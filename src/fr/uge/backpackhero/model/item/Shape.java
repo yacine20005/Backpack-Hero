@@ -75,12 +75,17 @@ public record Shape(List<Position> cells) {
             new Position(0, 1),
             new Position(1, 1)));
 
-    /** A T-shaped configuration. */
-    public static final Shape T_SHAPE = new Shape(List.of(
+    /** A square 3x3 shape. */
+    public static final Shape SQUARE_3X3 = new Shape(List.of(
+            new Position(0, 0),
             new Position(1, 0),
+            new Position(2, 0),
             new Position(0, 1),
             new Position(1, 1),
-            new Position(2, 1)));
+            new Position(2, 1),
+            new Position(0, 2),
+            new Position(1, 2),
+            new Position(2, 2)));
 
     /** A reversed T-shaped configuration. */
     public static final Shape T_SHAPE_REVERSED = new Shape(List.of(

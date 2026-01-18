@@ -157,7 +157,7 @@ public class Controller {
 
         // Prevent selling Gold
         switch (item) {
-            case Gold gold -> {
+            case Gold _ -> {
                 System.out.println("Cannot sell gold!");
                 View.draw(context, state);
                 return;
@@ -510,7 +510,7 @@ public class Controller {
         }
         // Prevent discarding Gold
         switch (item) {
-            case Gold gold -> {
+            case Gold _ -> {
                 System.out.println("Cannot discard gold!");
                 View.draw(context, state);
                 return;

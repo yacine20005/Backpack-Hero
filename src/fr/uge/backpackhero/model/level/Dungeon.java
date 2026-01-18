@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Random;
 
 import fr.uge.backpackhero.model.entity.Enemy;
-import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Item;
-import fr.uge.backpackhero.model.item.ManaStone;
-import fr.uge.backpackhero.model.item.Weapon;
+import fr.uge.backpackhero.model.loot.LootTables;
 
 /**
  * Represents a dungeon consisting of multiple floors.
@@ -28,10 +26,11 @@ public class Dungeon {
     private static final int TREASURE_COUNT = 2;
 
     private final List<Floor> floors;
+    private final Random rng;
 
     public Dungeon() {
         this.floors = new ArrayList<>();
-        Random rng = new Random();
+        this.rng = new Random();
 
         for (int i = 0; i < FLOOR_COUNT; i++) {
             floors.add(createRandomFloor(i, rng));
@@ -199,35 +198,18 @@ public class Dungeon {
     }
 
     private List<Item> treasureItems(int floorIndex) {
-        if (floorIndex == 0) {
-            return List.of(Weapon.woodSword());
-        }
-        if (floorIndex == 1) {
-            return List.of(Armor.woodenShield(), ManaStone.smallManaStone());
-        }
-        return List.of(Weapon.sturn(), ManaStone.bigManaStone());
+        return LootTables.generateLoot(floorIndex, 2, rng);
     }
 
     private HashMap<Item, Integer> merchantStock(int floorIndex) {
         var shop = new HashMap<Item, Integer>();
+        var items = LootTables.generateLoot(floorIndex, 3, rng);
 
-        if (floorIndex == 0) {
-            shop.put(Weapon.woodenBow(), 15);
-            shop.put(Armor.woodenShield(), 12);
-            shop.put(ManaStone.smallManaStone(), 8);
-            return shop;
+        for (var item : items) {
+            int price = item.getPrice();
+            shop.put(item, price);
         }
 
-        if (floorIndex == 1) {
-            shop.put(Weapon.lastWord(), 30);
-            shop.put(Armor.emeraldShield(), 25);
-            shop.put(ManaStone.bigManaStone(), 15);
-            return shop;
-        }
-
-        shop.put(Weapon.telesto(), 100);
-        shop.put(Armor.celestialnighthawk(), 50);
-        shop.put(ManaStone.bigManaStone(), 25);
         return shop;
     }
 

@@ -152,7 +152,7 @@ public class View {
         int y = cellPos.y() * TILE_SIZE;
 
         Color itemColor = switch (item) {
-            case Armor armor -> new Color(139, 69, 19);
+            case Armor _ -> new Color(139, 69, 19);
             default -> new Color(100, 0, 0);
         };
 

@@ -24,33 +24,20 @@ public final class LootTables {
   }
 
   /**
-   * Returns a list of possible treasure items for the given floor index.
+   * Generates a list of random loot items for the given floor.
+   * This is the central method used for all loot generation (combat, treasures, merchant).
    * 
    * @param floorIndex the index of the floor
+   * @param count      the number of items to generate
    * @param rng        a random number generator
-   * @return a list of possible treasure items
+   * @return a list of random items
    */
-  public static List<Item> treasureChoices(int floorIndex, Random rng) {
-    var res = new ArrayList<Item>();
-    switch (floorIndex) {
-      case 0 -> { // FLOOR 1
-        res.add(Weapon.woodSword());
-        res.add(Armor.woodenShield());
-      }
-      case 1 -> { // FLOOR 2
-        res.add(Weapon.montaintop());
-        res.add(Armor.liarshandshake());
-        res.add(ManaStone.smallManaStone());
-      }
-      case 2 -> { // FLOOR 3
-        res.add(Weapon.telesto());
-        res.add(ManaStone.bigManaStone());
-      }
-      default -> {
-        // No items for unknown floors
-      }
+  public static List<Item> generateLoot(int floorIndex, int count, Random rng) {
+    var loot = new ArrayList<Item>();
+    for (int i = 0; i < count; i++) {
+      loot.add(rollLootItem(floorIndex, rng));
     }
-    return res;
+    return loot;
   }
 
   /**
@@ -59,7 +46,7 @@ public final class LootTables {
    * @param floorIndex the index of the floor
    * @return the amount of gold available
    */
-  public static int treasureGold(int floorIndex) {
+  public static int goldForFloor(int floorIndex) {
     return switch (floorIndex) {
       case 0 -> 5;
       case 1 -> 10;
@@ -89,32 +76,53 @@ public final class LootTables {
     int r = rng.nextInt(100);
 
     if (floorIndex == 0) {
+      // Floor 0: COMMON and UNCOMMON
+      if (r < 25)
+        return Weapon.woodenSword();
       if (r < 40)
-        return Weapon.woodSword();
-      if (r < 60)
-        return Armor.woodenShield();
-      if (r < 80)
         return Weapon.woodenBow();
-      return ManaStone.smallManaStone();
+      if (r < 55)
+        return Armor.woodenShield();
+      if (r < 70)
+        return Weapon.ironSword();
+      if (r < 85)
+        return Weapon.ironBow();
+      return Armor.ironShield();
     }
     if (floorIndex == 1) {
-      if (r < 30)
-        return Weapon.sturn();
-      if (r < 55)
-        return Armor.emeraldShield();
-      if (r < 75)
-        return Armor.luckypants();
+      // Floor 1: UNCOMMON, RARE and EPIC
+      if (r < 20)
+        return Weapon.ironSword();
+      if (r < 35)
+        return Weapon.goldenSword();
+      if (r < 50)
+        return Weapon.goldenBow();
+      if (r < 65)
+        return Armor.goldenShield();
+      if (r < 80)
+        return Weapon.diamondSword();
+      if (r < 90)
+        return Armor.diamondShield();
       return ManaStone.bigManaStone();
     }
-    if (r < 30)
-      return Weapon.telesto();
-    if (r < 55)
-      return Weapon.montaintop();
+    // Floor 2: EPIC and EXOTIC
+    if (r < 20)
+      return Weapon.diamondSword();
+    if (r < 35)
+      return Weapon.diamondBow();
+    if (r < 50)
+      return Armor.diamondShield();
+    if (r < 65)
+      return Weapon.sturn();
     if (r < 75)
-      return Weapon.lastWord();
-    if (r < 90)
+      return Weapon.redDeath();
+    if (r < 85)
+      return Weapon.jadeRabbit();
+    if (r < 92)
+      return Armor.luckypants();
+    if (r < 96)
       return Armor.celestialnighthawk();
-    return Armor.liarshandshake();
+    return Weapon.telesto();
   }
 
   /**

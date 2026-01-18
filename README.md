@@ -101,11 +101,11 @@
 
 ### Expérience et niveaux
 
-- [ ] Ajouter XP au `Hero`
-- [ ] Chaque ennemi donne de l'XP à sa mort
-- [ ] Monter de niveau = +3 ou 4 cases dans le sac
-- [ ] Le joueur choisit où placer les nouvelles cases
-- [ ] Sac à dos max : 5×7 cases
+- [x] Ajouter XP au `Hero`
+- [x] Chaque ennemi donne de l'XP à sa mort
+- [x] Monter de niveau = +3 ou 4 cases dans le sac
+- [x] Le joueur choisit où placer les nouvelles cases
+- [x] Sac à dos max : 5×7 cases
 
 ### Interactions d'équipements
 
