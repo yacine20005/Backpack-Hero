@@ -7,11 +7,12 @@ import com.github.forax.zen.PointerEvent;
 
 import fr.uge.backpackhero.logic.CombatEngine;
 import fr.uge.backpackhero.logic.GameState;
+import fr.uge.backpackhero.logic.MerchantMode;
+import fr.uge.backpackhero.logic.PopupType;
+import fr.uge.backpackhero.logic.State;
 import fr.uge.backpackhero.model.entity.Enemy;
 import fr.uge.backpackhero.model.entity.Hero;
-import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Item;
-import fr.uge.backpackhero.model.item.Weapon;
 import fr.uge.backpackhero.model.item.Gold;
 import fr.uge.backpackhero.model.level.Floor;
 import fr.uge.backpackhero.model.level.Position;
@@ -52,11 +53,11 @@ public class Controller {
         var pos = new Position(x, y);
 
         // If in cell unlock mode, try to unlock the clicked cell
-        if (state.isCellUnlockMode()) {
+        if (state.getState() == State.CELL_UNLOCK) {
             if (state.getBackpack().canUnlockCell(pos)) {
                 state.unlockCellAt(pos);
                 IO.println("Cell unlocked! " + state.getCellsToUnlock() + " remaining.");
-                if (!state.isCellUnlockMode()) {
+                if (state.getState() != State.CELL_UNLOCK) {
                     IO.println("All cells unlocked!");
                 }
             } else {
@@ -67,7 +68,7 @@ public class Controller {
         }
 
         // If we are in loot screen mode with a selected loot item
-        if (state.isLootScreenOpen() && state.getSelectedLootItem() != null) {
+        if (state.getState() == State.LOOT_SCREEN && state.getSelectedLootItem() != null) {
             var lootItem = state.getSelectedLootItem();
             if (state.getBackpack().place(lootItem, pos)) {
                 state.removeLootItem(lootItem);
@@ -81,13 +82,13 @@ public class Controller {
         }
 
         // If in loot screen mode without selected item, allow item movement in backpack
-        if (state.isLootScreenOpen() && state.getSelectedLootItem() == null) {
+        if (state.getState() == State.LOOT_SCREEN && state.getSelectedLootItem() == null) {
             handleItemMovement(context, state, pos);
             return;
         }
 
         // If in merchant BUY mode with selected item
-        if (state.getMerchantMode().equals("BUY") && state.getSelectedMerchantItem() != null && !state.isInCombat()) {
+        if (state.getMerchantMode() == MerchantMode.BUY && state.getSelectedMerchantItem() != null && state.getState() != State.COMBAT) {
             var room = state.getCurrentFloor().getRoom(state.getPosition());
             if (room != null && room.getType() == RoomType.MERCHANT) {
                 var shop = room.getMerchantItems();
@@ -113,7 +114,7 @@ public class Controller {
         }
 
         // If in merchant SELL mode, clicking on item opens sell confirmation
-        if (state.getMerchantMode().equals("SELL") && !state.isInCombat()) {
+        if (state.getMerchantMode() == MerchantMode.SELL && state.getState() != State.COMBAT) {
             var room = state.getCurrentFloor().getRoom(state.getPosition());
             if (room != null && room.getType() == RoomType.MERCHANT) {
                 handleBackpackSellClick(context, state, pos);
@@ -122,7 +123,7 @@ public class Controller {
         }
 
         // If we're not in combat, handle item movement
-        if (!state.isInCombat()) {
+        if (state.getState() != State.COMBAT) {
             handleItemMovement(context, state, pos);
             return;
         }
@@ -231,37 +232,14 @@ public class Controller {
 
     /**
      * Uses the given item during combat if possible.
-     * A weapon triggers an attack on the first alive enemy, an armor triggers a
-     * defend action.
+     * Delegates to CombatEngine for the actual combat logic.
      *
      * @param state the current game state
      * @param item  the item clicked in the backpack
      * @return true if the combat action was successfully used, false otherwise
      */
     static boolean useItemInCombat(GameState state, Item item) {
-        var combat = state.getCombatEngine();
-        var hero = state.getHero();
-
-        return switch (item) {
-            case Weapon weapon -> {
-                Enemy target = combat.getSelectedEnemy();
-                if (target == null || !target.isAlive()) {
-                    // Find first alive enemy as fallback
-                    var enemies = combat.getCurrentEnemies();
-                    for (Enemy enemy : enemies) {
-                        if (enemy.isAlive()) {
-                            target = enemy;
-                            break;
-                        }
-                    }
-                }
-                if (target == null)
-                    yield false;
-                yield combat.heroAttack(hero, target, weapon);
-            }
-            case Armor armor -> combat.heroDefend(hero, armor);
-            default -> false;
-        };
+        return state.getCombatEngine().useItem(state.getHero(), item);
     }
 
     /**
@@ -272,7 +250,7 @@ public class Controller {
      * @param pointerEvent the pointer event representing the click
      */
     public static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
-        if (state.isInCombat()) {
+        if (state.getState() == State.COMBAT) {
             return;
         }
         if (state.isGameOver()) {
@@ -280,7 +258,7 @@ public class Controller {
         }
 
         // Block movement if any popup is open
-        if (state.isHealerPromptOpen() || state.isSellConfirmOpen() || state.isDiscardConfirmOpen()) {
+        if (state.getState() == State.HEALER_PROMPT || state.getActivePopup() == PopupType.SELL_CONFIRM || state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
             return;
         }
 
@@ -330,6 +308,7 @@ public class Controller {
                 var combat = state.getCombatEngine();
                 combat.startCombat(enemies);
                 combat.heroTurn(state.getHero(), state.getBackpack());
+                state.setState(State.COMBAT);
             }
         }
         View.draw(context, state);
@@ -387,6 +366,7 @@ public class Controller {
         if (!hero.isAlive()) {
             System.out.println("The hero is dead.");
             state.setGameOver(true);
+            state.setState(State.EXPLORATION);
             combat.endCombat();
             View.draw(context, state);
             return;
@@ -413,6 +393,7 @@ public class Controller {
         if (!hero.isAlive()) {
             System.out.println("The hero is dead.");
             state.setGameOver(true);
+            state.setState(State.EXPLORATION);
             combat.endCombat();
             View.draw(context, state);
             return true;
@@ -422,11 +403,11 @@ public class Controller {
         var lootItems = LootTables.generateLootFromEnemies(combat.getCurrentEnemies(), state.getFloor());
         int goldReward = combat.calculateGoldReward();
         int xpReward = combat.calculateXpReward();
-        
+
         // Give rewards
         state.getBackpack().addGold(goldReward);
         int levelsGained = hero.addXp(xpReward);
-        
+
         // Handle level up - enter cell unlock mode
         if (levelsGained > 0) {
             // Calculate total cells to unlock for all levels
@@ -440,7 +421,8 @@ public class Controller {
         }
 
         state.openLootScreen(lootItems);
-        IO.println("Combat won! Gained " + goldReward + " gold, " + xpReward + " XP and " + lootItems.size() + " items to choose from.");
+        IO.println("Combat won! Gained " + goldReward + " gold, " + xpReward + " XP and " + lootItems.size()
+                + " items to choose from.");
         if (levelsGained > 0) {
             IO.println("You gained " + levelsGained + " level(s)! Now level " + hero.getLevel());
         }
@@ -454,7 +436,7 @@ public class Controller {
         }
 
         var room = state.getCurrentFloor().getRoom(state.getPosition());
-        if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
+        if (room == null || room.getType() != RoomType.MERCHANT || state.getState() == State.COMBAT) {
             return false;
         }
         int mx = (int) event.location().x();
@@ -471,7 +453,7 @@ public class Controller {
     }
 
     public static void handleSellConfirmYes(GameState state) {
-        if (!state.isSellConfirmOpen())
+        if (state.getActivePopup() != PopupType.SELL_CONFIRM)
             return;
 
         var item = state.getSellConfirmItem();
@@ -486,14 +468,14 @@ public class Controller {
     }
 
     public static void handleSellConfirmNo(GameState state) {
-        if (!state.isSellConfirmOpen())
+        if (state.getActivePopup() != PopupType.SELL_CONFIRM)
             return;
         state.closeSellConfirm();
     }
 
     public static void handleDiscardItem(ApplicationContext context, GameState state) {
         // Only block if another popup is already open or game is over
-        if (state.isSellConfirmOpen() || state.isHealerPromptOpen()
+        if (state.getActivePopup() == PopupType.SELL_CONFIRM || state.getState() == State.HEALER_PROMPT
                 || state.isGameOver() || state.isVictory()) {
             return;
         }
@@ -524,7 +506,7 @@ public class Controller {
     }
 
     public static void handleDiscardConfirmYes(ApplicationContext context, GameState state) {
-        if (!state.isDiscardConfirmOpen())
+        if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
             return;
 
         var item = state.getDiscardConfirmItem();
@@ -539,14 +521,14 @@ public class Controller {
     }
 
     public static void handleDiscardConfirmNo(ApplicationContext context, GameState state) {
-        if (!state.isDiscardConfirmOpen())
+        if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
             return;
         state.closeDiscardConfirm();
         View.draw(context, state);
     }
 
     public static void handleHealerAccept(ApplicationContext context, GameState state) {
-        if (!state.isHealerPromptOpen())
+        if (state.getState() != State.HEALER_PROMPT)
             return;
 
         int cost = state.getHealerCost();
@@ -567,20 +549,20 @@ public class Controller {
     }
 
     public static void handleHealerDecline(ApplicationContext context, GameState state) {
-        if (!state.isHealerPromptOpen())
+        if (state.getState() != State.HEALER_PROMPT)
             return;
         state.closeHealerPrompt();
         View.draw(context, state);
     }
 
     public static void handleLootContinue(ApplicationContext context, GameState state) {
-        if (!state.isLootScreenOpen())
+        if (state.getState() != State.LOOT_SCREEN)
             return;
 
         state.closeLootScreen();
 
         // Only end combat if we were in combat
-        if (state.isInCombat()) {
+        if (state.getState() == State.LOOT_SCREEN) {
             var combat = state.getCombatEngine();
             combat.endCombat();
         }
@@ -598,7 +580,7 @@ public class Controller {
             return true;
         }
 
-        if (!state.isLootScreenOpen())
+        if (state.getState() != State.LOOT_SCREEN)
             return false;
         if (pe.action() != PointerEvent.Action.POINTER_DOWN)
             return true;
@@ -654,13 +636,11 @@ public class Controller {
     }
 
     public static void handleEndTurn(ApplicationContext context, GameState state) {
-        if (!state.isInCombat()) {
+        if (state.getState() != State.COMBAT) {
             return;
         }
 
-        var hero = state.getHero();
-        // Force energy to 0 to trigger enemy turn
-        hero.setEnergy(0);
+        state.getCombatEngine().endHeroTurn(state.getHero());
         IO.println("Turn ended.");
 
         processEnemiesTurn(context, state);

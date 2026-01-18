@@ -319,4 +319,47 @@ public class CombatEngine {
     public int getSelectedEnemyIndex() {
         return selectedEnemyIndex;
     }
+
+    /**
+     * Uses an item in combat. Weapons attack enemies, armors defend.
+     * 
+     * @param hero the hero using the item
+     * @param item the item to use
+     * @return true if the item was successfully used, false otherwise
+     */
+    public boolean useItem(Hero hero, fr.uge.backpackhero.model.item.Item item) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        Objects.requireNonNull(item, "item cannot be null");
+
+        return switch (item) {
+            case Weapon weapon -> {
+                Enemy target = getSelectedEnemy();
+                if (target == null || !target.isAlive()) {
+                    // Find first alive enemy as fallback
+                    for (Enemy enemy : currentEnemies) {
+                        if (enemy.isAlive()) {
+                            target = enemy;
+                            break;
+                        }
+                    }
+                }
+                if (target == null)
+                    yield false;
+                yield heroAttack(hero, target, weapon);
+            }
+            case Armor armor -> heroDefend(hero, armor);
+            default -> false;
+        };
+    }
+
+    /**
+     * Ends the hero's turn by setting energy to 0.
+     * This triggers the enemies' turn.
+     * 
+     * @param hero the hero whose turn is ending
+     */
+    public void endHeroTurn(Hero hero) {
+        Objects.requireNonNull(hero, "hero cannot be null");
+        hero.setEnergy(0);
+    }
 }

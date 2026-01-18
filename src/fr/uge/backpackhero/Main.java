@@ -10,6 +10,9 @@ import com.github.forax.zen.PointerEvent;
 import fr.uge.backpackhero.gui.Controller;
 import fr.uge.backpackhero.gui.View;
 import fr.uge.backpackhero.logic.GameState;
+import fr.uge.backpackhero.logic.MerchantMode;
+import fr.uge.backpackhero.logic.PopupType;
+import fr.uge.backpackhero.logic.State;
 
 /**
  * Main class to start the Backpack Hero game.
@@ -55,14 +58,14 @@ public class Main {
                     }
 
                     // Handle End Turn in combat with X
-                    if (ke.key() == KeyboardEvent.Key.X && state.isInCombat() && !state.isLootScreenOpen()) {
+                    if (ke.key() == KeyboardEvent.Key.X && state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
                         Controller.handleEndTurn(context, state);
                         continue;
                     }
 
                     // Handle Cycle Enemy Target in combat with CTRL
                     if ((ke.key() == KeyboardEvent.Key.CTRL)
-                            && state.isInCombat() && !state.isLootScreenOpen()) {
+                            && state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
                         state.getCombatEngine().cycleEnemyTarget();
                         System.out
                                 .println("Switched target to: " + state.getCombatEngine().getSelectedEnemy().getName());
@@ -76,7 +79,7 @@ public class Main {
                     }
 
                     // Handle Healer prompt with Y/N
-                    if (state.isHealerPromptOpen()) {
+                    if (state.getState() == State.HEALER_PROMPT) {
                         if (ke.key() == KeyboardEvent.Key.Y) {
                             Controller.handleHealerAccept(context, state);
                             continue;
@@ -88,7 +91,7 @@ public class Main {
                     }
 
                     // Handle Sell confirmation with Y/N
-                    if (state.isSellConfirmOpen()) {
+                    if (state.getActivePopup() == PopupType.SELL_CONFIRM) {
                         if (ke.key() == KeyboardEvent.Key.Y) {
                             Controller.handleSellConfirmYes(state);
                             View.draw(context, state);
@@ -102,7 +105,7 @@ public class Main {
                     }
 
                     // Handle Discard confirmation with Y/N
-                    if (state.isDiscardConfirmOpen()) {
+                    if (state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
                         if (ke.key() == KeyboardEvent.Key.Y) {
                             Controller.handleDiscardConfirmYes(context, state);
                             continue;
@@ -120,7 +123,7 @@ public class Main {
                     }
 
                     // Handle Loot screen with C (Continue)
-                    if (state.isLootScreenOpen()) {
+                    if (state.getState() == State.LOOT_SCREEN) {
                         if (ke.key() == KeyboardEvent.Key.C) {
                             Controller.handleLootContinue(context, state);
                             continue;
@@ -137,17 +140,17 @@ public class Main {
                     var currentRoom = state.getCurrentFloor().getRoom(state.getPosition());
                     if (currentRoom.getType() == fr.uge.backpackhero.model.level.RoomType.MERCHANT) {
                         if (ke.key() == KeyboardEvent.Key.B) {
-                            state.setMerchantMode("BUY");
+                            state.setMerchantMode(MerchantMode.BUY);
                             View.draw(context, state);
                             continue;
                         }
                         if (ke.key() == KeyboardEvent.Key.S) {
-                            state.setMerchantMode("SELL");
+                            state.setMerchantMode(MerchantMode.SELL);
                             View.draw(context, state);
                             continue;
                         }
                         // Handle number keys 1-9 for merchant item selection in BUY mode
-                        if (state.getMerchantMode().equals("BUY")) {
+                        if (state.getMerchantMode() == MerchantMode.BUY) {
                             int itemIndex = getNumberKeyIndex(ke.key());
                             if (itemIndex >= 0) {
                                 Controller.handleMerchantItemSelection(context, state, itemIndex);
@@ -162,7 +165,7 @@ public class Main {
                 if (pe.action() == PointerEvent.Action.POINTER_DOWN) {
 
                     // Handle sell confirmation popup with priority
-                    if (state.isSellConfirmOpen()) {
+                    if (state.getActivePopup() == PopupType.SELL_CONFIRM) {
                         Controller.handleMerchantClick(state, pe);
                         View.draw(context, state);
                         continue;
@@ -172,7 +175,7 @@ public class Main {
 
                     // If loot screen is open we handle clicks on loot screen and backpack
                     // simultaneously
-                    if (state.isLootScreenOpen()) {
+                    if (state.getState() == State.LOOT_SCREEN) {
                         if (x < View.BACKPACK_PIXEL_WIDTH) {
                             Controller.handleBackpackClick(context, state, pe);
                         } else {

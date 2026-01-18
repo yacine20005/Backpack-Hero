@@ -11,6 +11,9 @@ import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.backpackhero.logic.EnemyAction;
 import fr.uge.backpackhero.logic.GameState;
+import fr.uge.backpackhero.logic.MerchantMode;
+import fr.uge.backpackhero.logic.PopupType;
+import fr.uge.backpackhero.logic.State;
 import fr.uge.backpackhero.model.entity.Enemy;
 import fr.uge.backpackhero.model.item.Armor;
 import fr.uge.backpackhero.model.item.Backpack;
@@ -109,11 +112,11 @@ public class View {
             drawLootScreen(screen, state);
 
             // Draw discard confirmation popup (must be after merchant to overlay it)
-            if (state.isDiscardConfirmOpen()) {
+            if (state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
                 drawDiscardConfirmPopup(screen, state);
             }
 
-            if (state.isInCombat() && !state.isLootScreenOpen()) {
+            if (state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
                 drawCombat(screen, state, height);
             }
             if (state.isGameOver()) {
@@ -231,7 +234,7 @@ public class View {
             for (int x = 0; x < BACKPACK_WIDTH_IN_TILES; x++) {
                 var pos = new Position(x, y);
                 boolean isUnlocked = backpack.isUnlocked(pos);
-                boolean canUnlock = state.isCellUnlockMode() && backpack.canUnlockCell(pos);
+                boolean canUnlock = state.getState() == State.CELL_UNLOCK && backpack.canUnlockCell(pos);
                 
                 // Draw cell background
                 if (canUnlock) {
@@ -474,7 +477,7 @@ public class View {
 
     private static void drawMerchant(Graphics2D screen, GameState state) {
         var room = state.getCurrentFloor().getRoom(state.getPosition());
-        if (room == null || room.getType() != RoomType.MERCHANT || state.isInCombat()) {
+        if (room == null || room.getType() != RoomType.MERCHANT || state.getState() == State.COMBAT) {
             return;
         }
 
@@ -496,7 +499,7 @@ public class View {
         int btnY = y + 60;
         int btnW = SMALL_BUTTON_WIDTH;
         int btnH = SMALL_BUTTON_HEIGHT;
-        boolean isBuyMode = state.getMerchantMode().equals("BUY");
+        boolean isBuyMode = state.getMerchantMode() == MerchantMode.BUY;
 
         // BUY button
         screen.setColor(isBuyMode ? new Color(0, 150, 0) : BOX_GRAY);
@@ -564,12 +567,12 @@ public class View {
         }
 
         // Draw sell confirmation popup
-        if (state.isSellConfirmOpen()) {
+        if (state.getActivePopup() == PopupType.SELL_CONFIRM) {
             drawSellConfirmPopup(screen, state);
         }
 
         // Draw discard confirmation popup
-        if (state.isDiscardConfirmOpen()) {
+        if (state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
             drawDiscardConfirmPopup(screen, state);
         }
     }
@@ -628,7 +631,7 @@ public class View {
     }
 
     private static void drawHealerPrompt(Graphics2D screen, GameState state) {
-        if (!state.isHealerPromptOpen() || state.isInCombat())
+        if (state.getState() != State.HEALER_PROMPT || state.getState() == State.COMBAT)
             return;
 
         int boxX = POPUP_X;
@@ -688,7 +691,7 @@ public class View {
         screen.drawString("XP: " + xp + "/" + xpToNext, x + POPUP_PADDING, y + 105);
         
         // Show unlock mode message
-        if (state.isCellUnlockMode()) {
+        if (state.getState() == State.CELL_UNLOCK) {
             screen.setColor(Color.GREEN);
             screen.drawString("Click " + state.getCellsToUnlock() + " cells to unlock", x + POPUP_PADDING, y + h - 10);
             screen.setColor(Color.WHITE);
@@ -696,7 +699,7 @@ public class View {
     }
 
     private static void drawLootScreen(Graphics2D screen, GameState state) {
-        if (!state.isLootScreenOpen())
+        if (state.getState() != State.LOOT_SCREEN)
             return;
 
         int boxX = POPUP_X;
@@ -714,7 +717,7 @@ public class View {
 
         // Title
         screen.setFont(screen.getFont().deriveFont(Font.BOLD, FONT_LARGE));
-        String title = state.isInCombat() ? "VICTORY!" : "TREASURE!";
+        String title = state.getState() == State.COMBAT ? "VICTORY!" : "TREASURE!";
         screen.drawString(title, boxX + 120, boxY + 30);
 
         // Instructions

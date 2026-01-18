@@ -27,23 +27,37 @@ public class GameState {
     final Hero hero = new Hero();
     Backpack backpack = new Backpack(7, 5);
     CombatEngine combatEngine = new CombatEngine();
+    
+    // Game state
+    private State state = State.EXPLORATION;
+    private PopupType activePopup = null;  // null or SELL_CONFIRM, DISCARD_CONFIRM
+    private boolean gameOver = false;
+    private boolean victory = false;
+    
+    // Selection system
     private Position selectedItemAnchor = null;
     private Item selectedItem = null;
-    private boolean healerPromptOpen = false;
-    private boolean lootScreenOpen = false;
+    private Item selectedLootItem = null;
+    private Item selectedMerchantItem = null;
+    
+    // Confirm popup context (for SELL_CONFIRM and DISCARD_CONFIRM popups)
+    private Position confirmAnchor = null;
+    private Item confirmItem = null;
+    
+    // Cell unlock context (for CELL_UNLOCK state)
+    private int cellsToUnlock = 0;
+    private boolean pendingUnlockMode = false;  // True if unlock mode should start after loot screen
+    
+    // Merchant system
+    private MerchantMode merchantMode = MerchantMode.BUY;
+    
+    // Healer system
     private Position healerReturnPos = null;
     private int healerHealAmount = 0;
     private int healerCost = 0;
+    
+    // Loot system
     private List<Item> availableLoot = null;
-    private Item selectedLootItem = null;
-    private String merchantMode = "BUY"; // "BUY" or "SELL"
-    private Item sellConfirmItem = null;
-    private Position sellConfirmAnchor = null;
-    private Item selectedMerchantItem = null;
-    private Item discardConfirmItem = null;
-    private Position discardConfirmAnchor = null;
-    private boolean cellUnlockMode = false;
-    private int cellsToUnlock = 0;
 
     public GameState() {
     }
@@ -139,12 +153,21 @@ public class GameState {
     }
 
     /**
-     * Checks if the game is currently in combat.
+     * Returns the current game state.
      * 
-     * @return true if the game is in combat, false otherwise
+     * @return the current state
      */
-    public boolean isInCombat() {
-        return combatEngine.isInCombat();
+    public State getState() {
+        return state;
+    }
+    
+    /**
+     * Sets the current game state.
+     * 
+     * @param state the new state
+     */
+    public void setState(State state) {
+        this.state = Objects.requireNonNull(state);
     }
 
     /**
@@ -182,19 +205,15 @@ public class GameState {
         this.selectedItem = null;
     }
 
-    public boolean isHealerPromptOpen() {
-        return healerPromptOpen;
-    }
-
     public void openHealerPrompt(Position returnPos, int healAmount, int cost) {
-        this.healerPromptOpen = true;
+        this.state = State.HEALER_PROMPT;
         this.healerReturnPos = Objects.requireNonNull(returnPos);
         this.healerHealAmount = healAmount;
         this.healerCost = cost;
     }
 
     public void closeHealerPrompt() {
-        this.healerPromptOpen = false;
+        this.state = State.EXPLORATION;
         this.healerReturnPos = null;
         this.healerHealAmount = 0;
         this.healerCost = 0;
@@ -212,9 +231,6 @@ public class GameState {
         return healerCost;
     }
 
-    private boolean gameOver = false;
-    private boolean victory = false;
-
     public boolean isGameOver() {
         return gameOver;
     }
@@ -231,24 +247,27 @@ public class GameState {
         this.victory = value;
     }
 
-    public boolean isLootScreenOpen() {
-        return lootScreenOpen;
-    }
-
     public List<Item> getAvailableLoot() {
         return availableLoot;
     }
 
     public void openLootScreen(List<Item> loot) {
-        this.lootScreenOpen = true;
+        this.state = State.LOOT_SCREEN;
         this.availableLoot = new ArrayList<>(Objects.requireNonNull(loot));
         this.selectedLootItem = null;
     }
 
     public void closeLootScreen() {
-        this.lootScreenOpen = false;
         this.availableLoot = null;
         this.selectedLootItem = null;
+        
+        // If there's a pending unlock mode, start it now
+        if (pendingUnlockMode) {
+            this.state = State.CELL_UNLOCK;
+            pendingUnlockMode = false;
+        } else {
+            this.state = State.EXPLORATION;
+        }
     }
 
     public Item getSelectedLootItem() {
@@ -265,34 +284,36 @@ public class GameState {
         }
     }
 
-    public String getMerchantMode() {
+    public MerchantMode getMerchantMode() {
         return merchantMode;
     }
 
-    public void setMerchantMode(String mode) {
+    public void setMerchantMode(MerchantMode mode) {
         this.merchantMode = Objects.requireNonNull(mode);
     }
 
+    public PopupType getActivePopup() {
+        return activePopup;
+    }
+
     public Item getSellConfirmItem() {
-        return sellConfirmItem;
+        return activePopup == PopupType.SELL_CONFIRM ? confirmItem : null;
     }
 
     public Position getSellConfirmAnchor() {
-        return sellConfirmAnchor;
+        return activePopup == PopupType.SELL_CONFIRM ? confirmAnchor : null;
     }
 
     public void openSellConfirm(Item item, Position anchor) {
-        this.sellConfirmItem = Objects.requireNonNull(item);
-        this.sellConfirmAnchor = Objects.requireNonNull(anchor);
+        this.activePopup = PopupType.SELL_CONFIRM;
+        this.confirmItem = Objects.requireNonNull(item);
+        this.confirmAnchor = Objects.requireNonNull(anchor);
     }
 
     public void closeSellConfirm() {
-        this.sellConfirmItem = null;
-        this.sellConfirmAnchor = null;
-    }
-
-    public boolean isSellConfirmOpen() {
-        return sellConfirmItem != null;
+        this.activePopup = null;
+        this.confirmItem = null;
+        this.confirmAnchor = null;
     }
 
     public Item getSelectedMerchantItem() {
@@ -304,29 +325,23 @@ public class GameState {
     }
 
     public Item getDiscardConfirmItem() {
-        return discardConfirmItem;
+        return activePopup == PopupType.DISCARD_CONFIRM ? confirmItem : null;
     }
 
     public Position getDiscardConfirmAnchor() {
-        return discardConfirmAnchor;
+        return activePopup == PopupType.DISCARD_CONFIRM ? confirmAnchor : null;
     }
 
     public void openDiscardConfirm(Item item, Position anchor) {
-        this.discardConfirmItem = Objects.requireNonNull(item);
-        this.discardConfirmAnchor = Objects.requireNonNull(anchor);
+        this.activePopup = PopupType.DISCARD_CONFIRM;
+        this.confirmItem = Objects.requireNonNull(item);
+        this.confirmAnchor = Objects.requireNonNull(anchor);
     }
 
     public void closeDiscardConfirm() {
-        this.discardConfirmItem = null;
-        this.discardConfirmAnchor = null;
-    }
-
-    public boolean isDiscardConfirmOpen() {
-        return discardConfirmItem != null;
-    }
-
-    public boolean isCellUnlockMode() {
-        return cellUnlockMode;
+        this.activePopup = null;
+        this.confirmItem = null;
+        this.confirmAnchor = null;
     }
 
     public int getCellsToUnlock() {
@@ -334,21 +349,21 @@ public class GameState {
     }
 
     public void startCellUnlockMode(int count) {
-        this.cellUnlockMode = true;
         this.cellsToUnlock = count;
+        this.pendingUnlockMode = true;
     }
 
     public void unlockCellAt(Position pos) {
         if (backpack.unlockCell(pos)) {
             cellsToUnlock--;
             if (cellsToUnlock <= 0) {
-                cellUnlockMode = false;
+                state = State.EXPLORATION;
             }
         }
     }
 
     public void endCellUnlockMode() {
-        this.cellUnlockMode = false;
+        this.state = State.EXPLORATION;
         this.cellsToUnlock = 0;
     }
 

@@ -151,7 +151,7 @@
 
 ### Génération aléatoire de carte
 
-- [ ] Algorithme de génération (la carte doit être connexe)
+- [x] Algorithme de génération (la carte doit être connexe)
 - [ ] Grilles et clés
 
 ---
