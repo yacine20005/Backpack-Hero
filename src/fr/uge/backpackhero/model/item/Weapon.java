@@ -6,7 +6,6 @@ import java.util.Objects;
  * Represents a weapon item that can be used by the hero to deal damage.
  * Weapons have damage, energy cost, and mana cost attributes.
  * 
- * @author Yacine
  */
 public final class Weapon implements Item {
 

@@ -6,7 +6,6 @@ import java.util.Objects;
  * Represents an armor item that can be equipped by the hero.
  * Armor provides protection and has an associated energy cost.
  * 
- * @author Yacine
  */
 public final class Armor implements Item {
 

@@ -6,7 +6,6 @@ import java.util.Objects;
  * Represents the type of a room in the dungeon.
  * Each room type is associated with a unique symbol.
  * 
- * @author Yacine
  */
 public enum RoomType {
     /** A simple corridor with no special content. */

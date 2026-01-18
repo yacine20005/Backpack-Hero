@@ -17,8 +17,6 @@ import fr.uge.backpackhero.logic.GameState;
  * Controller class that delegates user interactions to specialized handlers.
  * Follows the Single Responsibility Principle by delegating each concern to a
  * specific handler.
- * 
- * @author @Naniiiii944
  */
 public class Controller {
 

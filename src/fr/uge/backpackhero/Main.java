@@ -20,7 +20,6 @@ import fr.uge.backpackhero.model.score.HOF;
 /**
  * Main class to start the Backpack Hero game.
  * 
- * @author @Naniiiii944
  */
 public class Main {
 

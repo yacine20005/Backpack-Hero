@@ -6,7 +6,6 @@ import java.util.Objects;
  * Represents an enemy in the game with attributes such as health points,
  * attack, defense, block, and gold drop.
  * 
- * @author Yacine
  */
 public class Enemy {
 	private final String name;

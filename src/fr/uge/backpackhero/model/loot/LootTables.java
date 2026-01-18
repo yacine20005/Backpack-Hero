@@ -18,7 +18,6 @@ import fr.uge.backpackhero.model.item.Weapon;
  * and to get loot dropped by enemies after combat.
  * 
  * 
- * @author @Naniiiii944
  */
 public final class LootTables {
   private LootTables() {

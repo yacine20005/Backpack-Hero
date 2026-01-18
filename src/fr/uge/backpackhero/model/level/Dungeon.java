@@ -14,7 +14,6 @@ import fr.uge.backpackhero.model.loot.LootTables;
  * Represents a dungeon consisting of multiple floors.
  * Each floor is generated procedurally and respects the required room counts.
  * 
- * @author abdelghani.koumad
  */
 public class Dungeon {
 

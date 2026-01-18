@@ -18,7 +18,6 @@ import fr.uge.backpackhero.model.item.Item;
  * Usually, rooms have one of the attributes set and the others to null or zero
  * depending on the room type.
  * 
- * @author Yacine
  */
 public class Room {
     private final RoomType type;

@@ -6,7 +6,6 @@ import java.util.Objects;
  * Represents a mana stone item that can be used by the hero to gain mana.
  * Mana stones provide a certain amount of mana when in the backpack.
  * 
- * @author Yacine
  */
 public final class ManaStone implements Item {
 

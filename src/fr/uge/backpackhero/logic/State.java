@@ -3,7 +3,6 @@ package fr.uge.backpackhero.logic;
 /**
  * Enum representing the different states of the game.
  * 
- * @author Yacine
  */
 
 public enum State {

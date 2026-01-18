@@ -5,7 +5,7 @@ package fr.uge.backpackhero.model.level;
  * 
  * @param x the horizontal coordinate (column)
  * @param y the vertical coordinate (row)
- * @author Yacine
+ * 
  */
 public record Position(int x, int y) {
 

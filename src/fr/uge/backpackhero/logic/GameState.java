@@ -17,7 +17,6 @@ import fr.uge.backpackhero.model.level.Position;
  * It provides methods to access and modify these components as the game
  * progresses.
  * 
- * @author Yacine
  */
 public class GameState {
 

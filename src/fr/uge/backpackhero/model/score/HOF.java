@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * Manages the Hall of Fame, storing the top 3 scores.
  * Uses java.nio for file operations as required by the project specifications.
  * 
- * @author Yacine
  */
 public class HOF {
 

@@ -8,7 +8,6 @@ import java.util.Objects;
  * Represents a floor in the dungeon consisting of a grid of rooms.
  * Each room can be of different types such as enemy rooms, treasure rooms, corridors, etc.
  * 
- * @author Yacine
  */
 public class Floor {
     private final int width;

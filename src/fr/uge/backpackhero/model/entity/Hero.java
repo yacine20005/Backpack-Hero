@@ -7,7 +7,6 @@ import fr.uge.backpackhero.model.item.Backpack;
  * points, energy, mana, and block.
  * The hero can take damage, use energy, and manage mana for abilities.
  * 
- * @author Yacine
  */
 public class Hero {
 

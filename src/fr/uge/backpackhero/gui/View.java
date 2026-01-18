@@ -29,7 +29,6 @@ import fr.uge.backpackhero.model.level.RoomType;
  * View class responsible for rendering the game state onto the screen.
  * It handles drawing the backpack, dungeon, hero, and combat interface.
  * 
- * @author @Naniiiii944
  */
 public class View {
 

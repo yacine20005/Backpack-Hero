@@ -4,7 +4,6 @@ package fr.uge.backpackhero.model.item;
  * Sealed interface representing items that can be stored in the hero's backpack.
  * Only specific types of items are permitted: Weapon, Armor, ManaStone, and Gold.
  * 
- * @author Yacine
  */
 public sealed interface Item permits Weapon, Armor, ManaStone, Gold {
 

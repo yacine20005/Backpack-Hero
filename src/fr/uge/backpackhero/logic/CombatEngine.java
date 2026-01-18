@@ -16,7 +16,6 @@ import fr.uge.backpackhero.model.item.Weapon;
  * It manages turns, attacks, defenses, and checks for combat termination
  * conditions.
  * 
- * @author Yacine
  */
 public class CombatEngine {
 

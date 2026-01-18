@@ -13,7 +13,6 @@ import java.util.Objects;
  * 
  * @param cells the list of relative positions that define the shape
  * 
- * @author Yacine
  */
 public record Shape(List<Position> cells) {
 

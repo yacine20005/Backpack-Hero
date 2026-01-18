@@ -6,7 +6,6 @@ import java.util.Objects;
  * Represents a score entry in the Hall of Fame.
  * Each entry contains a player name, score, and level reached.
  * 
- * @author Yacine
  * @param playerName the name of the player
  * @param score      the score achieved
  * @param level      the level reached

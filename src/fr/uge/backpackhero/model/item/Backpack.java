@@ -18,7 +18,6 @@ import fr.uge.backpackhero.model.level.Position;
  * It also tracks the mana provided by the mana stones contained in the
  * backpack.
  * 
- * @author Yacine
  */
 public class Backpack {
 

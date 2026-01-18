@@ -10,7 +10,6 @@ import java.util.Objects;
  * Exemple : if the hero has 10 gold and picks up 5 more gold, the total amount
  * of gold becomes 15 and occupies the same single slot in the backpack.
  * 
- * @author Yacine
  */
 public final class Gold implements Item {
 
