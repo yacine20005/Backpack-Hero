@@ -2,6 +2,7 @@ package fr.uge.backpackhero;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import com.github.forax.zen.Application;
 import com.github.forax.zen.ApplicationContext;
@@ -27,6 +28,7 @@ public class Main {
         // Private constructor to prevent warnings
     }
 
+    private static final String SAVE_FILE_PATH = "halloffame.txt";
     private final static int EVENT_POLL_TIMEOUT_MS = 10;
     private static final HOF HALL_OF_FAME = initializeHOF();
     private static String playerName = "Player";
@@ -38,7 +40,7 @@ public class Main {
      */
     private static HOF initializeHOF() {
         try {
-            return new HOF();
+            return new HOF(Path.of(SAVE_FILE_PATH));
         } catch (IOException e) {
             IO.println("Failed to load Hall of Fame: " + e.getMessage());
             IO.println("Starting with empty Hall of Fame.");

@@ -19,16 +19,18 @@ import java.util.stream.Collectors;
 public class HOF {
 
     private static final int MAX_ENTRIES = 3;
-    private static final Path SAVE_FILE = Path.of("halloffame.txt");
+    private final Path saveFile;
 
     private final List<ScoreEntry> entries;
 
     /**
      * Creates a new HallOfFame and loads existing scores from file.
      * 
+     * @param saveFile the path to the file where scores are saved
      * @throws IOException if an I/O error occurs loading the scores
      */
-    public HOF() throws IOException {
+    public HOF(Path saveFile) throws IOException {
+        this.saveFile = Objects.requireNonNull(saveFile);
         this.entries = new ArrayList<>();
         loadScores();
     }
@@ -121,11 +123,11 @@ public class HOF {
      * @throws IOException if an I/O error occurs reading from the file
      */
     private void loadScores() throws IOException {
-        if (!Files.exists(SAVE_FILE)) {
+        if (!Files.exists(saveFile)) {
             return; // File doesn't exist yet, start with empty list
         }
 
-        List<String> lines = Files.readAllLines(SAVE_FILE);
+        List<String> lines = Files.readAllLines(saveFile);
         entries.clear();
 
         for (String line : lines) {
@@ -159,7 +161,7 @@ public class HOF {
                 .map(ScoreEntry::toSaveString)
                 .collect(Collectors.toList());
 
-        Files.write(SAVE_FILE, lines,
+        Files.write(saveFile, lines,
                 StandardOpenOption.CREATE, // Create file if it doesn't exist
                 StandardOpenOption.TRUNCATE_EXISTING); // Overwrite existing file
     }
