@@ -83,7 +83,7 @@ public class View {
             drawHealerPrompt(screen, state);
             drawMerchant(screen, state);
             drawLootScreen(screen, state);
-            
+
             // Draw discard confirmation popup (must be after merchant to overlay it)
             if (state.isDiscardConfirmOpen()) {
                 drawDiscardConfirmPopup(screen, state);
@@ -338,11 +338,11 @@ public class View {
         textY += 20;
         screen.drawString("Block: " + hero.getBlock(), textX, textY);
         textY += 20;
-        
+
         // Display end turn hint
         screen.setFont(oldFont.deriveFont(14f));
         screen.setColor(Color.YELLOW);
-        screen.drawString("Press X to end turn", textX, textY);
+        screen.drawString("Press X to end turn | CTRL to cycle target", textX, textY);
         screen.setColor(Color.WHITE);
         screen.setFont(oldFont.deriveFont(18f));
         textY += 20;
@@ -350,20 +350,46 @@ public class View {
         screen.drawString("Ennemis :", textX, textY);
         textY += 20;
 
-        int index = 1;
+        int selectedIndex = combat.getSelectedEnemyIndex();
+        int index = 0;
         for (Enemy enemy : enemies) {
             EnemyAction intent = combat.getEnemyIntent(enemy);
             String intentStr = getIntentDisplay(intent, enemy);
 
-            screen.drawString(index + ". " + enemy.getName()
+            // Check if enemy is dead
+            boolean isDead = !enemy.isAlive();
+
+            // Highlight selected target (show even if dead so player knows)
+            if (index == selectedIndex) {
+                screen.setColor(isDead ? Color.GRAY : Color.RED);
+                screen.drawString("→ [TARGET]", textX, textY);
+                screen.setColor(Color.WHITE);
+            }
+
+            // Gray out dead enemies
+            if (isDead) {
+                screen.setColor(Color.GRAY);
+            }
+
+            String statusIndicator = isDead ? " [DEAD]" : "";
+            screen.drawString((index + 1) + ". " + enemy.getName()
                     + " HP=" + enemy.getHp()
-                    + " Block=" + enemy.getDefense(), textX, textY);
+                    + " Block=" + enemy.getDefense() + statusIndicator,
+                    textX + (index == selectedIndex ? 100 : 0), textY);
+
+            if (isDead) {
+                screen.setColor(Color.WHITE);
+            }
             textY += 20;
 
-            screen.setColor(getIntentColor(intent));
-            screen.drawString("   → Intent: " + intentStr, textX, textY);
-            screen.setColor(Color.WHITE);
-            textY += 20;
+            // Don't show intent for dead enemies
+            if (!isDead) {
+                screen.setColor(getIntentColor(intent));
+                screen.drawString("   → Intent: " + intentStr, textX, textY);
+                screen.setColor(Color.WHITE);
+                textY += 20;
+            }
+
             index++;
         }
     }

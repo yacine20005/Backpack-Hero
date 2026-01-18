@@ -82,52 +82,64 @@ public final class LootTables {
    * Rolls a random loot item based on the floor index.
    * 
    * @param floorIndex the index of the floor
-   * @param rng the random number generator
+   * @param rng        the random number generator
    * @return a random item appropriate for the floor
    */
   public static Item rollLootItem(int floorIndex, Random rng) {
     int r = rng.nextInt(100);
 
     if (floorIndex == 0) {
-      if (r < 40) return Weapon.woodSword();
-      if (r < 60) return Armor.woodenShield();
-      if (r < 80) return Weapon.woodenBow();
+      if (r < 40)
+        return Weapon.woodSword();
+      if (r < 60)
+        return Armor.woodenShield();
+      if (r < 80)
+        return Weapon.woodenBow();
       return ManaStone.smallManaStone();
     }
     if (floorIndex == 1) {
-      if (r < 30) return Weapon.sturn();
-      if (r < 55) return Armor.emeraldShield();
-      if (r < 75) return Armor.luckypants();
+      if (r < 30)
+        return Weapon.sturn();
+      if (r < 55)
+        return Armor.emeraldShield();
+      if (r < 75)
+        return Armor.luckypants();
       return ManaStone.bigManaStone();
     }
-    if (r < 30) return Weapon.telesto();
-    if (r < 55) return Weapon.montaintop();
-    if (r < 75) return Weapon.lastWord();
-    if (r < 90) return Armor.celestialnighthawk();
+    if (r < 30)
+      return Weapon.telesto();
+    if (r < 55)
+      return Weapon.montaintop();
+    if (r < 75)
+      return Weapon.lastWord();
+    if (r < 90)
+      return Armor.celestialnighthawk();
     return Armor.liarshandshake();
   }
 
   /**
    * Generates loot items from defeated enemies.
-   * Each dead enemy drops 1-2 random items.
+   * Each dead enemy drops 1 item, with a 25% chance of dropping a second item.
    * 
-   * @param enemies the list of enemies from the combat
+   * @param enemies    the list of enemies from the combat
    * @param floorIndex the current floor index
    * @return a list of loot items
    */
   public static List<Item> generateLootFromEnemies(List<Enemy> enemies, int floorIndex) {
     var loot = new ArrayList<Item>();
     var rng = new Random();
-    
+
     for (var enemy : enemies) {
       if (!enemy.isAlive()) {
-        int itemCount = 1 + rng.nextInt(2);
-        for (int i = 0; i < itemCount; i++) {
+        // Always drop 1 item
+        loot.add(rollLootItem(floorIndex, rng));
+        // 25% chance to drop a second item
+        if (rng.nextInt(100) < 25) {
           loot.add(rollLootItem(floorIndex, rng));
         }
       }
     }
-    
+
     return loot;
   }
 

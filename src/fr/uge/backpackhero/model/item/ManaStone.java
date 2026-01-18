@@ -36,7 +36,6 @@ public class ManaStone extends Item {
         return new ManaStone("Small Mana Stone", 3, Shape.SINGLE, Rarity.COMMON, 8);
     }
 
-
     /**
      * Creates a Big Mana Stone.
      * 

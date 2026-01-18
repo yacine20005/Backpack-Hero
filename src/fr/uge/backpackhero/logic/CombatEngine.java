@@ -13,7 +13,8 @@ import fr.uge.backpackhero.model.item.Weapon;
 
 /**
  * CombatEngine handles the combat mechanics between the hero and enemies.
- * It manages turns, attacks, defenses, and checks for combat termination conditions.
+ * It manages turns, attacks, defenses, and checks for combat termination
+ * conditions.
  * 
  * @author Yacine
  */
@@ -22,6 +23,7 @@ public class CombatEngine {
     private final Random random = new Random();
     private final HashMap<Enemy, EnemyAction> enemyIntents = new HashMap<>();
     private List<Enemy> currentEnemies;
+    private int selectedEnemyIndex = 0;
 
     /**
      * Creates a new CombatEngine instance.
@@ -37,6 +39,7 @@ public class CombatEngine {
      */
     public void startCombat(List<Enemy> enemies) {
         this.currentEnemies = Objects.requireNonNull(enemies, "enemies cannot be null");
+        this.selectedEnemyIndex = 0;
         decideEnemyIntents();
     }
 
@@ -45,6 +48,7 @@ public class CombatEngine {
      */
     public void endCombat() {
         this.currentEnemies = null;
+        this.selectedEnemyIndex = 0;
         enemyIntents.clear();
     }
 
@@ -67,9 +71,10 @@ public class CombatEngine {
     }
 
     /**
-     * Executes the hero's turn by resetting energy, block, and updating mana from the backpack.
+     * Executes the hero's turn by resetting energy, block, and updating mana from
+     * the backpack.
      * 
-     * @param hero the hero whose turn is being executed
+     * @param hero     the hero whose turn is being executed
      * @param backpack the backpack containing items that may affect the hero's mana
      */
     public void heroTurn(Hero hero, Backpack backpack) {
@@ -101,7 +106,8 @@ public class CombatEngine {
      */
     public void decideEnemyIntents() {
         enemyIntents.clear();
-        if (currentEnemies == null) return;
+        if (currentEnemies == null)
+            return;
         for (Enemy enemy : currentEnemies) {
             if (enemy.isAlive()) {
                 enemyIntents.put(enemy, decideEnemyAction(enemy));
@@ -128,12 +134,11 @@ public class CombatEngine {
         return enemyIntents.get(enemy);
     }
 
-
     /**
      * Executes the enemy's turn based on the decided action.
      * 
-     * @param hero the hero involved in the combat
-     * @param enemy the enemy whose turn is being executed
+     * @param hero   the hero involved in the combat
+     * @param enemy  the enemy whose turn is being executed
      * @param action the action decided for the enemy
      */
     public void enemyTurn(Hero hero, Enemy enemy, EnemyAction action) {
@@ -151,8 +156,8 @@ public class CombatEngine {
     /**
      * Handles the hero's attack on an enemy using a specified weapon.
      * 
-     * @param hero the hero performing the attack
-     * @param enemy the enemy being attacked
+     * @param hero   the hero performing the attack
+     * @param enemy  the enemy being attacked
      * @param weapon the weapon used for the attack
      * @return true if the attack was successful, false otherwise
      */
@@ -181,7 +186,7 @@ public class CombatEngine {
     /**
      * Handles the hero's defense using a specified armor.
      * 
-     * @param hero the hero performing the defense
+     * @param hero  the hero performing the defense
      * @param armor the armor used for defense
      * @return true if the defense was successful, false otherwise
      */
@@ -201,7 +206,7 @@ public class CombatEngine {
     /**
      * Handles the enemy's attack on the hero.
      * 
-     * @param hero the hero being attacked
+     * @param hero  the hero being attacked
      * @param enemy the enemy performing the attack
      */
     public void enemyAttack(Hero hero, Enemy enemy) {
@@ -227,7 +232,6 @@ public class CombatEngine {
         Objects.requireNonNull(enemy, "enemy cannot be null");
         enemy.setBlock(enemy.getBlock() + enemy.getDefense());
     }
-
 
     /**
      * Checks if the combat is over based on the hero's and current enemies' status.
@@ -257,4 +261,44 @@ public class CombatEngine {
         return currentEnemies.size() * 7;
     }
 
+    /**
+     * Gets the currently selected enemy target.
+     * 
+     * @return the selected enemy, or null if none available
+     */
+    public Enemy getSelectedEnemy() {
+        if (currentEnemies == null || currentEnemies.isEmpty()) {
+            return null;
+        }
+        if (selectedEnemyIndex < 0 || selectedEnemyIndex >= currentEnemies.size()) {
+            selectedEnemyIndex = 0;
+        }
+        return currentEnemies.get(selectedEnemyIndex);
+    }
+
+    /**
+     * Cycles to the next alive enemy target.
+     */
+    public void cycleEnemyTarget() {
+        if (currentEnemies == null || currentEnemies.isEmpty()) {
+            return;
+        }
+
+        int startIndex = selectedEnemyIndex;
+        do {
+            selectedEnemyIndex = (selectedEnemyIndex + 1) % currentEnemies.size();
+            if (currentEnemies.get(selectedEnemyIndex).isAlive()) {
+                return;
+            }
+        } while (selectedEnemyIndex != startIndex);
+    }
+
+    /**
+     * Gets the index of the currently selected enemy.
+     * 
+     * @return the selected enemy index
+     */
+    public int getSelectedEnemyIndex() {
+        return selectedEnemyIndex;
+    }
 }

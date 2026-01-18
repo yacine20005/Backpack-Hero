@@ -93,7 +93,7 @@
   - [x] Cliquer sur une armure → se défendre
   - [ ] Bouton "Fin de tour"
 - [x] Affichage du loot après combat
-- [ ] Écran de victoire/défaite
+- [x] Écran de victoire/défaite
 
 ---
 

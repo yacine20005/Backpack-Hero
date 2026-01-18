@@ -57,11 +57,10 @@ public class Hero {
     public void setHp(int hp) {
         this.hp = Math.min(Math.max(hp, 0), MAX_HP);
     }
-    
+
     public int getMaxHp() {
         return MAX_HP;
     }
-
 
     /**
      * Returns the current energy of the hero.

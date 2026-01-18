@@ -60,6 +60,16 @@ public class Main {
                         continue;
                     }
 
+                    // Handle Cycle Enemy Target in combat with CTRL
+                    if ((ke.key() == KeyboardEvent.Key.CTRL)
+                            && state.isInCombat() && !state.isLootScreenOpen()) {
+                        state.getCombatEngine().cycleEnemyTarget();
+                        System.out
+                                .println("Switched target to: " + state.getCombatEngine().getSelectedEnemy().getName());
+                        View.draw(context, state);
+                        continue;
+                    }
+
                     if (ke.key() == KeyboardEvent.Key.Z && (state.isGameOver() || state.isVictory())) {
                         state = new GameState();
                         View.draw(context, state);

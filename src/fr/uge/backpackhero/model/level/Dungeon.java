@@ -64,7 +64,7 @@ public class Dungeon {
         used.add(start);
 
         while (x < WIDTH - 1) {
-            int dir = rng.nextInt(3); 
+            int dir = rng.nextInt(3);
 
             if (dir == 0) {
                 x++;
@@ -92,18 +92,22 @@ public class Dungeon {
     }
 
     private void addSmallBranch(List<Position> corridors, HashSet<Position> used, Position base, Random rng) {
-        int len = 1 + rng.nextInt(3); 
+        int len = 1 + rng.nextInt(3);
         int x = base.x();
         int y = base.y();
 
         for (int i = 0; i < len; i++) {
-            int dir = rng.nextInt(4); 
+            int dir = rng.nextInt(4);
             int nx = x, ny = y;
 
-            if (dir == 0) nx--;
-            else if (dir == 1) nx++;
-            else if (dir == 2) ny--;
-            else ny++;
+            if (dir == 0)
+                nx--;
+            else if (dir == 1)
+                nx++;
+            else if (dir == 2)
+                ny--;
+            else
+                ny++;
 
             if (nx < 0 || nx >= WIDTH || ny < 0 || ny >= HEIGHT) {
                 return;
@@ -132,7 +136,6 @@ public class Dungeon {
         free.remove(exit);
         free.remove(new Position(0, 0));
 
-
         // Merchant
         Position merchant = pickAndRemove(free, rng);
         floor.setRoom(merchant, new Room(RoomType.MERCHANT, null, null, merchantStock(floorIndex), 0, 0));
@@ -141,7 +144,7 @@ public class Dungeon {
         Position healer = pickAndRemove(free, rng);
         floor.setRoom(healer, new Room(RoomType.HEALER, null, null, null, healerHeal(floorIndex), 0));
 
-        // Treasures 
+        // Treasures
         for (int i = 0; i < TREASURE_COUNT; i++) {
             Position t = pickAndRemove(free, rng);
             floor.setRoom(t, new Room(RoomType.TREASURE, null, treasureItems(floorIndex), null, 0, 0));
@@ -158,29 +161,41 @@ public class Dungeon {
         return list.remove(rng.nextInt(list.size()));
     }
 
-
     private int healerHeal(int floorIndex) {
-        if (floorIndex == 0) return 20;
-        if (floorIndex == 1) return 25;
+        if (floorIndex == 0)
+            return 20;
+        if (floorIndex == 1)
+            return 25;
         return 30;
     }
 
     private List<Enemy> enemiesForFloor(int floorIndex, Random rng) {
+        int enemyCount = 1 + rng.nextInt(3); // 1 to 3 enemies
+
         if (floorIndex == 0) {
-            return rng.nextBoolean()
-                    ? List.of(Enemy.petitRatLoup())
-                    : List.of(Enemy.ratLoup());
+            // Floor 0: Easy enemies
+            return switch (enemyCount) {
+                case 1 -> List.of(Enemy.ratLoup());
+                case 2 -> List.of(Enemy.petitRatLoup(), Enemy.petitRatLoup());
+                default -> List.of(Enemy.petitRatLoup(), Enemy.petitRatLoup(), Enemy.ratLoup());
+            };
         }
 
         if (floorIndex == 1) {
-            return rng.nextBoolean()
-                    ? List.of(Enemy.Gobelin())
-                    : List.of(Enemy.ChefGobelins());
+            // Floor 1: Medium enemies
+            return switch (enemyCount) {
+                case 1 -> List.of(Enemy.Gobelin());
+                case 2 -> List.of(Enemy.Gobelin(), Enemy.petitRatLoup());
+                default -> List.of(Enemy.Gobelin(), Enemy.Gobelin(), Enemy.ChefGobelins());
+            };
         }
 
-        return rng.nextBoolean()
-                ? List.of(Enemy.Demon())
-                : List.of(Enemy.RoiDemon());
+        // Floor 2: Hard enemies
+        return switch (enemyCount) {
+            case 1 -> List.of(Enemy.Demon());
+            case 2 -> List.of(Enemy.Demon(), Enemy.Gobelin());
+            default -> List.of(Enemy.Demon(), Enemy.Demon(), Enemy.RoiDemon());
+        };
     }
 
     private List<Item> treasureItems(int floorIndex) {

@@ -23,7 +23,7 @@ public enum RoomType {
     EXIT("X");
 
     private final String symbol;
-    
+
     /**
      * Creates a new RoomType with the specified symbol.
      * 

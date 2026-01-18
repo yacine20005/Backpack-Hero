@@ -226,15 +226,18 @@ public class Controller {
     static boolean useItemInCombat(GameState state, Item item) {
         var combat = state.getCombatEngine();
         var hero = state.getHero();
-        var enemies = combat.getCurrentEnemies();
 
         return switch (item) {
             case Weapon weapon -> {
-                Enemy target = null;
-                for (Enemy enemy : enemies) {
-                    if (enemy.isAlive()) {
-                        target = enemy;
-                        break;
+                Enemy target = combat.getSelectedEnemy();
+                if (target == null || !target.isAlive()) {
+                    // Find first alive enemy as fallback
+                    var enemies = combat.getCurrentEnemies();
+                    for (Enemy enemy : enemies) {
+                        if (enemy.isAlive()) {
+                            target = enemy;
+                            break;
+                        }
                     }
                 }
                 if (target == null)

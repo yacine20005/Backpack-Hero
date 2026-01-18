@@ -3,7 +3,8 @@ package fr.uge.backpackhero.model.entity;
 import java.util.Objects;
 
 /**
- * Represents an enemy in the game with attributes such as health points, attack, defense, block, and gold drop.
+ * Represents an enemy in the game with attributes such as health points,
+ * attack, defense, block, and gold drop.
  * 
  * @author Yacine
  */
@@ -19,10 +20,10 @@ public class Enemy {
 	/**
 	 * Creates a new Enemy with the specified attributes.
 	 * 
-	 * @param name the name of the enemy
-	 * @param maxHp the maximum health points of the enemy
-	 * @param attack the attack value of the enemy
-	 * @param defense the defense value of the enemy
+	 * @param name     the name of the enemy
+	 * @param maxHp    the maximum health points of the enemy
+	 * @param attack   the attack value of the enemy
+	 * @param defense  the defense value of the enemy
 	 * @param goldDrop the amount of gold dropped by the enemy upon defeat
 	 */
 	public Enemy(String name, int maxHp, int attack, int defense, int goldDrop) {
@@ -54,23 +55,21 @@ public class Enemy {
 	}
 
 	public static Enemy Gobelin() {
-		return new Enemy("Gobelin", 25, 10, 5, 8);
+		return new Enemy("Gobelin", 18, 8, 3, 8);
 	}
-	
+
 	public static Enemy ChefGobelins() {
-		return new Enemy("Chef gobelin", 30, 11, 7, 10);
+		return new Enemy("Chef gobelin", 22, 9, 5, 10);
 	}
-	
+
 	public static Enemy Demon() {
-		return new Enemy("Demon", 40, 15, 10, 15);
+		return new Enemy("Demon", 30, 12, 7, 15);
 	}
 
 	public static Enemy RoiDemon() {
-		return new Enemy("Roi Demon", 50, 18, 13, 20);
+		return new Enemy("Roi Demon", 35, 14, 9, 20);
 	}
 
-	
-	
 	/**
 	 * Returns the current health points of the enemy.
 	 * 
@@ -79,7 +78,7 @@ public class Enemy {
 	public int getHp() {
 		return hp;
 	}
-	
+
 	/**
 	 * Checks if the enemy is alive (hp > 0).
 	 * 

@@ -59,6 +59,5 @@ public class Gold extends Item {
         }
         this.amount = amount;
     }
-    
-    
+
 }
