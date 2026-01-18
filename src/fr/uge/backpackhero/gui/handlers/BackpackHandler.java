@@ -145,7 +145,7 @@ public class BackpackHandler {
 
         // Prevent selling Gold
         switch (item) {
-            case Gold _ -> {
+            case Gold gold -> {
                 System.out.println("Cannot sell gold!");
                 view.draw(context);
                 return;
@@ -229,7 +229,7 @@ public class BackpackHandler {
         }
         // Prevent discarding Gold
         switch (item) {
-            case Gold _ -> {
+            case Gold gold -> {
                 System.out.println("Cannot discard gold!");
                 view.draw(context);
                 return;
