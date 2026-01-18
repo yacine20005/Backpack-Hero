@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -32,8 +33,15 @@ import fr.uge.backpackhero.model.level.RoomType;
  */
 public class View {
 
-    private View() {
-        // Private constructor to prevent warnings
+    private final GameState state;
+
+    /**
+     * Creates a new View instance.
+     * 
+     * @param state the game state to render
+     */
+    public View(GameState state) {
+        this.state = Objects.requireNonNull(state, "state cannot be null");
     }
 
     /** The size of each tile in pixels. */
@@ -96,7 +104,7 @@ public class View {
      * @param context the application context
      * @param state   the current game state
      */
-    public static void draw(ApplicationContext context, GameState state) {
+    public void draw(ApplicationContext context) {
         context.renderFrame(screen -> {
 
             var screenInfo = context.getScreenInfo();
@@ -104,17 +112,17 @@ public class View {
             var height = (int) screenInfo.height();
 
             clearScreen(screen, width, height);
-            drawBackpack(screen, state);
-            drawStatsBox(screen, state);
+            drawBackpack(screen);
+            drawStatsBox(screen);
             drawDungeon(screen, state.getCurrentFloor());
             drawHero(screen, state.getPosition());
-            drawHealerPrompt(screen, state);
-            drawMerchant(screen, state);
-            drawLootScreen(screen, state);
+            drawHealerPrompt(screen);
+            drawMerchant(screen);
+            drawLootScreen(screen);
 
             // Draw discard confirmation popup (must be after merchant to overlay it)
             if (state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
-                drawDiscardConfirmPopup(screen, state);
+                drawDiscardConfirmPopup(screen);
             }
 
             if (state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
@@ -150,7 +158,7 @@ public class View {
      * @param isAnchor   whether the cell is the anchor cell of the item
      * @param isSelected whether the item is currently selected
      */
-    private static void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor,
+    private void drawItemCell(Graphics2D screen, Item item, Position cellPos, boolean isAnchor,
             boolean isSelected) {
         int x = cellPos.x() * TILE_SIZE;
         int y = cellPos.y() * TILE_SIZE;
@@ -186,7 +194,7 @@ public class View {
      * @param backpack     the backpack to draw
      * @param screenHeight the height of the screen
      */
-    private static void drawBackpack(Graphics2D screen, GameState state) {
+    private void drawBackpack(Graphics2D screen) {
         var backpack = state.getBackpack();
         var screenInfo = screen.getDeviceConfiguration().getBounds();
         int screenHeight = (int) screenInfo.getHeight();
@@ -208,7 +216,7 @@ public class View {
      * @param backpack the backpack containing the items to draw
      * @param state    the current game state
      */
-    private static void drawItems(Graphics2D screen, Backpack backpack, GameState state) {
+    private void drawItems(Graphics2D screen, Backpack backpack, GameState state) {
         Position selectedAnchor = state.getSelectedItemAnchor();
 
         backpack.getItems().forEach((anchor, item) -> {
@@ -228,7 +236,7 @@ public class View {
      * @param state         the game state to check for unlock mode
      * @param heightInTiles the height of the backpack in tiles
      */
-    private static void drawBackpackGrid(Graphics2D screen, Backpack backpack, GameState state, int heightInTiles) {
+    private void drawBackpackGrid(Graphics2D screen, Backpack backpack, GameState state, int heightInTiles) {
         screen.setStroke(new BasicStroke(1));
 
         for (int y = 0; y < heightInTiles; y++) {
@@ -273,7 +281,7 @@ public class View {
      * @param screen the graphics context to draw on
      * @param floor  the dungeon floor to draw
      */
-    private static void drawDungeon(Graphics2D screen, Floor floor) {
+    private void drawDungeon(Graphics2D screen, Floor floor) {
         for (int y = 0; y < floor.getHeight(); y++) {
             for (int x = 0; x < floor.getWidth(); x++) {
                 Room room = floor.getRoom(new Position(x, y));
@@ -293,7 +301,7 @@ public class View {
      * @param y       the y position of the room in the dungeon grid
      * @param xOffset the horizontal offset to apply when drawing the room
      */
-    private static void drawOneRoom(Graphics2D screen, Room room, int x, int y, int xOffset) {
+    private void drawOneRoom(Graphics2D screen, Room room, int x, int y, int xOffset) {
         var rect = new Rectangle2D.Float(
                 (x * TILE_SIZE) + xOffset,
                 y * TILE_SIZE,
@@ -318,7 +326,7 @@ public class View {
      * @param screen  the graphics context to draw on
      * @param heroPos the position of the hero
      */
-    private static void drawHero(Graphics2D screen, Position heroPos) {
+    private void drawHero(Graphics2D screen, Position heroPos) {
         if (heroPos == null)
             return;
 
@@ -338,7 +346,7 @@ public class View {
      * @param type the type of the room
      * @return the color corresponding to the room type
      */
-    private static Color getColorForRoom(RoomType type) {
+    private Color getColorForRoom(RoomType type) {
         return switch (type) {
             case CORRIDOR -> Color.GRAY;
             case ENEMY -> Color.RED;
@@ -358,7 +366,7 @@ public class View {
      * @param state        the current game state
      * @param screenHeight the height of the screen
      */
-    private static void drawCombat(Graphics2D screen, GameState state, int screenHeight) {
+    private void drawCombat(Graphics2D screen, GameState state, int screenHeight) {
         var hero = state.getHero();
         var combat = state.getCombatEngine();
         var enemies = combat.getCurrentEnemies();
@@ -452,7 +460,7 @@ public class View {
      * @param enemy  the enemy (for damage/defense values)
      * @return a formatted string describing the intent
      */
-    private static String getIntentDisplay(EnemyAction intent, Enemy enemy) {
+    private String getIntentDisplay(EnemyAction intent, Enemy enemy) {
         if (intent == null)
             return "???";
         return switch (intent) {
@@ -467,7 +475,7 @@ public class View {
      * @param intent the enemy action intent
      * @return a color representing the intent type
      */
-    private static Color getIntentColor(EnemyAction intent) {
+    private Color getIntentColor(EnemyAction intent) {
         if (intent == null)
             return Color.GRAY;
         return switch (intent) {
@@ -476,7 +484,7 @@ public class View {
         };
     }
 
-    private static void drawMerchant(Graphics2D screen, GameState state) {
+    private void drawMerchant(Graphics2D screen) {
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT || state.getState() == State.COMBAT) {
             return;
@@ -569,16 +577,16 @@ public class View {
 
         // Draw sell confirmation popup
         if (state.getActivePopup() == PopupType.SELL_CONFIRM) {
-            drawSellConfirmPopup(screen, state);
+            drawSellConfirmPopup(screen);
         }
 
         // Draw discard confirmation popup
         if (state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
-            drawDiscardConfirmPopup(screen, state);
+            drawDiscardConfirmPopup(screen);
         }
     }
 
-    private static void drawDiscardConfirmPopup(Graphics2D screen, GameState state) {
+    private void drawDiscardConfirmPopup(Graphics2D screen) {
         var item = state.getDiscardConfirmItem();
         if (item == null)
             return;
@@ -606,7 +614,7 @@ public class View {
                 "NO (N)");
     }
 
-    private static void drawSellConfirmPopup(Graphics2D screen, GameState state) {
+    private void drawSellConfirmPopup(Graphics2D screen) {
         var item = state.getSellConfirmItem();
         if (item == null)
             return;
@@ -631,7 +639,7 @@ public class View {
                 "NO (N)");
     }
 
-    private static void drawHealerPrompt(Graphics2D screen, GameState state) {
+    private void drawHealerPrompt(Graphics2D screen) {
         if (state.getState() != State.HEALER_PROMPT || state.getState() == State.COMBAT)
             return;
 
@@ -659,7 +667,7 @@ public class View {
                 "LEAVE (N)");
     }
 
-    private static void drawButton(Graphics2D screen, int x, int y, int w, int h, String text) {
+    private void drawButton(Graphics2D screen, int x, int y, int w, int h, String text) {
         screen.setColor(BOX_GRAY);
         screen.fill(new Rectangle2D.Float(x, y, w, h));
         screen.setColor(Color.WHITE);
@@ -667,7 +675,7 @@ public class View {
         screen.drawString(text, x + BUTTON_TEXT_X, y + BUTTON_TEXT_Y);
     }
 
-    private static void drawStatsBox(Graphics2D screen, GameState state) {
+    private void drawStatsBox(Graphics2D screen) {
         int x = POPUP_X;
         int y = 510;
         int w = POPUP_WIDTH;
@@ -699,7 +707,7 @@ public class View {
         }
     }
 
-    private static void drawLootScreen(Graphics2D screen, GameState state) {
+    private void drawLootScreen(Graphics2D screen) {
         if (state.getState() != State.LOOT_SCREEN)
             return;
 
@@ -773,7 +781,7 @@ public class View {
         drawButton(screen, continueX, continueY, BUTTON_WIDTH + 10, BUTTON_HEIGHT, "CONTINUE (C)");
     }
 
-    private static void drawGameOver(Graphics2D screen, int width, int height, GameState state) {
+    private void drawGameOver(Graphics2D screen, int width, int height, GameState state) {
         screen.setColor(Color.RED);
         screen.setFont(new Font("Arial", Font.BOLD, 48));
         screen.drawString("GAME OVER", width / 2 - 160, height - 400);
@@ -793,7 +801,7 @@ public class View {
         screen.drawString("Restart: Z", width / 2 - 90, height - 55);
     }
 
-    private static void drawVictory(Graphics2D screen, int width, int height, GameState state) {
+    private void drawVictory(Graphics2D screen, int width, int height, GameState state) {
         // Background overlay
         screen.setColor(OVERLAY_BG);
         screen.fill(new Rectangle2D.Float(0, 0, width, height));
@@ -829,7 +837,7 @@ public class View {
      * @param width the screen width
      * @param startY the Y position to start drawing
      */
-    private static void drawHallOfFame(Graphics2D screen, int width, int startY) {
+    private void drawHallOfFame(Graphics2D screen, int width, int startY) {
         var hallOfFame = Main.getHallOfFame();
         var entries = hallOfFame.getTopScores();
         

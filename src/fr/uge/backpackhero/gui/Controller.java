@@ -1,6 +1,7 @@
 package fr.uge.backpackhero.gui;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.PointerEvent;
@@ -29,8 +30,18 @@ import fr.uge.backpackhero.model.loot.LootTables;
  */
 public class Controller {
 
-    private Controller() {
-        // Private constructor to prevent warnings
+    private final GameState state;
+    private final View view;
+
+    /**
+     * Creates a new Controller instance.
+     * 
+     * @param state the game state to control
+     * @param view the view to update after actions
+     */
+    public Controller(GameState state, View view) {
+        this.state = Objects.requireNonNull(state, "state cannot be null");
+        this.view = Objects.requireNonNull(view, "view cannot be null");
     }
 
     /**
@@ -38,10 +49,12 @@ public class Controller {
      * Left click: select/deselect or move items, or use in combat
      * 
      * @param context      the application context
-     * @param state        the current game state
      * @param pointerEvent the pointer event representing the click
      */
-    public static void handleBackpackClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
+    public void handleBackpackClick(ApplicationContext context, PointerEvent pointerEvent) {
+        Objects.requireNonNull(context, "context cannot be null");
+        Objects.requireNonNull(pointerEvent, "pointerEvent cannot be null");
+        
         if (state.isGameOver()) {
             return;
         }
@@ -63,7 +76,7 @@ public class Controller {
             } else {
                 IO.println("Cannot unlock this cell. Choose an adjacent cell.");
             }
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
 
@@ -77,13 +90,13 @@ public class Controller {
             } else {
                 IO.println("Cannot place item here.");
             }
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
 
         // If in loot screen mode without selected item, allow item movement in backpack
         if (state.getState() == State.LOOT_SCREEN && state.getSelectedLootItem() == null) {
-            handleItemMovement(context, state, pos);
+            handleItemMovement(context, pos);
             return;
         }
 
@@ -109,7 +122,7 @@ public class Controller {
                         }
                     }
                 }
-                View.draw(context, state);
+                view.draw(context);
                 return;
             }
         }
@@ -118,14 +131,14 @@ public class Controller {
         if (state.getMerchantMode() == MerchantMode.SELL && state.getState() != State.COMBAT) {
             var room = state.getCurrentFloor().getRoom(state.getPosition());
             if (room != null && room.getType() == RoomType.MERCHANT) {
-                handleBackpackSellClick(context, state, pos);
+                handleBackpackSellClick(context, pos);
                 return;
             }
         }
 
         // If we're not in combat, handle item movement
         if (state.getState() != State.COMBAT) {
-            handleItemMovement(context, state, pos);
+            handleItemMovement(context, pos);
             return;
         }
 
@@ -138,14 +151,14 @@ public class Controller {
         var item = optItem.get();
         if (!useItemInCombat(state, item)) {
             System.out.println("Cannot use item in combat.");
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
 
-        afterHeroAction(context, state);
+        afterHeroAction(context);
     }
 
-    private static void handleBackpackSellClick(ApplicationContext context, GameState state, Position pos) {
+    private void handleBackpackSellClick(ApplicationContext context, Position pos) {
         var backpack = state.getBackpack();
         var anchor = backpack.getAnchorAt(pos);
         if (anchor.isEmpty()) {
@@ -161,7 +174,7 @@ public class Controller {
         switch (item) {
             case Gold _ -> {
                 System.out.println("Cannot sell gold!");
-                View.draw(context, state);
+                view.draw(context);
                 return;
             }
             default -> {
@@ -169,7 +182,7 @@ public class Controller {
         }
 
         state.openSellConfirm(item, anchor.get());
-        View.draw(context, state);
+        view.draw(context);
     }
 
     /**
@@ -179,7 +192,7 @@ public class Controller {
      * @param state   the current game state
      * @param pos     the clicked position in the backpack
      */
-    private static void handleItemMovement(ApplicationContext context, GameState state, Position pos) {
+    private void handleItemMovement(ApplicationContext context, Position pos) {
         var backpack = state.getBackpack();
         var currentAnchor = backpack.getAnchorAt(pos);
 
@@ -189,7 +202,7 @@ public class Controller {
                 var anchor = currentAnchor.get(); // Because currentAnchor is an Optional and we checked with isPresent
                 var item = backpack.getItems().get(anchor);
                 state.setSelectedItem(anchor, item);
-                View.draw(context, state);
+                view.draw(context);
             }
         }
         // An item is selected, try to move it
@@ -198,7 +211,7 @@ public class Controller {
             if (currentAnchor.isPresent() && currentAnchor.get().equals(selectedAnchor)) {
                 // Clicked on the same item, deselect
                 state.clearSelectedItem();
-                View.draw(context, state);
+                view.draw(context);
             } else {
                 // Try to move the item to the new position
                 if (backpack.move(selectedAnchor, pos)) {
@@ -206,7 +219,7 @@ public class Controller {
                 } else {
                     System.out.println("Cannot move item to this position.");
                 }
-                View.draw(context, state);
+                view.draw(context);
             }
         }
     }
@@ -217,7 +230,7 @@ public class Controller {
      * @param context the application context
      * @param state   the current game state
      */
-    public static void handleRotateItem(ApplicationContext context, GameState state) {
+    public void handleRotateItem(ApplicationContext context) {
         var selectedItemAnchor = state.getSelectedItemAnchor();
         if (selectedItemAnchor == null) {
             System.out.println("No item selected.");
@@ -228,7 +241,7 @@ public class Controller {
         if (!backpack.rotateItem(selectedItemAnchor)) {
             System.out.println("Cannot rotate item in current position.");
         }
-        View.draw(context, state);
+        view.draw(context);
     }
 
     /**
@@ -250,7 +263,7 @@ public class Controller {
      * @param state        the current game state
      * @param pointerEvent the pointer event representing the click
      */
-    public static void handleDungeonClick(ApplicationContext context, GameState state, PointerEvent pointerEvent) {
+    public void handleDungeonClick(ApplicationContext context, PointerEvent pointerEvent) {
         if (state.getState() == State.COMBAT) {
             return;
         }
@@ -277,7 +290,7 @@ public class Controller {
 
         if (room != null && room.getType() == RoomType.EXIT) {
             state.exitFloor();
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
 
@@ -285,7 +298,7 @@ public class Controller {
             int heal = room.getHealAmount();
             int cost = Math.max(1, heal / 2);
             state.openHealerPrompt(prevPos, heal, cost);
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
 
@@ -299,7 +312,7 @@ public class Controller {
                 }
                 state.openLootScreen(treasureItems);
                 IO.println("Treasure room! " + treasureItems.size() + " items to choose from.");
-                View.draw(context, state);
+                view.draw(context);
             }
             return;
         }
@@ -313,7 +326,7 @@ public class Controller {
                 state.setState(State.COMBAT);
             }
         }
-        View.draw(context, state);
+        view.draw(context);
     }
 
     /**
@@ -343,14 +356,14 @@ public class Controller {
      * @param context the application context
      * @param state   the current game state
      */
-    static void afterHeroAction(ApplicationContext context, GameState state) {
-        if (checkEndOfCombat(context, state))
+    private void afterHeroAction(ApplicationContext context) {
+        if (checkEndOfCombat(context))
             return;
-        processEnemiesTurn(context, state);
-        View.draw(context, state);
+        processEnemiesTurn(context);
+        view.draw(context);
     }
 
-    static void processEnemiesTurn(ApplicationContext context, GameState state) {
+    private void processEnemiesTurn(ApplicationContext context) {
         var combat = state.getCombatEngine();
         var hero = state.getHero();
         var enemies = combat.getCurrentEnemies();
@@ -370,7 +383,7 @@ public class Controller {
             state.setGameOver(true);
             state.setState(State.EXPLORATION);
             combat.endCombat();
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
         combat.decideEnemyIntents();
@@ -384,7 +397,7 @@ public class Controller {
      * @param state   the current game state
      * @return true if the combat has ended, false otherwise
      */
-    static boolean checkEndOfCombat(ApplicationContext context, GameState state) {
+    private boolean checkEndOfCombat(ApplicationContext context) {
         CombatEngine combat = state.getCombatEngine();
         Hero hero = state.getHero();
 
@@ -397,7 +410,7 @@ public class Controller {
             state.setGameOver(true);
             state.setState(State.EXPLORATION);
             combat.endCombat();
-            View.draw(context, state);
+            view.draw(context);
             return true;
         }
 
@@ -428,11 +441,11 @@ public class Controller {
         if (levelsGained > 0) {
             IO.println("You gained " + levelsGained + " level(s)! Now level " + hero.getLevel());
         }
-        View.draw(context, state);
+        view.draw(context);
         return true;
     }
 
-    public static boolean handleMerchantClick(GameState state, PointerEvent event) {
+    public boolean handleMerchantClick(PointerEvent event) {
         if (state.isGameOver()) {
             return true;
         }
@@ -454,7 +467,7 @@ public class Controller {
         return true;
     }
 
-    public static void handleSellConfirmYes(GameState state) {
+    public void handleSellConfirmYes() {
         if (state.getActivePopup() != PopupType.SELL_CONFIRM)
             return;
 
@@ -469,13 +482,13 @@ public class Controller {
         state.closeSellConfirm();
     }
 
-    public static void handleSellConfirmNo(GameState state) {
+    public void handleSellConfirmNo() {
         if (state.getActivePopup() != PopupType.SELL_CONFIRM)
             return;
         state.closeSellConfirm();
     }
 
-    public static void handleDiscardItem(ApplicationContext context, GameState state) {
+    public void handleDiscardItem(ApplicationContext context) {
         // Only block if another popup is already open or game is over
         if (state.getActivePopup() == PopupType.SELL_CONFIRM || state.getState() == State.HEALER_PROMPT
                 || state.isGameOver() || state.isVictory()) {
@@ -496,7 +509,7 @@ public class Controller {
         switch (item) {
             case Gold _ -> {
                 System.out.println("Cannot discard gold!");
-                View.draw(context, state);
+                view.draw(context);
                 return;
             }
             default -> {
@@ -504,10 +517,10 @@ public class Controller {
         }
 
         state.openDiscardConfirm(item, selectedAnchor);
-        View.draw(context, state);
+        view.draw(context);
     }
 
-    public static void handleDiscardConfirmYes(ApplicationContext context, GameState state) {
+    public void handleDiscardConfirmYes(ApplicationContext context) {
         if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
             return;
 
@@ -519,17 +532,17 @@ public class Controller {
             System.out.println("Discarded: " + item.getName());
         }
         state.closeDiscardConfirm();
-        View.draw(context, state);
+        view.draw(context);
     }
 
-    public static void handleDiscardConfirmNo(ApplicationContext context, GameState state) {
+    public void handleDiscardConfirmNo(ApplicationContext context) {
         if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
             return;
         state.closeDiscardConfirm();
-        View.draw(context, state);
+        view.draw(context);
     }
 
-    public static void handleHealerAccept(ApplicationContext context, GameState state) {
+    public void handleHealerAccept(ApplicationContext context) {
         if (state.getState() != State.HEALER_PROMPT)
             return;
 
@@ -538,7 +551,7 @@ public class Controller {
 
         if (!state.getBackpack().spendGold(cost)) {
             System.out.println("Not enough gold.");
-            View.draw(context, state);
+            view.draw(context);
             return;
         }
 
@@ -547,17 +560,17 @@ public class Controller {
         hero.setHp(before + heal);
 
         state.closeHealerPrompt();
-        View.draw(context, state);
+        view.draw(context);
     }
 
-    public static void handleHealerDecline(ApplicationContext context, GameState state) {
+    public void handleHealerDecline(ApplicationContext context) {
         if (state.getState() != State.HEALER_PROMPT)
             return;
         state.closeHealerPrompt();
-        View.draw(context, state);
+        view.draw(context);
     }
 
-    public static void handleLootContinue(ApplicationContext context, GameState state) {
+    public void handleLootContinue(ApplicationContext context) {
         if (state.getState() != State.LOOT_SCREEN)
             return;
 
@@ -574,10 +587,10 @@ public class Controller {
         floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
 
         IO.println("Loot screen closed.");
-        View.draw(context, state);
+        view.draw(context);
     }
 
-    public static boolean handleLootScreenClick(ApplicationContext context, GameState state, PointerEvent pe) {
+    public boolean handleLootScreenClick(ApplicationContext context, PointerEvent pe) {
         if (state.isGameOver()) {
             return true;
         }
@@ -590,7 +603,7 @@ public class Controller {
         return true;
     }
 
-    public static void handleMerchantItemSelection(ApplicationContext context, GameState state, int index) {
+    public void handleMerchantItemSelection(ApplicationContext context, int index) {
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT) {
             return;
@@ -613,11 +626,11 @@ public class Controller {
                 state.setSelectedMerchantItem(selectedItem);
                 System.out.println("Selected merchant item: " + selectedItem.getName());
             }
-            View.draw(context, state);
+            view.draw(context);
         }
     }
 
-    public static void handleLootItemSelection(ApplicationContext context, GameState state, int index) {
+    public void handleLootItemSelection(ApplicationContext context, int index) {
         var loot = state.getAvailableLoot();
         if (loot == null || loot.isEmpty()) {
             return;
@@ -633,11 +646,11 @@ public class Controller {
                 state.setSelectedLootItem(selectedItem);
                 System.out.println("Selected loot item: " + selectedItem.getName());
             }
-            View.draw(context, state);
+            view.draw(context);
         }
     }
 
-    public static void handleEndTurn(ApplicationContext context, GameState state) {
+    public void handleEndTurn(ApplicationContext context) {
         if (state.getState() != State.COMBAT) {
             return;
         }
@@ -645,8 +658,8 @@ public class Controller {
         state.getCombatEngine().endHeroTurn(state.getHero());
         IO.println("Turn ended.");
 
-        processEnemiesTurn(context, state);
-        View.draw(context, state);
+        processEnemiesTurn(context);
+        view.draw(context);
     }
 
 }

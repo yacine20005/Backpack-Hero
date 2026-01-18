@@ -1,13 +1,19 @@
 package fr.uge.backpackhero.model.item;
 
+import java.util.Objects;
+
 /**
  * Represents an armor item that can be equipped by the hero.
  * Armor provides protection and has an associated energy cost.
  * 
  * @author Yacine
  */
-public class Armor extends Item {
+public final class Armor implements Item {
 
+    private final String name;
+    private Shape shape;
+    private final Rarity rarity;
+    private final int price;
     private final int protection;
     private final int energyCost;
     private final int manaCost;
@@ -24,13 +30,44 @@ public class Armor extends Item {
      * @param price      the price of the armor
      */
     public Armor(String name, int protection, int energyCost, int manaCost, Shape shape, Rarity rarity, int price) {
-        super(name, shape, rarity, price);
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+        this.rarity = Objects.requireNonNull(rarity, "rarity cannot be null");
+        if (price < 0) {
+            throw new IllegalArgumentException("price cannot be negative");
+        }
+        this.price = price;
         if (protection < 0 || energyCost < 0 || manaCost < 0) {
             throw new IllegalArgumentException("Protection, energy cost, and mana cost must be non-negative");
         }
         this.protection = protection;
         this.energyCost = energyCost;
         this.manaCost = manaCost;
+    }
+    
+    @Override
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public Shape getShape() {
+        return shape;
+    }
+    
+    @Override
+    public void setShape(Shape shape) {
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+    }
+    
+    @Override
+    public Rarity getRarity() {
+        return rarity;
+    }
+    
+    @Override
+    public int getPrice() {
+        return price;
     }
 
     /**

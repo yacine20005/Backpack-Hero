@@ -1,13 +1,19 @@
 package fr.uge.backpackhero.model.item;
 
+import java.util.Objects;
+
 /**
  * Represents a weapon item that can be used by the hero to deal damage.
  * Weapons have damage, energy cost, and mana cost attributes.
  * 
  * @author Yacine
  */
-public class Weapon extends Item {
+public final class Weapon implements Item {
 
+    private final String name;
+    private Shape shape;
+    private final Rarity rarity;
+    private final int price;
     private final int damage;
     private final int energyCost;
     private final int manaCost;
@@ -24,10 +30,41 @@ public class Weapon extends Item {
      * @param price      the price of the weapon
      */
     public Weapon(String name, int damage, int energyCost, int manaCost, Shape shape, Rarity rarity, int price) {
-        super(name, shape, rarity, price);
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+        this.rarity = Objects.requireNonNull(rarity, "rarity cannot be null");
+        if (price < 0) {
+            throw new IllegalArgumentException("price cannot be negative");
+        }
+        this.price = price;
         this.damage = damage;
         this.energyCost = energyCost;
         this.manaCost = manaCost;
+    }
+    
+    @Override
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public Shape getShape() {
+        return shape;
+    }
+    
+    @Override
+    public void setShape(Shape shape) {
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+    }
+    
+    @Override
+    public Rarity getRarity() {
+        return rarity;
+    }
+    
+    @Override
+    public int getPrice() {
+        return price;
     }
 
     /**

@@ -1,13 +1,19 @@
 package fr.uge.backpackhero.model.item;
 
+import java.util.Objects;
+
 /**
  * Represents a mana stone item that can be used by the hero to gain mana.
  * Mana stones provide a certain amount of mana when in the backpack.
  * 
  * @author Yacine
  */
-public class ManaStone extends Item {
+public final class ManaStone implements Item {
 
+    private final String name;
+    private Shape shape;
+    private final Rarity rarity;
+    private final int price;
     private final int manaProvided;
 
     /**
@@ -20,11 +26,42 @@ public class ManaStone extends Item {
      * @param price        the price of the mana stone
      */
     public ManaStone(String name, int manaProvided, Shape shape, Rarity rarity, int price) {
-        super(name, shape, rarity, price);
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+        this.rarity = Objects.requireNonNull(rarity, "rarity cannot be null");
+        if (price < 0) {
+            throw new IllegalArgumentException("price cannot be negative");
+        }
+        this.price = price;
         if (manaProvided < 0) {
             throw new IllegalArgumentException("Mana provided cannot be negative");
         }
         this.manaProvided = manaProvided;
+    }
+    
+    @Override
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public Shape getShape() {
+        return shape;
+    }
+    
+    @Override
+    public void setShape(Shape shape) {
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+    }
+    
+    @Override
+    public Rarity getRarity() {
+        return rarity;
+    }
+    
+    @Override
+    public int getPrice() {
+        return price;
     }
 
     /**

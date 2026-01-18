@@ -1,5 +1,7 @@
 package fr.uge.backpackhero.model.item;
 
+import java.util.Objects;
+
 /**
  * Represents a gold item that can be collected by the hero.
  * Gold has an amount that can be increased or decreased.
@@ -10,8 +12,12 @@ package fr.uge.backpackhero.model.item;
  * 
  * @author Yacine
  */
-public class Gold extends Item {
+public final class Gold implements Item {
 
+    private final String name;
+    private Shape shape;
+    private final Rarity rarity;
+    private final int price;
     private int amount;
 
     /**
@@ -23,7 +29,10 @@ public class Gold extends Item {
      * @param shape  the shape of the gold item in the backpack
      */
     public Gold(int amount, Shape shape) {
-        super("Gold", shape, Rarity.COMMON, 0);
+        this.name = "Gold";
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+        this.rarity = Rarity.COMMON;
+        this.price = 0;
         if (amount < 0) {
             throw new IllegalArgumentException("Gold amount cannot be negative");
         }
@@ -37,6 +46,31 @@ public class Gold extends Item {
      */
     public Gold(int amount) {
         this(amount, Shape.SINGLE);
+    }
+    
+    @Override
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public Shape getShape() {
+        return shape;
+    }
+    
+    @Override
+    public void setShape(Shape shape) {
+        this.shape = Objects.requireNonNull(shape, "shape cannot be null");
+    }
+    
+    @Override
+    public Rarity getRarity() {
+        return rarity;
+    }
+    
+    @Override
+    public int getPrice() {
+        return price;
     }
 
     /**

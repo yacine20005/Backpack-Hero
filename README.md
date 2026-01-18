@@ -198,3 +198,46 @@
 - [ ] Archive `.zip` avec le bon nom et la bonne structure
 - [ ] Pas de librairies externes non autorisées
 - [ ] Pas de plagiat
+
+
+⚠️ Méthodes static si pertinent : Trop de static (Controller, View)
+⚠️ Méthodes private si pertinent : Partiellement
+⚠️ RequireNonNull pour les méthodes publiques : Partiellement fait
+❌ Interfaces avec plusieurs implémentations : Manque d'abstraction
+✅ Pas de classes inutiles : OK
+✅ Structuration package / visibilité des classes : OUI (model/gui/logic)
+⚠️ Code bien factorisé / pas de duplication : À vérifier
+⚠️ Pas de classe fourre-tout : Controller est un peu fourre-tout
+❌ Pas de méthode de plus de 20 lignes : À VÉRIFIER - probablement NON
+📋 Java : Lecture de fichiers
+❌ Utilisation de fichiers de config : NON
+⚠️ Pas de référence sur des fichiers en dur : Path.of("halloffame.txt") en dur dans HOF
+📋 Java : Documentation (Javadoc)
+⚠️ Javadoc pour les méthodes publiques : Partiellement
+❌ Javadoc pour toutes les méthodes : NON
+✅ Javadoc en anglais : OUI (quand présent)
+📋 Documentation : Readme
+❌ Ce qui a été implémenté : README.md existe mais incomplet
+❌ Organisation / hiérarchie des classes : NON
+❌ Choix techniques : NON
+❌ Problèmes rencontrés : NON
+📋 Déploiement
+⚠️ Le projet compile : À tester (problèmes module-path vus avant)
+🔴 POINTS CRITIQUES MANQUANTS
+❌ Plus court chemin (Algorithmique) - Dijkstra/BFS manquant
+❌ Interactions entre objets (Cœur du gameplay Phase 2)
+❌ Interface scellée (Pattern matching)
+❌ Catch uniquement dans main (IOException dans HOF)
+❌ Méthodes < 20 lignes (À vérifier mais probablement NON)
+❌ Fichiers de config (ennemis/items en dur)
+❌ Documentation complète (README technique manquant)
+❌ Trop de static (Controller/View devraient être des instances)
+💡 NOTE ESTIMÉE AVEC CETTE CHECKLIST : 9-10/20
+Pourquoi si bas ?
+
+Interactions items manquantes = cœur du jeu absent
+Architecture trop procedurale (static partout)
+Pathfinding absent (juste adjacence)
+Exceptions mal gérées (catch IOException hors main)
+Documentation technique absente
+Tu veux que je corrige les points critiques en priorité ?

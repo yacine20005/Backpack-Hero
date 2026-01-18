@@ -25,8 +25,10 @@ public class HOF {
 
     /**
      * Creates a new HallOfFame and loads existing scores from file.
+     * 
+     * @throws IOException if an I/O error occurs loading the scores
      */
-    public HOF() {
+    public HOF() throws IOException {
         this.entries = new ArrayList<>();
         loadScores();
     }
@@ -39,8 +41,9 @@ public class HOF {
      * @param score      the score achieved
      * @param level      the level reached
      * @return true if the score made it into the top 3, false otherwise
+     * @throws IOException if an I/O error occurs saving the scores
      */
-    public boolean addScore(String playerName, int score, int level) {
+    public boolean addScore(String playerName, int score, int level) throws IOException {
         Objects.requireNonNull(playerName, "Player name cannot be null");
 
         ScoreEntry newEntry = new ScoreEntry(playerName, score, level);
@@ -62,8 +65,9 @@ public class HOF {
      * @param playerName the name of the player
      * @param score      the score achieved
      * @param level      the level reached
+     * @throws IOException if an I/O error occurs saving the scores
      */
-    public void submitScore(String playerName, int score, int level) {
+    public void submitScore(String playerName, int score, int level) throws IOException {
         boolean madeIt = addScore(playerName, score, level);
 
         if (madeIt) {
@@ -113,63 +117,59 @@ public class HOF {
 
     /**
      * Loads scores from the save file using java.nio.
+     * 
+     * @throws IOException if an I/O error occurs reading from the file
      */
-    private void loadScores() {
+    private void loadScores() throws IOException {
         if (!Files.exists(SAVE_FILE)) {
             return; // File doesn't exist yet, start with empty list
         }
 
-        try {
-            List<String> lines = Files.readAllLines(SAVE_FILE);
-            entries.clear();
+        List<String> lines = Files.readAllLines(SAVE_FILE);
+        entries.clear();
 
-            for (String line : lines) {
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
-                try {
-                    ScoreEntry entry = ScoreEntry.fromSaveString(line);
-                    entries.add(entry);
-                } catch (IllegalArgumentException e) { // In case of a malformed line that would crash with the
-                                                       // fromSaveString call
-                    System.err.println("Skipping invalid score entry: " + line);
-                }
+        for (String line : lines) {
+            if (line.trim().isEmpty()) {
+                continue;
             }
-
-            Collections.sort(entries);
-
-            // Ensure we only keep top MAX_ENTRIES
-            if (entries.size() > MAX_ENTRIES) {
-                entries.subList(MAX_ENTRIES, entries.size()).clear();
+            try {
+                ScoreEntry entry = ScoreEntry.fromSaveString(line);
+                entries.add(entry);
+            } catch (IllegalArgumentException e) { // In case of a malformed line that would crash with the
+                                                   // fromSaveString call
+                System.err.println("Skipping invalid score entry: " + line);
             }
+        }
 
-        } catch (IOException e) {
-            System.err.println("Failed to load Hall of Fame: " + e.getMessage());
+        Collections.sort(entries);
+
+        // Ensure we only keep top MAX_ENTRIES
+        if (entries.size() > MAX_ENTRIES) {
+            entries.subList(MAX_ENTRIES, entries.size()).clear();
         }
     }
 
     /**
      * Saves scores to the save file.
+     * 
+     * @throws IOException if an I/O error occurs writing to the file
      */
-    private void saveScores() {
-        try {
-            List<String> lines = entries.stream()
-                    .map(ScoreEntry::toSaveString)
-                    .collect(Collectors.toList());
+    private void saveScores() throws IOException {
+        List<String> lines = entries.stream()
+                .map(ScoreEntry::toSaveString)
+                .collect(Collectors.toList());
 
-            Files.write(SAVE_FILE, lines,
-                    StandardOpenOption.CREATE, // Create file if it doesn't exist
-                    StandardOpenOption.TRUNCATE_EXISTING); // Overwrite existing file
-
-        } catch (IOException e) {
-            System.err.println("Failed to save Hall of Fame: " + e.getMessage());
-        }
+        Files.write(SAVE_FILE, lines,
+                StandardOpenOption.CREATE, // Create file if it doesn't exist
+                StandardOpenOption.TRUNCATE_EXISTING); // Overwrite existing file
     }
 
     /**
      * Clears all scores from the Hall of Fame.
+     * 
+     * @throws IOException if an I/O error occurs saving the scores
      */
-    public void clearAll() {
+    public void clearAll() throws IOException {
         entries.clear();
         saveScores();
     }

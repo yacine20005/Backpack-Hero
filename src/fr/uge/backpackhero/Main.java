@@ -1,6 +1,7 @@
 package fr.uge.backpackhero;
 
 import java.awt.Color;
+import java.io.IOException;
 
 import com.github.forax.zen.Application;
 import com.github.forax.zen.ApplicationContext;
@@ -27,8 +28,23 @@ public class Main {
     }
 
     private final static int EVENT_POLL_TIMEOUT_MS = 10;
-    private static final HOF HALL_OF_FAME = new HOF();
+    private static final HOF HALL_OF_FAME = initializeHOF();
     private static String playerName = "Player";
+    
+    /**
+     * Initializes the Hall of Fame, handling potential I/O errors.
+     * 
+     * @return a new HOF instance, or null if initialization fails
+     */
+    private static HOF initializeHOF() {
+        try {
+            return new HOF();
+        } catch (IOException e) {
+            IO.println("Failed to load Hall of Fame: " + e.getMessage());
+            IO.println("Starting with empty Hall of Fame.");
+            return null;
+        }
+    }
 
     /**
      * Main method to launch the game.
@@ -45,16 +61,24 @@ public class Main {
 
     private static void gameEntry(ApplicationContext context) {
         var state = new GameState();
+        var view = new View(state);
+        var controller = new Controller(state, view);
         boolean scoreSubmitted = false;
 
-        View.draw(context, state);
+        view.draw(context);
 
         while (true) {
             // Check for game over or victory and submit score once
             if ((state.isGameOver() || state.isVictory()) && !scoreSubmitted) {
                 int score = state.calculateScore();
                 int level = state.getHero().getLevel();
-                HALL_OF_FAME.submitScore(playerName, score, level);
+                if (HALL_OF_FAME != null) {
+                    try {
+                        HALL_OF_FAME.submitScore(playerName, score, level);
+                    } catch (IOException e) {
+                        IO.println("Failed to save score to Hall of Fame: " + e.getMessage());
+                    }
+                }
                 scoreSubmitted = true;
             }
             
@@ -69,12 +93,12 @@ public class Main {
                         break;
                     }
                     if (ke.key() == KeyboardEvent.Key.R) {
-                        Controller.handleRotateItem(context, state);
+                        controller.handleRotateItem(context);
                     }
 
                     // Handle End Turn in combat with X
                     if (ke.key() == KeyboardEvent.Key.X && state.getState() == State.COMBAT && state.getState() != State.LOOT_SCREEN) {
-                        Controller.handleEndTurn(context, state);
+                        controller.handleEndTurn(context);
                         continue;
                     }
 
@@ -84,24 +108,24 @@ public class Main {
                         state.getCombatEngine().cycleEnemyTarget();
                         System.out
                                 .println("Switched target to: " + state.getCombatEngine().getSelectedEnemy().getName());
-                        View.draw(context, state);
+                        view.draw(context);
                         continue;
                     }
 
                     if (ke.key() == KeyboardEvent.Key.Z && (state.isGameOver() || state.isVictory())) {
                         state = new GameState();
                         scoreSubmitted = false;
-                        View.draw(context, state);
+                        view.draw(context);
                     }
 
                     // Handle Healer prompt with Y/N
                     if (state.getState() == State.HEALER_PROMPT) {
                         if (ke.key() == KeyboardEvent.Key.Y) {
-                            Controller.handleHealerAccept(context, state);
+                            controller.handleHealerAccept(context);
                             continue;
                         }
                         if (ke.key() == KeyboardEvent.Key.N) {
-                            Controller.handleHealerDecline(context, state);
+                            controller.handleHealerDecline(context);
                             continue;
                         }
                     }
@@ -109,13 +133,13 @@ public class Main {
                     // Handle Sell confirmation with Y/N
                     if (state.getActivePopup() == PopupType.SELL_CONFIRM) {
                         if (ke.key() == KeyboardEvent.Key.Y) {
-                            Controller.handleSellConfirmYes(state);
-                            View.draw(context, state);
+                            controller.handleSellConfirmYes();
+                            view.draw(context);
                             continue;
                         }
                         if (ke.key() == KeyboardEvent.Key.N) {
-                            Controller.handleSellConfirmNo(state);
-                            View.draw(context, state);
+                            controller.handleSellConfirmNo();
+                            view.draw(context);
                             continue;
                         }
                     }
@@ -123,31 +147,31 @@ public class Main {
                     // Handle Discard confirmation with Y/N
                     if (state.getActivePopup() == PopupType.DISCARD_CONFIRM) {
                         if (ke.key() == KeyboardEvent.Key.Y) {
-                            Controller.handleDiscardConfirmYes(context, state);
+                            controller.handleDiscardConfirmYes(context);
                             continue;
                         }
                         if (ke.key() == KeyboardEvent.Key.N) {
-                            Controller.handleDiscardConfirmNo(context, state);
+                            controller.handleDiscardConfirmNo(context);
                             continue;
                         }
                     }
 
                     // Handle Discard item with D key
                     if (ke.key() == KeyboardEvent.Key.D) {
-                        Controller.handleDiscardItem(context, state);
+                        controller.handleDiscardItem(context);
                         continue;
                     }
 
                     // Handle Loot screen with C (Continue)
                     if (state.getState() == State.LOOT_SCREEN) {
                         if (ke.key() == KeyboardEvent.Key.C) {
-                            Controller.handleLootContinue(context, state);
+                            controller.handleLootContinue(context);
                             continue;
                         }
                         // Handle number keys 1-9 for item selection
                         int itemIndex = getNumberKeyIndex(ke.key());
                         if (itemIndex >= 0) {
-                            Controller.handleLootItemSelection(context, state, itemIndex);
+                            controller.handleLootItemSelection(context, itemIndex);
                             continue;
                         }
                     }
@@ -157,19 +181,19 @@ public class Main {
                     if (currentRoom.getType() == fr.uge.backpackhero.model.level.RoomType.MERCHANT) {
                         if (ke.key() == KeyboardEvent.Key.B) {
                             state.setMerchantMode(MerchantMode.BUY);
-                            View.draw(context, state);
+                            view.draw(context);
                             continue;
                         }
                         if (ke.key() == KeyboardEvent.Key.S) {
                             state.setMerchantMode(MerchantMode.SELL);
-                            View.draw(context, state);
+                            view.draw(context);
                             continue;
                         }
                         // Handle number keys 1-9 for merchant item selection in BUY mode
                         if (state.getMerchantMode() == MerchantMode.BUY) {
                             int itemIndex = getNumberKeyIndex(ke.key());
                             if (itemIndex >= 0) {
-                                Controller.handleMerchantItemSelection(context, state, itemIndex);
+                                controller.handleMerchantItemSelection(context, itemIndex);
                                 continue;
                             }
                         }
@@ -182,8 +206,8 @@ public class Main {
 
                     // Handle sell confirmation popup with priority
                     if (state.getActivePopup() == PopupType.SELL_CONFIRM) {
-                        Controller.handleMerchantClick(state, pe);
-                        View.draw(context, state);
+                        controller.handleMerchantClick(pe);
+                        view.draw(context);
                         continue;
                     }
 
@@ -193,22 +217,22 @@ public class Main {
                     // simultaneously
                     if (state.getState() == State.LOOT_SCREEN) {
                         if (x < View.BACKPACK_PIXEL_WIDTH) {
-                            Controller.handleBackpackClick(context, state, pe);
+                            controller.handleBackpackClick(context, pe);
                         } else {
-                            Controller.handleLootScreenClick(context, state, pe);
+                            controller.handleLootScreenClick(context, pe);
                         }
                         continue;
                     }
 
-                    if (Controller.handleMerchantClick(state, pe)) {
-                        View.draw(context, state);
+                    if (controller.handleMerchantClick(pe)) {
+                        view.draw(context);
                         continue;
                     }
 
                     if (x < View.BACKPACK_PIXEL_WIDTH) {
-                        Controller.handleBackpackClick(context, state, pe);
+                        controller.handleBackpackClick(context, pe);
                     } else {
-                        Controller.handleDungeonClick(context, state, pe);
+                        controller.handleDungeonClick(context, pe);
                     }
                 }
             }
