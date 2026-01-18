@@ -28,14 +28,18 @@ public class Main {
 
     private final static int EVENT_POLL_TIMEOUT_MS = 10;
     private static final HOF HALL_OF_FAME = new HOF();
+    private static String playerName = "Player";
 
     /**
      * Main method to launch the game.
      * 
-     * @param args command line arguments (not used)
+     * @param args command line arguments: args[0] = player name (optional)
      */
 
     public static void main(String[] args) {
+        if (args.length > 0 && !args[0].isBlank()) {
+            playerName = args[0];
+        }
         Application.run(Color.BLACK, Main::gameEntry);
     }
 
@@ -50,7 +54,7 @@ public class Main {
             if ((state.isGameOver() || state.isVictory()) && !scoreSubmitted) {
                 int score = state.calculateScore();
                 int level = state.getHero().getLevel();
-                HALL_OF_FAME.submitScore("Player", score, level);
+                HALL_OF_FAME.submitScore(playerName, score, level);
                 scoreSubmitted = true;
             }
             
