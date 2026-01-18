@@ -83,6 +83,11 @@ public class View {
             drawHealerPrompt(screen, state);
             drawMerchant(screen, state);
             drawLootScreen(screen, state);
+            
+            // Draw discard confirmation popup (must be after merchant to overlay it)
+            if (state.isDiscardConfirmOpen()) {
+                drawDiscardConfirmPopup(screen, state);
+            }
 
             if (state.isInCombat() && !state.isLootScreenOpen()) {
                 drawCombat(screen, state, height);
@@ -329,7 +334,15 @@ public class View {
         screen.drawString("Energy: " + hero.getEnergy(), textX, textY);
         textY += 20;
         screen.drawString("Block: " + hero.getBlock(), textX, textY);
-        textY += 25;
+        textY += 20;
+        
+        // Display end turn hint
+        screen.setFont(oldFont.deriveFont(14f));
+        screen.setColor(Color.YELLOW);
+        screen.drawString("Press X to end turn", textX, textY);
+        screen.setColor(Color.WHITE);
+        screen.setFont(oldFont.deriveFont(18f));
+        textY += 20;
 
         screen.drawString("Ennemis :", textX, textY);
         textY += 20;
@@ -478,6 +491,39 @@ public class View {
         if (state.isSellConfirmOpen()) {
             drawSellConfirmPopup(screen, state);
         }
+
+        // Draw discard confirmation popup
+        if (state.isDiscardConfirmOpen()) {
+            drawDiscardConfirmPopup(screen, state);
+        }
+    }
+
+    private static void drawDiscardConfirmPopup(Graphics2D screen, GameState state) {
+        var item = state.getDiscardConfirmItem();
+        if (item == null)
+            return;
+
+        int boxX = POPUP_X;
+        int boxY = POPUP_Y;
+        int boxW = POPUP_WIDTH;
+        int boxH = 150;
+
+        screen.setColor(new Color(40, 0, 0));
+        screen.fill(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+        screen.setColor(Color.RED);
+        screen.draw(new Rectangle2D.Float(boxX, boxY, boxW, boxH));
+
+        screen.setColor(Color.ORANGE);
+        screen.drawString("DISCARD ITEM?", boxX + POPUP_PADDING * 2, boxY + 30);
+        screen.setColor(Color.WHITE);
+        screen.drawString(item.getName(), boxX + POPUP_PADDING * 2, boxY + 55);
+        screen.setColor(Color.YELLOW);
+        screen.drawString("This item will be lost forever!", boxX + POPUP_PADDING * 2, boxY + 75);
+
+        screen.setColor(Color.WHITE);
+        drawButton(screen, boxX + POPUP_PADDING * 3, boxY + 100, BUTTON_WIDTH, BUTTON_HEIGHT, "YES (Y)");
+        drawButton(screen, boxX + POPUP_PADDING * 3 + BUTTON_WIDTH + 50, boxY + 100, BUTTON_WIDTH, BUTTON_HEIGHT,
+                "NO (N)");
     }
 
     private static void drawSellConfirmPopup(Graphics2D screen, GameState state) {

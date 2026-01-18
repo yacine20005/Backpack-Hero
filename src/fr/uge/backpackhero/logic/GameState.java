@@ -40,6 +40,8 @@ public class GameState {
     private Item sellConfirmItem = null;
     private Position sellConfirmAnchor = null;
     private Item selectedMerchantItem = null;
+    private Item discardConfirmItem = null;
+    private Position discardConfirmAnchor = null;
 
     public GameState() {
     }
@@ -287,6 +289,28 @@ public class GameState {
 
     public void setSelectedMerchantItem(Item item) {
         this.selectedMerchantItem = item;
+    }
+
+    public Item getDiscardConfirmItem() {
+        return discardConfirmItem;
+    }
+
+    public Position getDiscardConfirmAnchor() {
+        return discardConfirmAnchor;
+    }
+
+    public void openDiscardConfirm(Item item, Position anchor) {
+        this.discardConfirmItem = Objects.requireNonNull(item);
+        this.discardConfirmAnchor = Objects.requireNonNull(anchor);
+    }
+
+    public void closeDiscardConfirm() {
+        this.discardConfirmItem = null;
+        this.discardConfirmAnchor = null;
+    }
+
+    public boolean isDiscardConfirmOpen() {
+        return discardConfirmItem != null;
     }
 
 }

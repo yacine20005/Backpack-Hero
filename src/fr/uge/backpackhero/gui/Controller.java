@@ -447,6 +447,59 @@ public class Controller {
         state.closeSellConfirm();
     }
 
+    public static void handleDiscardItem(ApplicationContext context, GameState state) {
+        if (state.isInCombat() || state.isLootScreenOpen() || state.isSellConfirmOpen() 
+            || state.isHealerPromptOpen() || state.isGameOver()) {
+            return;
+        }
+
+        var selectedAnchor = state.getSelectedItemAnchor();
+        if (selectedAnchor == null) {
+            System.out.println("No item selected to discard.");
+            return;
+        }
+
+        var item = state.getBackpack().getItems().get(selectedAnchor);
+        if (item == null) {
+            return;
+        }
+        // Prevent discarding Gold
+        switch (item) {
+            case Gold gold -> {
+                System.out.println("Cannot discard gold!");
+                View.draw(context, state);
+                return;
+            }
+            default -> {
+            }
+        }
+
+        state.openDiscardConfirm(item, selectedAnchor);
+        View.draw(context, state);
+    }
+
+    public static void handleDiscardConfirmYes(ApplicationContext context, GameState state) {
+        if (!state.isDiscardConfirmOpen())
+            return;
+
+        var item = state.getDiscardConfirmItem();
+        var anchor = state.getDiscardConfirmAnchor();
+        if (item != null && anchor != null) {
+            state.getBackpack().removeItem(anchor);
+            state.clearSelectedItem();
+            System.out.println("Discarded: " + item.getName());
+        }
+        state.closeDiscardConfirm();
+        View.draw(context, state);
+    }
+
+    public static void handleDiscardConfirmNo(ApplicationContext context, GameState state) {
+        if (!state.isDiscardConfirmOpen())
+            return;
+        state.closeDiscardConfirm();
+        View.draw(context, state);
+    }
+
     public static void handleHealerAccept(ApplicationContext context, GameState state) {
         if (!state.isHealerPromptOpen())
             return;
@@ -480,7 +533,7 @@ public class Controller {
             return;
 
         state.closeLootScreen();
-        
+
         // Only end combat if we were in combat
         if (state.isInCombat()) {
             var combat = state.getCombatEngine();
@@ -553,6 +606,20 @@ public class Controller {
             }
             View.draw(context, state);
         }
+    }
+
+    public static void handleEndTurn(ApplicationContext context, GameState state) {
+        if (!state.isInCombat()) {
+            return;
+        }
+
+        var hero = state.getHero();
+        // Force energy to 0 to trigger enemy turn
+        hero.setEnergy(0);
+        IO.println("Turn ended.");
+
+        processEnemiesTurn(context, state);
+        View.draw(context, state);
     }
 
 }

@@ -54,6 +54,12 @@ public class Main {
                         Controller.handleRotateItem(context, state);
                     }
 
+                    // Handle End Turn in combat with X
+                    if (ke.key() == KeyboardEvent.Key.X && state.isInCombat() && !state.isLootScreenOpen()) {
+                        Controller.handleEndTurn(context, state);
+                        continue;
+                    }
+
                     if (ke.key() == KeyboardEvent.Key.Z && state.isGameOver()) {
                         state = new GameState();
                         View.draw(context, state);
@@ -83,6 +89,24 @@ public class Main {
                             View.draw(context, state);
                             continue;
                         }
+                    }
+
+                    // Handle Discard confirmation with Y/N
+                    if (state.isDiscardConfirmOpen()) {
+                        if (ke.key() == KeyboardEvent.Key.Y) {
+                            Controller.handleDiscardConfirmYes(context, state);
+                            continue;
+                        }
+                        if (ke.key() == KeyboardEvent.Key.N) {
+                            Controller.handleDiscardConfirmNo(context, state);
+                            continue;
+                        }
+                    }
+
+                    // Handle Discard item with D key
+                    if (ke.key() == KeyboardEvent.Key.D) {
+                        Controller.handleDiscardItem(context, state);
+                        continue;
                     }
 
                     // Handle Loot screen with C (Continue)

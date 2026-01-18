@@ -77,7 +77,7 @@
 - [x] Contenu des salles (ennemis, loot) codé en dur
 - [w] Logique du marchand (acheter/vendre)
 - [x] Logique du guérisseur (soigner contre or)
-- [ ] Logique du trésor (ramasser le loot)
+- [x] Logique du trésor (ramasser le loot)
 
 ### Interface graphique (Vue & Contrôleur)
 
