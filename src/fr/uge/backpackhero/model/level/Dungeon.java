@@ -174,26 +174,26 @@ public class Dungeon {
         if (floorIndex == 0) {
             // Floor 0: Easy enemies
             return switch (enemyCount) {
-                case 1 -> List.of(Enemy.ratLoup());
-                case 2 -> List.of(Enemy.petitRatLoup(), Enemy.petitRatLoup());
-                default -> List.of(Enemy.petitRatLoup(), Enemy.petitRatLoup(), Enemy.ratLoup());
+                case 1 -> List.of(Enemy.ratWolf());
+                case 2 -> List.of(Enemy.smallRatWolf(), Enemy.smallRatWolf());
+                default -> List.of(Enemy.smallRatWolf(), Enemy.smallRatWolf(), Enemy.ratWolf());
             };
         }
 
         if (floorIndex == 1) {
             // Floor 1: Medium enemies
             return switch (enemyCount) {
-                case 1 -> List.of(Enemy.Gobelin());
-                case 2 -> List.of(Enemy.Gobelin(), Enemy.petitRatLoup());
-                default -> List.of(Enemy.Gobelin(), Enemy.Gobelin(), Enemy.ChefGobelins());
+                case 1 -> List.of(Enemy.goblin());
+                case 2 -> List.of(Enemy.goblin(), Enemy.frogWizard());
+                default -> List.of(Enemy.goblin(), Enemy.goblin(), Enemy.goblinChief());
             };
         }
 
-        // Floor 2: Hard enemies
+        // Floor 2: Hard enemies (including new Phase 3 enemies)
         return switch (enemyCount) {
-            case 1 -> List.of(Enemy.Demon());
-            case 2 -> List.of(Enemy.Demon(), Enemy.Gobelin());
-            default -> List.of(Enemy.Demon(), Enemy.Demon(), Enemy.RoiDemon());
+            case 1 -> List.of(Enemy.demon());
+            case 2 -> List.of(Enemy.demon(), Enemy.livingShadow());
+            default -> List.of(Enemy.demon(), Enemy.demonKing(), Enemy.beeQueen());
         };
     }
 

@@ -40,37 +40,84 @@ public class Enemy {
 	}
 
 	/**
-	 * Creates a Rat Loup enemy.
+	 * Creates a Rat Wolf enemy.
 	 * 
-	 * @return a new Rat Loup enemy instance
+	 * @return a new Rat Wolf enemy instance
 	 */
-	public static Enemy ratLoup() {
-		return new Enemy("Rat Loup", 10, 1, 3, 6, 3);
+	public static Enemy ratWolf() {
+		return new Enemy("Rat Wolf", 10, 1, 3, 6, 3);
 	}
 
 	/**
-	 * Creates a Petit Rat Loup enemy.
+	 * Creates a Small Rat Wolf enemy.
 	 * 
-	 * @return a new Petit Rat Loup enemy instance
+	 * @return a new Small Rat Wolf enemy instance
 	 */
-	public static Enemy petitRatLoup() {
-		return new Enemy("Petit Rat Loup", 5, 1, 0, 3, 2);
+	public static Enemy smallRatWolf() {
+		return new Enemy("Small Rat Wolf", 5, 1, 0, 3, 2);
 	}
 
-	public static Enemy Gobelin() {
-		return new Enemy("Gobelin", 18, 8, 3, 8, 5);
+	/**
+	 * Creates a Goblin enemy.
+	 * 
+	 * @return a new Goblin enemy instance
+	 */
+	public static Enemy goblin() {
+		return new Enemy("Goblin", 18, 8, 3, 8, 5);
 	}
 
-	public static Enemy ChefGobelins() {
-		return new Enemy("Chef gobelin", 22, 9, 5, 10, 7);
+	/**
+	 * Creates a Goblin Chief enemy.
+	 * 
+	 * @return a new Goblin Chief enemy instance
+	 */
+	public static Enemy goblinChief() {
+		return new Enemy("Goblin Chief", 22, 9, 5, 10, 7);
 	}
 
-	public static Enemy Demon() {
+	/**
+	 * Creates a Demon enemy.
+	 * 
+	 * @return a new Demon enemy instance
+	 */
+	public static Enemy demon() {
 		return new Enemy("Demon", 30, 12, 7, 15, 10);
 	}
 
-	public static Enemy RoiDemon() {
-		return new Enemy("Roi Demon", 35, 14, 9, 20, 15);
+	/**
+	 * Creates a Demon King enemy.
+	 * 
+	 * @return a new Demon King enemy instance
+	 */
+	public static Enemy demonKing() {
+		return new Enemy("Demon King", 35, 14, 9, 20, 15);
+	}
+
+	/**
+	 * Creates a Frog Wizard enemy.
+	 * 
+	 * @return a new Frog Wizard enemy instance
+	 */
+	public static Enemy frogWizard() {
+		return new Enemy("Frog Wizard", 25, 10, 5, 12, 8);
+	}
+
+	/**
+	 * Creates a Living Shadow enemy.
+	 * 
+	 * @return a new Living Shadow enemy instance
+	 */
+	public static Enemy livingShadow() {
+		return new Enemy("Living Shadow", 20, 11, 4, 10, 7);
+	}
+
+	/**
+	 * Creates a Bee Queen enemy.
+	 * 
+	 * @return a new Bee Queen enemy instance
+	 */
+	public static Enemy beeQueen() {
+		return new Enemy("Bee Queen", 40, 13, 8, 25, 12);
 	}
 
 	/**

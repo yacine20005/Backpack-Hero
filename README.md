@@ -130,8 +130,8 @@
 
 ### Loot aléatoire
 
-- [ ] Tables de loot basées sur la rareté
-- [ ] Remplacer le loot codé en dur par du loot aléatoire
+- [x] Tables de loot basées sur la rareté
+- [x] Remplacer le loot codé en dur par du loot aléatoire
 
 ---
 
@@ -145,9 +145,9 @@
 
 ### Nouveaux ennemis
 
-- [ ] Sorcier-grenouille
-- [ ] Ombre vivante
-- [ ] Reine des abeilles
+- [x] Sorcier-grenouille (Frog Wizard)
+- [x] Ombre vivante (Living Shadow)
+- [x] Reine des abeilles (Bee Queen)
 
 ### Génération aléatoire de carte
 
