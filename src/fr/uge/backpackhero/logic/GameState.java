@@ -111,6 +111,7 @@ public class GameState {
 
     public void exitFloor() {
         if (floor + 1 >= dungeon.getFloorCount()) {
+            this.victory = true;
             return;
         }
         this.floor++;
@@ -210,6 +211,7 @@ public class GameState {
     }
 
     private boolean gameOver = false;
+    private boolean victory = false;
 
     public boolean isGameOver() {
         return gameOver;
@@ -217,6 +219,14 @@ public class GameState {
 
     public void setGameOver(boolean value) {
         this.gameOver = value;
+    }
+
+    public boolean isVictory() {
+        return victory;
+    }
+
+    public void setVictory(boolean value) {
+        this.victory = value;
     }
 
     public boolean isLootScreenOpen() {

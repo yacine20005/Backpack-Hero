@@ -95,6 +95,9 @@ public class View {
             if (state.isGameOver()) {
                 drawGameOver(screen, width, height);
             }
+            if (state.isVictory()) {
+                drawVictory(screen, width, height);
+            }
         });
     }
 
@@ -689,6 +692,27 @@ public class View {
         screen.setFont(new Font("Arial", Font.PLAIN, 18));
         screen.drawString("Quit: Q", width / 2 - 70, height - 80);
         screen.drawString("Restart: Z", width / 2 - 90, height - 55);
+    }
+
+    private static void drawVictory(Graphics2D screen, int width, int height) {
+        // Background overlay
+        screen.setColor(new Color(0, 0, 0, 150));
+        screen.fill(new Rectangle2D.Float(0, 0, width, height));
+
+        // Victory text
+        screen.setColor(Color.YELLOW);
+        screen.setFont(new Font("Arial", Font.BOLD, 60));
+        screen.drawString("VICTORY!", width / 2 - 150, height / 2 - 100);
+
+        // Congratulations
+        screen.setColor(Color.WHITE);
+        screen.setFont(new Font("Arial", Font.PLAIN, 24));
+        screen.drawString("You escaped the dungeon!", width / 2 - 140, height / 2 - 40);
+
+        // Controls
+        screen.setFont(new Font("Arial", Font.PLAIN, 18));
+        screen.drawString("Quit: Q", width / 2 - 70, height / 2 + 40);
+        screen.drawString("Restart: Z", width / 2 - 90, height / 2 + 70);
     }
 
 }

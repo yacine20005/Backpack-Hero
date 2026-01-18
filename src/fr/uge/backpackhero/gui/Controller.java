@@ -261,6 +261,11 @@ public class Controller {
             return;
         }
 
+        // Block movement if any popup is open
+        if (state.isHealerPromptOpen() || state.isSellConfirmOpen() || state.isDiscardConfirmOpen()) {
+            return;
+        }
+
         int x = (int) ((pointerEvent.location().x() - View.BACKPACK_PIXEL_WIDTH) / View.TILE_SIZE);
         int y = (int) (pointerEvent.location().y() / View.TILE_SIZE);
         var clickedPos = new Position(x, y);
@@ -363,6 +368,7 @@ public class Controller {
         }
         if (!hero.isAlive()) {
             System.out.println("The hero is dead.");
+            state.setGameOver(true);
             combat.endCombat();
             View.draw(context, state);
             return;
@@ -448,8 +454,9 @@ public class Controller {
     }
 
     public static void handleDiscardItem(ApplicationContext context, GameState state) {
-        if (state.isInCombat() || state.isLootScreenOpen() || state.isSellConfirmOpen() 
-            || state.isHealerPromptOpen() || state.isGameOver()) {
+        // Only block if another popup is already open or game is over
+        if (state.isSellConfirmOpen() || state.isHealerPromptOpen()
+                || state.isGameOver() || state.isVictory()) {
             return;
         }
 

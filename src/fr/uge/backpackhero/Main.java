@@ -60,7 +60,7 @@ public class Main {
                         continue;
                     }
 
-                    if (ke.key() == KeyboardEvent.Key.Z && state.isGameOver()) {
+                    if (ke.key() == KeyboardEvent.Key.Z && (state.isGameOver() || state.isVictory())) {
                         state = new GameState();
                         View.draw(context, state);
                     }
