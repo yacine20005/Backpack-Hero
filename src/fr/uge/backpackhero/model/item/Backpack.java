@@ -23,7 +23,7 @@ public class Backpack {
 
     private final int width;
     private final int height;
-    private int mana; // TODO : move the mana management to Hero
+    private int mana;
     private final Map<Position, Item> items;
     private final Set<Position> occupiedCells; // We use a set to track occupied cells faster
     private final Set<Position> unlockedCells; // Cells that can be used
