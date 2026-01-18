@@ -43,7 +43,7 @@ public class View {
     /** X position for all left sidebar popups. */
     public static final int POPUP_X = 10;
     /** Y position for all interactive popups. */
-    public static final int POPUP_Y = 350;
+    public static final int POPUP_Y = 500;
     /** Width for all popups. */
     public static final int POPUP_WIDTH = BACKPACK_PIXEL_WIDTH - 20;
     /** Padding inside popups. */
@@ -580,7 +580,8 @@ public class View {
 
         // Title
         screen.setFont(screen.getFont().deriveFont(Font.BOLD, 20f));
-        screen.drawString("VICTORY!", boxX + 120, boxY + 30);
+        String title = state.isInCombat() ? "VICTORY!" : "TREASURE!";
+        screen.drawString(title, boxX + 120, boxY + 30);
 
         // Instructions
         screen.setFont(screen.getFont().deriveFont(Font.PLAIN, 14f));

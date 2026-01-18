@@ -286,6 +286,21 @@ public class Controller {
             return;
         }
 
+        if (room != null && room.getType() == RoomType.TREASURE) {
+            var treasureItems = room.getTreasureItems();
+            if (treasureItems != null && !treasureItems.isEmpty()) {
+                int goldAmount = room.collectGold();
+                if (goldAmount > 0) {
+                    state.getBackpack().addGold(goldAmount);
+                    IO.println("Found " + goldAmount + " gold!");
+                }
+                state.openLootScreen(treasureItems);
+                IO.println("Treasure room! " + treasureItems.size() + " items to choose from.");
+                View.draw(context, state);
+            }
+            return;
+        }
+
         if (room != null && room.getType() == RoomType.ENEMY) {
             var enemies = room.getEnemies();
             if (enemies != null && !enemies.isEmpty()) {
@@ -465,14 +480,18 @@ public class Controller {
             return;
 
         state.closeLootScreen();
-        var combat = state.getCombatEngine();
-        combat.endCombat();
+        
+        // Only end combat if we were in combat
+        if (state.isInCombat()) {
+            var combat = state.getCombatEngine();
+            combat.endCombat();
+        }
 
         var floor = state.getCurrentFloor();
         var pos = state.getPosition();
         floor.setRoom(pos, new Room(RoomType.CORRIDOR, null, null, null, 0, 0));
 
-        IO.println("Loot screen closed. Combat ended.");
+        IO.println("Loot screen closed.");
         View.draw(context, state);
     }
 
