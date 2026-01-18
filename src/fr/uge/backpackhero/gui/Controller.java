@@ -37,7 +37,7 @@ public class Controller {
      * Creates a new Controller instance.
      * 
      * @param state the game state to control
-     * @param view the view to update after actions
+     * @param view  the view to update after actions
      */
     public Controller(GameState state, View view) {
         this.state = Objects.requireNonNull(state, "state cannot be null");
@@ -54,7 +54,7 @@ public class Controller {
     public void handleBackpackClick(ApplicationContext context, PointerEvent pointerEvent) {
         Objects.requireNonNull(context, "context cannot be null");
         Objects.requireNonNull(pointerEvent, "pointerEvent cannot be null");
-        
+
         if (state.isGameOver()) {
             return;
         }
@@ -231,6 +231,7 @@ public class Controller {
      * @param state   the current game state
      */
     public void handleRotateItem(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         var selectedItemAnchor = state.getSelectedItemAnchor();
         if (selectedItemAnchor == null) {
             System.out.println("No item selected.");
@@ -264,6 +265,8 @@ public class Controller {
      * @param pointerEvent the pointer event representing the click
      */
     public void handleDungeonClick(ApplicationContext context, PointerEvent pointerEvent) {
+        Objects.requireNonNull(context, "context cannot be null");
+        Objects.requireNonNull(pointerEvent, "pointerEvent cannot be null");
         if (state.getState() == State.COMBAT) {
             return;
         }
@@ -446,6 +449,7 @@ public class Controller {
     }
 
     public boolean handleMerchantClick(PointerEvent event) {
+        Objects.requireNonNull(event, "event cannot be null");
         if (state.isGameOver()) {
             return true;
         }
@@ -489,6 +493,7 @@ public class Controller {
     }
 
     public void handleDiscardItem(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         // Only block if another popup is already open or game is over
         if (state.getActivePopup() == PopupType.SELL_CONFIRM || state.getState() == State.HEALER_PROMPT
                 || state.isGameOver() || state.isVictory()) {
@@ -521,6 +526,7 @@ public class Controller {
     }
 
     public void handleDiscardConfirmYes(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
             return;
 
@@ -536,6 +542,7 @@ public class Controller {
     }
 
     public void handleDiscardConfirmNo(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         if (state.getActivePopup() != PopupType.DISCARD_CONFIRM)
             return;
         state.closeDiscardConfirm();
@@ -543,6 +550,7 @@ public class Controller {
     }
 
     public void handleHealerAccept(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.HEALER_PROMPT)
             return;
 
@@ -564,6 +572,7 @@ public class Controller {
     }
 
     public void handleHealerDecline(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.HEALER_PROMPT)
             return;
         state.closeHealerPrompt();
@@ -571,6 +580,7 @@ public class Controller {
     }
 
     public void handleLootContinue(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.LOOT_SCREEN)
             return;
 
@@ -591,6 +601,8 @@ public class Controller {
     }
 
     public boolean handleLootScreenClick(ApplicationContext context, PointerEvent pe) {
+        Objects.requireNonNull(context, "context cannot be null");
+        Objects.requireNonNull(pe, "pe cannot be null");
         if (state.isGameOver()) {
             return true;
         }
@@ -604,6 +616,7 @@ public class Controller {
     }
 
     public void handleMerchantItemSelection(ApplicationContext context, int index) {
+        Objects.requireNonNull(context, "context cannot be null");
         var room = state.getCurrentFloor().getRoom(state.getPosition());
         if (room == null || room.getType() != RoomType.MERCHANT) {
             return;
@@ -631,6 +644,7 @@ public class Controller {
     }
 
     public void handleLootItemSelection(ApplicationContext context, int index) {
+        Objects.requireNonNull(context, "context cannot be null");
         var loot = state.getAvailableLoot();
         if (loot == null || loot.isEmpty()) {
             return;
@@ -651,6 +665,7 @@ public class Controller {
     }
 
     public void handleEndTurn(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         if (state.getState() != State.COMBAT) {
             return;
         }

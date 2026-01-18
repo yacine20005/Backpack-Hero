@@ -2,6 +2,7 @@ package fr.uge.backpackhero.model.loot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import fr.uge.backpackhero.model.entity.Enemy;
@@ -25,7 +26,8 @@ public final class LootTables {
 
   /**
    * Generates a list of random loot items for the given floor.
-   * This is the central method used for all loot generation (combat, treasures, merchant).
+   * This is the central method used for all loot generation (combat, treasures,
+   * merchant).
    * 
    * @param floorIndex the index of the floor
    * @param count      the number of items to generate
@@ -62,6 +64,7 @@ public final class LootTables {
    * @return the amount of gold dropped
    */
   public static int combatGold(Enemy enemy) {
+    Objects.requireNonNull(enemy, "enemy cannot be null");
     return enemy.getGoldDrop();
   }
 
@@ -134,6 +137,7 @@ public final class LootTables {
    * @return a list of loot items
    */
   public static List<Item> generateLootFromEnemies(List<Enemy> enemies, int floorIndex) {
+    Objects.requireNonNull(enemies, "enemies cannot be null");
     var loot = new ArrayList<Item>();
     var rng = new Random();
 

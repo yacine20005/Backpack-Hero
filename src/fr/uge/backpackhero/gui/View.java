@@ -105,6 +105,7 @@ public class View {
      * @param state   the current game state
      */
     public void draw(ApplicationContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
         context.renderFrame(screen -> {
 
             var screenInfo = context.getScreenInfo();

@@ -126,8 +126,9 @@ public class Room {
     }
 
     public boolean getFromTreasure(Backpack backpack, Position position, Item item) {
-        Objects.requireNonNull(backpack);
-        Objects.requireNonNull(item);
+        Objects.requireNonNull(backpack, "backpack cannot be null");
+        Objects.requireNonNull(position, "position cannot be null");
+        Objects.requireNonNull(item, "item cannot be null");
         if (treasureItems == null || !treasureItems.contains(item)) {
             throw new IllegalArgumentException("Item " + item + " is not in the treasure items of this room");
         }

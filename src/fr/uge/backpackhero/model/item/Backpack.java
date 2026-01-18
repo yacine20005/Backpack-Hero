@@ -421,6 +421,7 @@ public class Backpack {
     }
 
     public boolean placeFirstFit(Item item) {
+        Objects.requireNonNull(item, "item cannot be null");
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Position p = new Position(x, y);

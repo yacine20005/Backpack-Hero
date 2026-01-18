@@ -196,8 +196,8 @@ public class GameState {
      * @param item   the selected item
      */
     public void setSelectedItem(Position anchor, Item item) {
-        this.selectedItemAnchor = anchor;
-        this.selectedItem = item;
+        this.selectedItemAnchor = Objects.requireNonNull(anchor, "anchor cannot be null");
+        this.selectedItem = Objects.requireNonNull(item, "item cannot be null");
     }
 
     public void clearSelectedItem() {
@@ -275,10 +275,11 @@ public class GameState {
     }
 
     public void setSelectedLootItem(Item item) {
-        this.selectedLootItem = item;
+        this.selectedLootItem = Objects.requireNonNull(item, "item cannot be null");
     }
 
     public void removeLootItem(Item item) {
+        Objects.requireNonNull(item, "item cannot be null");
         if (availableLoot != null) {
             availableLoot.remove(item);
         }
@@ -321,7 +322,7 @@ public class GameState {
     }
 
     public void setSelectedMerchantItem(Item item) {
-        this.selectedMerchantItem = item;
+        this.selectedMerchantItem = Objects.requireNonNull(item, "item cannot be null");
     }
 
     public Item getDiscardConfirmItem() {
@@ -354,6 +355,7 @@ public class GameState {
     }
 
     public void unlockCellAt(Position pos) {
+        Objects.requireNonNull(pos, "pos cannot be null");
         if (backpack.unlockCell(pos)) {
             cellsToUnlock--;
             if (cellsToUnlock <= 0) {

@@ -22,3 +22,6 @@
 hs_err_pid*
 replay_pid*
 /bin/
+
+# Checklist file
+CHECKLIST.md
