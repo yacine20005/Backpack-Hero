@@ -1,6 +1,6 @@
-# Backpack Hero (Java Clone)
+# Backpack Hero
 
-> A strategic roguelike focusing on inventory management, built with **Java** and strict **Object-Oriented Design** principles.
+A strategic roguelike focusing on inventory management, built with **Java** and strict **Object-Oriented Design** principles.
 
 ## Project Overview
 
@@ -14,13 +14,12 @@ The core gameplay revolves around managing a limited inventory grid where items 
 
 ### Complex Inventory System
 *   **Spatial Puzzle:** Items have unique shapes (tetromino-like) and must be rotated/translated to fit into the grid.
-*   **Adjacency Bonuses:** Strategic placement triggers item synergies (e.g., armor boosting adjacent weapons).
 *   **Dynamic Expansion:** The backpack grid grows as the player levels up.
 
 ### Tactical Turn-Based Combat
 *   **Energy Management:** Players spend energy points to use items (attack, block, heal).
 *   **Predictive Enemy AI:** Enemy intentions are telegraphing, requiring players to react defensively or aggressively.
-*   ** diverse Arsenal:** Weapons, shields, magical artifacts, and consumables.
+*   **Diverse Arsenal:** Weapons, shields, magical artifacts, and consumables.
 
 ### Dungeon Crawler Mechanics
 *   **Procedural Generation:** Explore unique dungeon layouts with enemies, treasures, merchants, and healers.
@@ -38,8 +37,6 @@ The project is engineered with a focus on maintainability, scalability, and code
 *   **Controller:** Handles user input and orchestrates the game loop.
 
 ### Code Quality Standards
-To ensure professional-grade code, the project adheres to strict constraints:
-*   **Clean Code:** No method exceeds **20 lines** of code.
 *   **Encapsulation:** All fields are `private`; no global variables or states.
 *   **Safety:** rigorous null-checks (`Objects.requireNonNull`) and input validation.
 *   **No Duplication:** Heavy emphasis on code reuse and modularity.
